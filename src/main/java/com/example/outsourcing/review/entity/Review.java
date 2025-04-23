@@ -21,6 +21,6 @@ public class Review extends BaseEntity {
 
     private String content;
 
-    @NotNull
+    @Column(nullable = false)
     private int score;
 }
