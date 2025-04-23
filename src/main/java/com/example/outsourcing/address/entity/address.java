@@ -9,9 +9,11 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import org.hibernate.usertype.UserType;
 
 @Entity
+@Table(name = "address")
 public class address extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
