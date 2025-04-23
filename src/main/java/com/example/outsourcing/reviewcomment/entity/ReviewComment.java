@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "reviewComment")
+@Table(name = "review_comment")
 public class ReviewComment extends BaseEntity {
 
     @Id
