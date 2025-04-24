@@ -1,6 +1,5 @@
 package com.example.outsourcing.user.entity.dto;
 
-import com.example.outsourcing.user.entity.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -16,9 +15,9 @@ public class UserSignupRequestDTO {
   @Pattern(regexp = "^[a-z|A-Z|0-9|ㄱ-ㅎ|가-힣]+$", message = "닉네임은 영문자, 한글, 숫자만 입력 가능합니다.")
   private String nickname;
 
-  // TODO: 추후 Enum Validator 사용
+  // TODO: 추후 Enum Validator 사용, String -> Enum 변환
   @NotBlank(message = "권한은 필수값입니다.")
-  private Role role;
+  private String role;
 
   // 단순 이미지 url
   private String profileImg;

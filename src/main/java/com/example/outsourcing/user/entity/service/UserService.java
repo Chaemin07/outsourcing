@@ -33,7 +33,7 @@ public class UserService {
     requestDTO.setPassword(encodedPwd);
 
     // 저장
-    userRepository.save(new User());  // TODO: Mapper or MapStruct 로 DTO-엔티티 변환 구현
+    userRepository.save(new User(requestDTO));  // TODO: Mapper or MapStruct 로 DTO-엔티티 변환 구현
   }
 
   // 회원 조회
