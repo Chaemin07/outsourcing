@@ -3,10 +3,12 @@ package com.example.outsourcing.user.entity.service;
 import com.example.outsourcing.common.config.PasswordEncoder;
 import com.example.outsourcing.user.entity.User;
 import com.example.outsourcing.user.entity.dto.PwdUpdateRequestDTO;
+import com.example.outsourcing.user.entity.dto.UserDeactiveRequestDTO;
 import com.example.outsourcing.user.entity.dto.UserResponseDTO;
 import com.example.outsourcing.user.entity.dto.UserSignupRequestDTO;
 import com.example.outsourcing.user.entity.dto.UserUpdateRequestDTO;
 import com.example.outsourcing.user.entity.repository.UserRepository;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +33,7 @@ public class UserService {
     requestDTO.setPassword(encodedPwd);
 
     // 저장
-    userRepository.save(requestDTO);  // TODO: Mapper or MapStruct 로 DTO-엔티티 변환 구현
+    userRepository.save(new User());  // TODO: Mapper or MapStruct 로 DTO-엔티티 변환 구현
   }
 
   // 회원 조회
@@ -47,6 +49,9 @@ public class UserService {
   @Transactional
   public void updateUser(Long userId, UserUpdateRequestDTO requestDTO) {
     User user = userRepository.findById(userId).orElseThrow();
+    if (!isValidPassword(requestDTO.getPassword(), user.getPassword())) {
+      return;
+    }
     user.update(requestDTO);
   }
 
@@ -55,7 +60,7 @@ public class UserService {
   public void updatePassword(Long userId, PwdUpdateRequestDTO requestDTO) {
     User user = userRepository.findById(userId).orElseThrow();
 
-    // 비밀번호 검증 로직
+    // 비밀번호 검증
     if (!isValidPassword(requestDTO.getOldPwd(), user.getPassword())) {
       return;
     }
@@ -70,5 +75,22 @@ public class UserService {
   // 중복 이메일 검사
   private boolean isExistsEmail(String email) {
     return userRepository.existsByEmail(email);
+  }
+
+  // 유저 탈퇴
+  @Transactional
+  public void deactiveUser(Long userId, UserDeactiveRequestDTO requestDTO) {
+    User user = userRepository.findById(userId).orElseThrow();
+
+    // 비밀번호 검증
+    if (!isValidPassword(requestDTO.getPassword(), user.getPassword())) {
+      return;
+    }
+
+    // 탈퇴된 유저인지 확인
+    if (user.getDeletedAt() == null) {
+      // TODO: 탈퇴된 회원 예외처리 추가
+    }
+    user.setDeletedAt(LocalDateTime.now());
   }
 }

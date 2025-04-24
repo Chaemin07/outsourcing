@@ -2,12 +2,8 @@ package com.example.outsourcing.user.entity;
 
 import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.entity.BaseEntity;
-<<<<<<< Updated upstream
 import com.example.outsourcing.image.entity.Image;
-=======
-import com.example.outsourcing.user.entity.dto.PwdUpdateRequestDTO;
 import com.example.outsourcing.user.entity.dto.UserUpdateRequestDTO;
->>>>>>> Stashed changes
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,8 +15,10 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -60,10 +58,13 @@ public class User extends BaseEntity {
   @OneToMany(mappedBy = "user")
   private List<Address> addresses;
 
+  @Setter
+  private LocalDateTime deletedAt = null;
+
   // 회원 정보 수정
   public void update(UserUpdateRequestDTO requestDTO) {
     this.nickname = requestDTO.getNickname();
-    this.profileImg = requestDTO.getProfileImg();
+    this.profileImg = requestDTO.getProfileImg();   // TODO: Img 레포지토리 사용
   }
 
   // 비밀번호 수정

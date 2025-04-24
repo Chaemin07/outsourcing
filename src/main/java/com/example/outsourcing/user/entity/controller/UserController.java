@@ -1,6 +1,7 @@
 package com.example.outsourcing.user.entity.controller;
 
 import com.example.outsourcing.user.entity.dto.PwdUpdateRequestDTO;
+import com.example.outsourcing.user.entity.dto.UserDeactiveRequestDTO;
 import com.example.outsourcing.user.entity.dto.UserResponseDTO;
 import com.example.outsourcing.user.entity.dto.UserSignupRequestDTO;
 import com.example.outsourcing.user.entity.dto.UserUpdateRequestDTO;
@@ -8,6 +9,7 @@ import com.example.outsourcing.user.entity.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +23,7 @@ public class UserController {
 
   private final UserService userService;
 
+  // TODO : 공통 응답으로 리팩토링
   // 회원 가입
   @PostMapping("/signup")
   public ResponseEntity<Void> signup(@Valid @RequestBody UserSignupRequestDTO requestDTO) {
@@ -51,4 +54,10 @@ public class UserController {
   }
 
   // 회원 탈퇴
+  @DeleteMapping("/users/{userId}")
+  public ResponseEntity<Void> deactiveUser(@PathVariable Long userId,
+      @RequestBody UserDeactiveRequestDTO requestDTO) {
+    userService.deactiveUser(userId, requestDTO);
+    return ResponseEntity.ok().build();
+  }
 }
