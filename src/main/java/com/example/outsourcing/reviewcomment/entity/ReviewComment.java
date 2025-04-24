@@ -1,9 +1,8 @@
 package com.example.outsourcing.reviewcomment.entity;
 
 import com.example.outsourcing.common.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.outsourcing.review.entity.Review;
+import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
@@ -15,4 +14,8 @@ public class ReviewComment extends BaseEntity {
     private Long id;
 
     private String content;
+
+    @OneToOne
+    @MapsId
+    private Review review;
 }
