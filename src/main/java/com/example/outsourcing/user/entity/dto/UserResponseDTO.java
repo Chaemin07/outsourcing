@@ -7,11 +7,12 @@ import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails.Addre
 
 @Getter
 public class UserResponseDTO {
+
   private String name;
   private String Email;
   private String phoneNumber;
   private List<Address> addresses;
   private String nickname;
   private Role role;
-  // profile Img;
+  private String profileImg;
 }

@@ -2,7 +2,12 @@ package com.example.outsourcing.user.entity;
 
 import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.entity.BaseEntity;
+<<<<<<< Updated upstream
 import com.example.outsourcing.image.entity.Image;
+=======
+import com.example.outsourcing.user.entity.dto.PwdUpdateRequestDTO;
+import com.example.outsourcing.user.entity.dto.UserUpdateRequestDTO;
+>>>>>>> Stashed changes
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -54,4 +59,15 @@ public class User extends BaseEntity {
 
   @OneToMany(mappedBy = "user")
   private List<Address> addresses;
+
+  // 회원 정보 수정
+  public void update(UserUpdateRequestDTO requestDTO) {
+    this.nickname = requestDTO.getNickname();
+    this.profileImg = requestDTO.getProfileImg();
+  }
+
+  // 비밀번호 수정
+  public void updatePwd(String newPassword) {
+    this.password = newPassword;
+  }
 }
