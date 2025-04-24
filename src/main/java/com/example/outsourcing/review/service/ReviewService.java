@@ -6,8 +6,10 @@ import com.example.outsourcing.review.dto.request.ReviewRequestDto;
 import com.example.outsourcing.review.dto.response.ReviewResponseDto;
 import com.example.outsourcing.review.entity.Review;
 import com.example.outsourcing.review.repository.ReviewRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -36,17 +38,36 @@ public class ReviewService {
         return new ReviewResponseDto(savedReview);
     }
 
+    @Transactional
+    public ReviewResponseDto updateReview(Long userId, Long orderId, ReviewRequestDto dto) {
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("주문 없음"));
+
+        // 본인의 리뷰가 맞는 지 확인
+        // => 본인의 주문이 맞는 지 확인 (주문 <-> 리뷰 / 1ㄷ1 매핑) 즉, 주문당 1개의 리뷰
+        // save의 확인이랑 묶어서 메서드화?
+
+        Review savedReview = reviewRepository.findByOrderId(orderId);
+
+        savedReview.updateReview(dto.getContent(), dto.getScore());
+
+        // 수정 기간은 주문후 3일 - 주문의 created_at
+
+        return new ReviewResponseDto(savedReview);
+    }
+
     public void deleteReview(Long userId, Long orderId, String password) {
 
         String userPassword = "1234";
-        
+
         // Bcrypt => 비밀번호 matches로 검증
         if (!password.equals(userPassword)) {
 
             // 예외처리
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
-        
+
         // orderId로 reviewId를 찾아옴
         // 해당 orderId에 대한 리뷰가 없을 때 예외처리
         // 해당 orderId에 해당하는 주문이 없을 때 예외처리
@@ -54,4 +75,5 @@ public class ReviewService {
 
         reviewRepository.deleteById(reviewId);
     }
+
 }
