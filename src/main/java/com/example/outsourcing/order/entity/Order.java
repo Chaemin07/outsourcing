@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 public class Order extends BaseEntity {
 
     @Id

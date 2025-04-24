@@ -1,7 +1,11 @@
 package com.example.outsourcing.cart.repository;
 
-import org.springframework.stereotype.Repository;
+import com.example.outsourcing.cart.entity.Cart;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class CartRepository {
+import java.util.Optional;
+
+public interface CartRepository extends JpaRepository<Cart,Long> {
+
+    Optional<Cart> findByUserId(Long userId);
 }
