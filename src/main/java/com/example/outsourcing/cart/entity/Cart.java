@@ -2,7 +2,9 @@ package com.example.outsourcing.cart.entity;
 
 import com.example.outsourcing.common.entity.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "cart")
 public class Cart extends BaseEntity {
