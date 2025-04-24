@@ -39,5 +39,8 @@ public class Menu extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    @OneToOne
+    private Image image;
+
 
 }

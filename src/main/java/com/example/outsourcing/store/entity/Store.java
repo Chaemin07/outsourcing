@@ -45,9 +45,11 @@ public class Store extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne()
-    @JoinColumn(name = "address_id")
+    @OneToOne
     private Address address;
+
+    @OneToOne
+    private Image image;
 
 
 }
