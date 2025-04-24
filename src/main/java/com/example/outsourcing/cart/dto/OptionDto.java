@@ -7,7 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class OptionDto {
     private Long optionId;
-    private String optionType;
-    private String content;
+    private String optionName;
     private Integer optionPrice;
 }
