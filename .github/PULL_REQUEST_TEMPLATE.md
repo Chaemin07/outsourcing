@@ -1,12 +1,3 @@
----
-name: PULL_REQUEST_TEMPLATE
-about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
-
----
-
 ## #️⃣연관된 이슈
 
 > ex) #이슈번호, #이슈번호
