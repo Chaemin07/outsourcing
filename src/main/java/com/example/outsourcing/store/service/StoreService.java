@@ -52,4 +52,16 @@ public class StoreService {
             findStore.getOpeningTimes(), findStore.getClosingTimes(), findStore.getNotification(), findStore.getCreatedAt(),
             findStore.getUpdatedAt());
     }
+
+    public StoreResponseDto updateStore(Long id, String name, String status, String storePhoneNumber,
+        Integer minOderPrice, String openingTimes, String closingTimes, String notification) {
+
+        Store findStore = storeRepository.findByIdOrElseThrow(id);
+
+        findStore.updateStore(name, status, storePhoneNumber, minOderPrice, openingTimes, closingTimes, notification);
+
+        return new StoreResponseDto(findStore.getId(), findStore.getName(), findStore.getStatus(), findStore.getStorePhoneNumber(),
+            findStore.getMinOderPrice(), findStore.getOpeningTimes(), findStore.getClosingTimes(), findStore.getNotification(),
+            findStore.getCreatedAt(),findStore.getUpdatedAt());
+    }
 }

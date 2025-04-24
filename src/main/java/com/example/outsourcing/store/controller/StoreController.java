@@ -1,6 +1,7 @@
 package com.example.outsourcing.store.controller;
 
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
+import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.store.dto.response.CreateStoreResponseDto;
 import com.example.outsourcing.store.dto.response.StoreResponseDto;
 import com.example.outsourcing.store.service.StoreService;
@@ -23,7 +24,8 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping
-    public ResponseEntity<CreateStoreResponseDto> createStore(@RequestBody CreateStoreRequestDto requestDto) {
+    public ResponseEntity<CreateStoreResponseDto> createStore(
+        @RequestBody CreateStoreRequestDto requestDto) {
 
         CreateStoreResponseDto createStoreResponseDto =
             storeService.createStore(
@@ -50,6 +52,24 @@ public class StoreController {
     public ResponseEntity<StoreResponseDto> findById(@PathVariable Long id) {
 
         StoreResponseDto storeResponseDto = storeService.findById(id);
+
+        return ResponseEntity.ok(storeResponseDto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long id, @RequestBody
+        UpdateStoreRequestDto requestDto) {
+
+        StoreResponseDto storeResponseDto = storeService.updateStore(
+            id,
+            requestDto.getName(),
+            requestDto.getStatus(),
+            requestDto.getStorePhoneNumber(),
+            requestDto.getMinOderPrice(),
+            requestDto.getOpeningTimes(),
+            requestDto.getClosingTimes(),
+            requestDto.getNotification()
+        );
 
         return ResponseEntity.ok(storeResponseDto);
     }
