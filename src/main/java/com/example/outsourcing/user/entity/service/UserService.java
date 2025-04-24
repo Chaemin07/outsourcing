@@ -1,5 +1,6 @@
 package com.example.outsourcing.user.entity.service;
 
+import com.example.outsourcing.user.entity.dto.UserResponseDTO;
 import com.example.outsourcing.user.entity.dto.UserSignupRequestDTO;
 import com.example.outsourcing.user.entity.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,15 @@ public class UserService {
 
     // 저장
     userRepository.save(requestDTO);  // TODO: Mapper or MapStruct 로 DTO-엔티티 변환 구현
+  }
+
+  // 회원 조회
+  public UserResponseDTO getUser(Long userId) {
+    // 유효한 id 인지 검사
+
+    // 레포지토리 조회 후 DTO 변환해서 반환
+    userRepository.findById(userId);
+    return new UserResponseDTO();
   }
 
   // 중복 이메일 검사
