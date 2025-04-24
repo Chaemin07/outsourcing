@@ -2,9 +2,12 @@ package com.example.outsourcing.store.controller;
 
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.response.CreateStoreResponseDto;
+import com.example.outsourcing.store.dto.response.StoreResponseDto;
 import com.example.outsourcing.store.service.StoreService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +35,11 @@ public class StoreController {
             );
 
         return ResponseEntity.ok(createStoreResponseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<StoreResponseDto>> findAll() {
+        List<StoreResponseDto> storeResponseDtoList = storeService.findAll();
     }
 
 }

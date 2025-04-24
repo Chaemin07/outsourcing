@@ -4,9 +4,11 @@ import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.response.CreateStoreResponseDto;
+import com.example.outsourcing.store.dto.response.StoreResponseDto;
 import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.store.repository.StoreRepository;
 import com.example.outsourcing.user.entity.User;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,4 +35,10 @@ public class StoreService {
             savedStore.getUpdatedAt());
     }
 
+    public List<StoreResponseDto> findAll() {
+        return storeRepository.findAll()
+            .stream()
+            .map(StoreResponseDto::toDto)
+            .toList();
+    }
 }
