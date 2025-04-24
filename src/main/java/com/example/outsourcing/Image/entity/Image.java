@@ -1,4 +1,4 @@
-package com.example.outsourcing.Image.entity;
+package com.example.outsourcing.image.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,8 +1,8 @@
 package com.example.outsourcing.user.entity;
 
-import com.example.outsourcing.Image.entity.Image;
 import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.image.entity.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
