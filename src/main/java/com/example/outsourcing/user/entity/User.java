@@ -19,11 +19,13 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Table(name = "user")
+@NoArgsConstructor
 public class User extends BaseEntity {
 
   @Id
