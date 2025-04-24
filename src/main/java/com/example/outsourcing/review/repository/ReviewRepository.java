@@ -8,7 +8,6 @@ import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    // Long 값의 ReviewId 만을 찾기 위해서는 쿼리 작성 필요
     Optional<Review> findByOrderId(Long orderId);
 
     List<Review> findByStoreId(Long storeId);

@@ -1,5 +1,6 @@
 package com.example.outsourcing.review.controller;
 
+import com.example.outsourcing.common.enums.SortType;
 import com.example.outsourcing.review.dto.request.DeleteReviewRequestDto;
 import com.example.outsourcing.review.dto.request.ReviewRequestDto;
 import com.example.outsourcing.review.dto.response.ReviewListResponseDto;
@@ -31,17 +32,10 @@ public class ReviewController {
     
     // 리뷰 조회
     @GetMapping("/stores/{storeId}/reviews")
-    public ResponseEntity<ReviewListResponseDto> getStoreReviews(@PathVariable Long storeId) {
+    public ResponseEntity<ReviewListResponseDto> getStoreReviews(@PathVariable Long storeId, @RequestParam(defaultValue = "latest") String sort) {
 
-        // 정렬을 어떻게 받아올건지 고민.
-        // param?
-        // body?
-        // 기본 - 최신순
-        // + 별점 높은 순 => score desc
-        // + 별점 낮은 순 => score asc
-        // 사진 추가 후 -> 사진이 있는 => img 경로가 NULL 값이 아닌
-
-        ReviewListResponseDto reviewsByStoreId = reviewService.getReviewsByStoreId(storeId);
+        SortType sortType = SortType.from(sort);
+        ReviewListResponseDto reviewsByStoreId = reviewService.getReviewsByStoreId(storeId, sortType);
 
         return new ResponseEntity<>(reviewsByStoreId, HttpStatus.OK);
     }

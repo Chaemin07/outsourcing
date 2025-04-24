@@ -1,5 +1,6 @@
 package com.example.outsourcing.review.service;
 
+import com.example.outsourcing.common.enums.SortType;
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.order.repository.OrderRepository;
 import com.example.outsourcing.review.dto.request.ReviewRequestDto;
@@ -12,7 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -75,7 +79,7 @@ public class ReviewService {
 
         String userPassword = "1234";
 
-        // Bcrypt => 비밀번호 matches로 검증
+        // TODO: Bcrypt => 비밀번호 matches로 검증
         if (!password.equals(userPassword)) {
 
             // 예외처리
@@ -94,11 +98,22 @@ public class ReviewService {
         reviewRepository.deleteById(reviewId);
     }
 
-    public ReviewListResponseDto getReviewsByStoreId(Long storeId) {
+    public ReviewListResponseDto getReviewsByStoreId(Long storeId, SortType sortType) {
 
         List<Review> reviews = reviewRepository.findByStoreId(storeId);
 
-        List<ReviewResponseDto> reviewList = reviews.stream().map(this::convertToDto).toList();
+        Stream<Review> stream = reviews.stream();
+
+        // TODO: 이미지가 있는 리뷰만 보기
+        // if (sortType == SortType.WITH_IMAGES) {
+        //     stream = stream.filter(review -> review.getImage)
+        // }
+
+        if (SORT_COMPARATORS.containsKey(sortType)) {
+            stream = stream.sorted(SORT_COMPARATORS.get(sortType));
+        }
+
+        List<ReviewResponseDto> reviewList = stream.map(this::convertToDto).toList();
 
         Long count = (long) reviewList.size();
         double average = reviewList.stream().mapToInt(ReviewResponseDto::getScore).average().orElse(0.0);
@@ -118,6 +133,12 @@ public class ReviewService {
                 review.getStoreId()
         );
     }
+
+    private final Map<SortType, Comparator<Review>> SORT_COMPARATORS = Map.of(
+            SortType.SCORE_DESC, Comparator.comparingInt(Review::getScore).reversed(),
+            SortType.SCORE_ASC, Comparator.comparingInt(Review::getScore),
+            SortType.LATEST, Comparator.comparing(Review::getCreatedAt).reversed()
+    );
 
     public void isReviewPeriodExpired(LocalDateTime deliveredAt) {
         // 테스트를 위해 1분 뒤로 변경.
