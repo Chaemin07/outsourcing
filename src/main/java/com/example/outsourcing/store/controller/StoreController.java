@@ -40,6 +40,8 @@ public class StoreController {
     @GetMapping
     public ResponseEntity<List<StoreResponseDto>> findAll() {
         List<StoreResponseDto> storeResponseDtoList = storeService.findAll();
+
+        return ResponseEntity.ok(storeResponseDtoList);
     }
 
 }
