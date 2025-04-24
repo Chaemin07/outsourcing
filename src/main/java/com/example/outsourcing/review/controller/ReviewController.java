@@ -1,5 +1,6 @@
 package com.example.outsourcing.review.controller;
 
+import com.example.outsourcing.common.enums.SortType;
 import com.example.outsourcing.review.dto.request.DeleteReviewRequestDto;
 import com.example.outsourcing.review.dto.request.ReviewRequestDto;
 import com.example.outsourcing.review.dto.response.ReviewListResponseDto;
@@ -31,9 +32,10 @@ public class ReviewController {
     
     // 리뷰 조회
     @GetMapping("/stores/{storeId}/reviews")
-    public ResponseEntity<ReviewListResponseDto> getStoreReviews(@PathVariable Long storeId) {
+    public ResponseEntity<ReviewListResponseDto> getStoreReviews(@PathVariable Long storeId, @RequestParam(defaultValue = "latest") String sort) {
 
-        ReviewListResponseDto reviewsByStoreId = reviewService.getReviewsByStoreId(storeId);
+        SortType sortType = SortType.from(sort);
+        ReviewListResponseDto reviewsByStoreId = reviewService.getReviewsByStoreId(storeId, sortType);
 
         return new ResponseEntity<>(reviewsByStoreId, HttpStatus.OK);
     }
