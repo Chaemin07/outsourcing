@@ -24,7 +24,22 @@ public class Review extends BaseEntity {
     private int score;
 
     @OneToOne
+    @JoinColumn(name = "order_id")
     private Order order;
+
+    private Long storeId;
     
     // 이미지 연결
+
+    public Review(String content, int score, Long storeId, Order order) {
+        this.content = content;
+        this.score = score;
+        this.storeId = storeId;
+        this.order = order;
+    }
+
+    public void updateReview(String content, int score) {
+        this.content = content;
+        this.score = score;
+    }
 }
