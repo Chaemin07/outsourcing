@@ -1,6 +1,7 @@
 package com.example.outsourcing.review.entity;
 
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,4 +22,9 @@ public class Review extends BaseEntity {
 
     @Column(nullable = false)
     private int score;
+
+    @OneToOne
+    private Order order;
+    
+    // 이미지 연결
 }
