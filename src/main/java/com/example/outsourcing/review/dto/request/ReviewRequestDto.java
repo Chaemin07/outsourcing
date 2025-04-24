@@ -16,7 +16,4 @@ public class ReviewRequestDto {
     private final int score;
     
     // 사진 추가
-
-    // 주문 생성 전 테스트용
-    private final Long order_id;
 }
