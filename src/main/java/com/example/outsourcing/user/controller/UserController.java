@@ -24,7 +24,6 @@ public class UserController {
 
   private final UserService userService;
 
-  // TODO : 공통 응답으로 리팩토링
   // 회원 가입
   @PostMapping("/signup")
   public ResponseEntity<ApiResponse<Void>> signup(
@@ -32,6 +31,8 @@ public class UserController {
     userService.signup(requestDTO);
     return ResponseEntity.ok().build();
   }
+
+  // TODO : 로그인, 로그아웃, 유저 주소 추가 등록 API 작업
 
   // 회원 조회
   @GetMapping("/users/{userId}")

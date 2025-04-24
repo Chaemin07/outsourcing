@@ -2,13 +2,9 @@ package com.example.outsourcing.jwt;
 
 import com.example.outsourcing.user.entity.Role;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import java.security.Key;
 import java.util.Base64;
@@ -55,22 +51,6 @@ public class JwtUtil {
         .claim("role", role)
         .signWith(key, signatureAlgorithm)   // 서명 (사용 알고리즘, 서명 생성-검증 용 비밀 키)
         .compact();
-  }
-
-  // 토큰 검증
-  public boolean isValidToken(String token) {
-    try {
-      Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-      return true;
-    } catch (SecurityException | MalformedJwtException | SignatureException e) {
-      throw new RuntimeException("유효하지 않은 JWT 서명입니다.");
-    } catch (ExpiredJwtException e) {
-      throw new RuntimeException("만료된 JWT 토큰입니다.");
-    } catch (UnsupportedJwtException e) {
-      throw new RuntimeException("지원되지 않는 JWT 토큰입니다.");
-    } catch (IllegalArgumentException e) {
-      throw new RuntimeException("잘못된 JWT 토큰입니다.");
-    }
   }
 
   // 토큰 바디(Claims) 반환
