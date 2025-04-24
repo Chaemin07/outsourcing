@@ -28,7 +28,7 @@ public class Order extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Role canceled_by; // 주문 취소한 사용자 역할
+    private Role canceledBy; // 주문 취소한 사용자 역할
 
     private String canceledReason;
 
