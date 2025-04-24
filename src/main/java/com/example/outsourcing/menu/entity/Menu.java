@@ -1,10 +1,8 @@
 package com.example.outsourcing.menu.entity;
 
-import com.example.outsourcing.Image.entity.Image;
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.store.entity.Store;
-import com.example.outsourcing.user.entity.User;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,24 +21,24 @@ import lombok.NoArgsConstructor;
 @Table(name = "menu")
 public class Menu extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String name;
+  private String name;
 
-    private Integer price;
+  private Integer price;
 
-    private String status;
+  private String status;
 
-    private LocalDateTime deletedAt;
+  private LocalDateTime deletedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "store_id")
-    private Store store;
+  @ManyToOne
+  @JoinColumn(name = "store_id")
+  private Store store;
 
-    @OneToOne
-    private Image image;
+  @OneToOne
+  private Image image;
 
 
 }

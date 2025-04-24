@@ -1,8 +1,8 @@
 package com.example.outsourcing.store.entity;
 
-import com.example.outsourcing.Image.entity.Image;
 import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,35 +21,35 @@ import lombok.NoArgsConstructor;
 @Table(name = "store")
 public class Store extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String name;
+  private String name;
 
-    private String status;
+  private String status;
 
-    private String phone;
+  private String phone;
 
-    private String storePhoneNumber;
+  private String storePhoneNumber;
 
-    private Integer minOderPrice;
+  private Integer minOderPrice;
 
-    private String openingTimes;
+  private String openingTimes;
 
-    private String closingTimes;
+  private String closingTimes;
 
-    private String notification;
+  private String notification;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
-    @OneToOne
-    private Address address;
+  @OneToOne
+  private Address address;
 
-    @OneToOne
-    private Image image;
+  @OneToOne
+  private Image image;
 
 
 }
