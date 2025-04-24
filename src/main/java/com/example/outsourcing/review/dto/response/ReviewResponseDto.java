@@ -40,7 +40,7 @@ public class ReviewResponseDto {
         // this.userId = order.getUser().getId();
         // this.storeId = order.getStore().getId();
         this.orderId = order.getId();
-        this.userId = 1L;
-        this.storeId = 1L;
+        this.userId = order.getUserId();
+        this.storeId = order.getStoreId();
     }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/reviews/orders/{ordersId}")
+@RequestMapping("/orders/{ordersId}/reviews")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -34,15 +34,13 @@ public class ReviewController {
     // 리뷰 수정
     
     // 리뷰 삭제
-    @DeleteMapping("/{reviewId}")
-    public ResponseEntity<String> deleteReview(@PathVariable Long storeId, @PathVariable Long reviewId, @Valid @RequestBody DeleteReviewRequestDto dto) {
+    @DeleteMapping
+    public ResponseEntity<String> deleteReview(@PathVariable Long ordersId, @Valid @RequestBody DeleteReviewRequestDto dto) {
         // 로그인 나오면 HttpServletRequest
-        // + 로그인 되어있는 유저의 비밀번호 가져와서 비교
 
         long userId = 1L;
-        String tempPassword = "1234";
 
-        reviewService.deleteReview(reviewId, dto.getPassword(), tempPassword);
+        reviewService.deleteReview(userId, ordersId, dto.getPassword());
 
         return new ResponseEntity<>("리뷰 삭제가 완료되었습니다.", HttpStatus.OK);
     }

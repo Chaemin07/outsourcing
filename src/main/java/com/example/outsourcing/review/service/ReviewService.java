@@ -7,7 +7,6 @@ import com.example.outsourcing.review.dto.response.ReviewResponseDto;
 import com.example.outsourcing.review.entity.Review;
 import com.example.outsourcing.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -37,14 +36,21 @@ public class ReviewService {
         return new ReviewResponseDto(savedReview);
     }
 
-    public void deleteReview(Long reviewId, String password, String userPassword) {
+    public void deleteReview(Long userId, Long orderId, String password) {
 
+        String userPassword = "1234";
+        
         // Bcrypt => 비밀번호 matches로 검증
         if (!password.equals(userPassword)) {
 
             // 예외처리
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
+        
+        // orderId로 reviewId를 찾아옴
+        // 해당 orderId에 대한 리뷰가 없을 때 예외처리
+        // 해당 orderId에 해당하는 주문이 없을 때 예외처리
+        Long reviewId = reviewRepository.findByOrderId(orderId).getId();
 
         reviewRepository.deleteById(reviewId);
     }
