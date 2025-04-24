@@ -21,24 +21,23 @@ import lombok.NoArgsConstructor;
 @Table(name = "menu")
 public class Menu extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String name;
+    private String name;
 
-  private Integer price;
+    private Integer price;
 
-  private String status;
+    private String status;
 
-  private LocalDateTime deletedAt;
+    private LocalDateTime deletedAt;
 
-  @ManyToOne
-  @JoinColumn(name = "store_id")
-  private Store store;
+    @ManyToOne
+    private Store store;
 
-  @OneToOne
-  private Image image;
+    @ManyToOne
+    private Image image;
 
 
 }
