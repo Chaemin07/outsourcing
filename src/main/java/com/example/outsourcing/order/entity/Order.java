@@ -1,8 +1,11 @@
 package com.example.outsourcing.order.entity;
 
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.user.entity.Role;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 @Table(name = "order")
 public class Order extends BaseEntity {
@@ -22,6 +25,12 @@ public class Order extends BaseEntity {
 
     @Column(nullable = false)
     private String deliveryStatus;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role canceled_by; // 주문 취소한 사용자 역할
+
+    private String canceledReason;
 
     @Column(nullable = false)
     private Long userId;
