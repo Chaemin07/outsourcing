@@ -10,11 +10,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import org.hibernate.usertype.UserType;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "address")
-public class address extends BaseEntity {
+public class Address extends BaseEntity {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
