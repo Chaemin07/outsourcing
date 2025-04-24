@@ -36,11 +36,7 @@ public class ReviewService {
         }
 
         LocalDateTime deliveredAt = order.getUpdatedAt();
-        // 테스트를 위해 1분 뒤로 변경.
-        // 3일뒤 => plusDays(3)
-        if (deliveredAt.plusMinutes(1).isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("배송 완료 후 3일이 지났습니다.");
-        }
+        isReviewPeriodExpired(deliveredAt);
 
         Review savedReview = new Review(dto.getContent(), dto.getScore(), order.getStoreId(), order);
 
@@ -55,9 +51,13 @@ public class ReviewService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문 없음"));
 
-        // 본인의 리뷰가 맞는 지 확인
-        // => 본인의 주문이 맞는 지 확인 (주문 <-> 리뷰 / 1ㄷ1 매핑) 즉, 주문당 1개의 리뷰
+        // TODO: 본인의 주문이 맞는 지 확인(userId == orderId.getUserId())
+        // userId => 로그인 되이었는 유저의 userId
+        // orderId.getUserId => 주문을 한 유저의 userID
         // save의 확인이랑 묶어서 메서드화?
+
+        LocalDateTime deliveredAt = order.getUpdatedAt();
+        isReviewPeriodExpired(deliveredAt);
 
         Review savedReview = reviewRepository.findByOrderId(orderId);
 
@@ -110,5 +110,13 @@ public class ReviewService {
                 review.getOrder().getId(),
                 review.getStoreId()
         );
+    }
+
+    public void isReviewPeriodExpired(LocalDateTime deliveredAt) {
+        // 테스트를 위해 1분 뒤로 변경.
+        // 3일뒤 => plusDays(3)
+        if (deliveredAt.plusMinutes(1).isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("배송 완료 후 3일이 지났습니다.");
+        }
     }
 }
