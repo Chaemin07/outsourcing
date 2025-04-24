@@ -33,7 +33,7 @@ public class StoreController {
                 requestDto.getName(),
                 requestDto.getStatus(),
                 requestDto.getStorePhoneNumber(),
-                requestDto.getMinOderPrice(),
+                requestDto.getMinOrderPrice(),
                 requestDto.getOpeningTimes(),
                 requestDto.getClosingTimes(),
                 requestDto.getNotification()
@@ -66,7 +66,7 @@ public class StoreController {
             requestDto.getName(),
             requestDto.getStatus(),
             requestDto.getStorePhoneNumber(),
-            requestDto.getMinOderPrice(),
+            requestDto.getMinOrderPrice(),
             requestDto.getOpeningTimes(),
             requestDto.getClosingTimes(),
             requestDto.getNotification()

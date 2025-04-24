@@ -31,7 +31,7 @@ public class StoreService {
 
         return new CreateStoreResponseDto(savedStore.getId(), savedStore.getName(),
             savedStore.getStatus(), savedStore.getStorePhoneNumber(),
-            savedStore.getMinOderPrice(), savedStore.getOpeningTimes(),
+            savedStore.getMinOrderPrice(), savedStore.getOpeningTimes(),
             savedStore.getClosingTimes(), savedStore.getNotification(), savedStore.getCreatedAt(),
             savedStore.getUpdatedAt());
     }
@@ -48,7 +48,7 @@ public class StoreService {
         Store findStore = storeRepository.findByIdOrElseThrow(id);
 
         return new StoreResponseDto(findStore.getId(), findStore.getName(), findStore.getStatus(),
-            findStore.getStorePhoneNumber(), findStore.getMinOderPrice(),
+            findStore.getStorePhoneNumber(), findStore.getMinOrderPrice(),
             findStore.getOpeningTimes(), findStore.getClosingTimes(), findStore.getNotification(), findStore.getCreatedAt(),
             findStore.getUpdatedAt());
     }
@@ -61,7 +61,7 @@ public class StoreService {
         findStore.updateStore(name, status, storePhoneNumber, minOderPrice, openingTimes, closingTimes, notification);
 
         return new StoreResponseDto(findStore.getId(), findStore.getName(), findStore.getStatus(), findStore.getStorePhoneNumber(),
-            findStore.getMinOderPrice(), findStore.getOpeningTimes(), findStore.getClosingTimes(), findStore.getNotification(),
+            findStore.getMinOrderPrice(), findStore.getOpeningTimes(), findStore.getClosingTimes(), findStore.getNotification(),
             findStore.getCreatedAt(),findStore.getUpdatedAt());
     }
 

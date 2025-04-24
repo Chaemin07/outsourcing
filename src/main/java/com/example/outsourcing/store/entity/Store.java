@@ -38,7 +38,7 @@ public class Store extends BaseEntity {
 
     private String storePhoneNumber;
 
-    private Integer minOderPrice;
+    private Integer minOrderPrice;
 
     private String openingTimes;
 
@@ -56,23 +56,23 @@ public class Store extends BaseEntity {
     private Image image;
 
     public Store(String name, String status, String storePhoneNumber,
-        Integer minOderPrice, String openingTimes, String closingTimes, String notification
+        Integer minOrderPrice, String openingTimes, String closingTimes, String notification
        ) {
         this.name = name;
         this.status = status;
         this.storePhoneNumber = storePhoneNumber;
-        this.minOderPrice = minOderPrice;
+        this.minOrderPrice = minOrderPrice;
         this.openingTimes = openingTimes;
         this.closingTimes = closingTimes;
         this.notification = notification;
     }
 
     public void updateStore(String name, String status, String storePhoneNumber,
-        Integer minOderPrice, String openingTimes, String closingTimes, String notification) {
+        Integer minOrderPrice, String openingTimes, String closingTimes, String notification) {
         this.name = name;
         this.status = status;
         this.storePhoneNumber = storePhoneNumber;
-        this.minOderPrice = minOderPrice;
+        this.minOrderPrice = minOrderPrice;
         this.openingTimes = openingTimes;
         this.closingTimes = closingTimes;
         this.notification = notification;

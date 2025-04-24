@@ -15,7 +15,7 @@ public class CreateStoreRequestDto {
 
     private final String storePhoneNumber;
 
-    private final Integer minOderPrice;
+    private final Integer minOrderPrice;
 
     private final String openingTimes;
 

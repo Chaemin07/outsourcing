@@ -13,7 +13,7 @@ public class UpdateStoreRequestDto {
 
     private final String storePhoneNumber;
 
-    private final Integer minOderPrice;
+    private final Integer minOrderPrice;
 
     private final String openingTimes;
 

@@ -17,7 +17,7 @@ public class StoreResponseDto {
 
     private final String storePhoneNumber;
 
-    private final Integer minOderPrice;
+    private final Integer minOrderPrice;
 
     private final String openingTimes;
 
@@ -35,7 +35,7 @@ public class StoreResponseDto {
             store.getName(),
             store.getStatus(),
             store.getStorePhoneNumber(),
-            store.getMinOderPrice(),
+            store.getMinOrderPrice(),
             store.getOpeningTimes(),
             store.getClosingTimes(),
             store.getNotification(),
