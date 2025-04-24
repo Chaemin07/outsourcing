@@ -2,6 +2,7 @@ package com.example.outsourcing.review.dto.response;
 
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.review.entity.Review;
+import com.example.outsourcing.reviewcomment.dto.response.ReviewCommentResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -30,6 +31,8 @@ public class ReviewResponseDto {
     // 리뷰를 작성하는 가게 id
     private final long storeId;
 
+    private String commentContent;
+
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
         this.content = review.getContent();
@@ -42,5 +45,6 @@ public class ReviewResponseDto {
         this.orderId = order.getId();
         this.userId = order.getUserId();
         this.storeId = order.getStoreId();
+        this.commentContent = review.getReviewComment() != null ? review.getReviewComment().getContent() : null;
     }
 }

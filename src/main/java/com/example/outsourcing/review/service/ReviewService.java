@@ -121,17 +121,22 @@ public class ReviewService {
         return new ReviewListResponseDto(count, average, reviewList);
     }
 
+    // private ReviewResponseDto convertToDto(Review review) {
+    //     return new ReviewResponseDto(
+    //             review.getId(),
+    //             review.getContent(),
+    //             review.getScore(),
+    //             // 음식 이름 추가
+    //             // 이미지 주소 추가
+    //             review.getOrder().getUserId(),
+    //             review.getOrder().getId(),
+    //             review.getStoreId(),
+    //             review.getReviewComment().getContent()
+    //     );
+    // }
+
     private ReviewResponseDto convertToDto(Review review) {
-        return new ReviewResponseDto(
-                review.getId(),
-                review.getContent(),
-                review.getScore(),
-                // 음식 이름 추가
-                // 이미지 주소 추가
-                review.getOrder().getUserId(),
-                review.getOrder().getId(),
-                review.getStoreId()
-        );
+        return new ReviewResponseDto(review);
     }
 
     private final Map<SortType, Comparator<Review>> SORT_COMPARATORS = Map.of(
