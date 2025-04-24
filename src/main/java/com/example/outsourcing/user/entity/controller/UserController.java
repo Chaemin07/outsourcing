@@ -1,5 +1,6 @@
 package com.example.outsourcing.user.entity.controller;
 
+import com.example.outsourcing.common.response.ApiResponse;
 import com.example.outsourcing.user.entity.dto.PwdUpdateRequestDTO;
 import com.example.outsourcing.user.entity.dto.UserDeactiveRequestDTO;
 import com.example.outsourcing.user.entity.dto.UserResponseDTO;
@@ -26,38 +27,40 @@ public class UserController {
   // TODO : 공통 응답으로 리팩토링
   // 회원 가입
   @PostMapping("/signup")
-  public ResponseEntity<Void> signup(@Valid @RequestBody UserSignupRequestDTO requestDTO) {
+  public ResponseEntity<ApiResponse<Void>> signup(
+      @Valid @RequestBody UserSignupRequestDTO requestDTO) {
     userService.signup(requestDTO);
     return ResponseEntity.ok().build();
   }
 
   // 회원 조회
   @GetMapping("/users/{userId}")
-  public ResponseEntity<UserResponseDTO> getUser(@PathVariable Long userId) {
-    return ResponseEntity.ok(userService.getUser(userId));    // TODO: 토큰, 세션에서 가져오는 방식으로 변경
+  public ResponseEntity<ApiResponse<UserResponseDTO>> getUser(@PathVariable Long userId) {
+    return ResponseEntity.ok(
+        ApiResponse.success(userService.getUser(userId)));    // TODO: 토큰, 세션에서 가져오는 방식으로 변경
   }
 
   // 회원 정보 수정
   @PatchMapping("/users/{userId}")
-  public ResponseEntity<Void> updateUser(@PathVariable Long userId,
+  public ResponseEntity<ApiResponse<Void>> updateUser(@PathVariable Long userId,
       @RequestBody UserUpdateRequestDTO requestDTO) {
     userService.updateUser(userId, requestDTO);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(ApiResponse.success());
   }
 
   // 비밀번호 수정
   @PatchMapping("/users/{userId}/password")
-  public ResponseEntity<Void> updatePassword(@PathVariable Long userId,
+  public ResponseEntity<ApiResponse<Void>> updatePassword(@PathVariable Long userId,
       @RequestBody PwdUpdateRequestDTO requestDTO) {
     userService.updatePassword(userId, requestDTO);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(ApiResponse.success());
   }
 
   // 회원 탈퇴
   @DeleteMapping("/users/{userId}")
-  public ResponseEntity<Void> deactiveUser(@PathVariable Long userId,
+  public ResponseEntity<ApiResponse<Void>> deactiveUser(@PathVariable Long userId,
       @RequestBody UserDeactiveRequestDTO requestDTO) {
     userService.deactiveUser(userId, requestDTO);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.ok(ApiResponse.success());
   }
 }
