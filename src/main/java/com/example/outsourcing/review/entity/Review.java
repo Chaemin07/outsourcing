@@ -3,13 +3,9 @@ package com.example.outsourcing.review.entity;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.order.entity.Order;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Range;
-
-import java.util.Optional;
 
 @Getter
 @Setter
@@ -30,12 +26,15 @@ public class Review extends BaseEntity {
     @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
+
+    private Long storeId;
     
     // 이미지 연결
 
-    public Review(String content, int score, Order order) {
+    public Review(String content, int score, Long storeId, Order order) {
         this.content = content;
         this.score = score;
+        this.storeId = storeId;
         this.order = order;
     }
 

@@ -3,15 +3,15 @@ package com.example.outsourcing.review.service;
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.order.repository.OrderRepository;
 import com.example.outsourcing.review.dto.request.ReviewRequestDto;
+import com.example.outsourcing.review.dto.response.ReviewListResponseDto;
 import com.example.outsourcing.review.dto.response.ReviewResponseDto;
 import com.example.outsourcing.review.entity.Review;
 import com.example.outsourcing.review.repository.ReviewRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +31,7 @@ public class ReviewService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문 없음"));
 
-        Review savedReview = new Review(dto.getContent(), dto.getScore(), order);
+        Review savedReview = new Review(dto.getContent(), dto.getScore(), order.getStoreId(), order);
 
         Review saved = reviewRepository.save(savedReview);
 
@@ -76,4 +76,28 @@ public class ReviewService {
         reviewRepository.deleteById(reviewId);
     }
 
+    public ReviewListResponseDto getReviewsByStoreId(Long storeId) {
+
+        List<Review> reviews = reviewRepository.findByStoreId(storeId);
+
+        List<ReviewResponseDto> reviewList = reviews.stream().map(this::convertToDto).toList();
+
+        Long count = (long) reviewList.size();
+        double average = reviewList.stream().mapToInt(ReviewResponseDto::getScore).average().orElse(0.0);
+
+        return new ReviewListResponseDto(count, average, reviewList);
+    }
+
+    private ReviewResponseDto convertToDto(Review review) {
+        return new ReviewResponseDto(
+                review.getId(),
+                review.getContent(),
+                review.getScore(),
+                // 음식 이름 추가
+                // 이미지 주소 추가
+                review.getOrder().getUserId(),
+                review.getOrder().getId(),
+                review.getStoreId()
+        );
+    }
 }

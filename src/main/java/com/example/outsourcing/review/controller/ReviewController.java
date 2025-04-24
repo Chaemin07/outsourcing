@@ -2,6 +2,7 @@ package com.example.outsourcing.review.controller;
 
 import com.example.outsourcing.review.dto.request.DeleteReviewRequestDto;
 import com.example.outsourcing.review.dto.request.ReviewRequestDto;
+import com.example.outsourcing.review.dto.response.ReviewListResponseDto;
 import com.example.outsourcing.review.dto.response.ReviewResponseDto;
 import com.example.outsourcing.review.service.ReviewService;
 import jakarta.validation.Valid;
@@ -12,13 +13,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/orders/{orderId}/reviews")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
     // 리뷰 생성
-    @PostMapping
+    @PostMapping("/orders/{orderId}/reviews")
     public ResponseEntity<ReviewResponseDto> saveReview(@PathVariable Long orderId, @Valid @RequestBody ReviewRequestDto dto) {
         // 로그인 나오면 HttpServletRequest
 
@@ -30,9 +30,16 @@ public class ReviewController {
     }
     
     // 리뷰 조회
+    @GetMapping("/stores/{storeId}/reviews")
+    public ResponseEntity<ReviewListResponseDto> getStoreReviews(@PathVariable Long storeId) {
+
+        ReviewListResponseDto reviewsByStoreId = reviewService.getReviewsByStoreId(storeId);
+
+        return new ResponseEntity<>(reviewsByStoreId, HttpStatus.OK);
+    }
     
     // 리뷰 수정
-    @PatchMapping
+    @PatchMapping("/orders/{orderId}/reviews")
     public ResponseEntity<ReviewResponseDto> updateReview(@PathVariable Long orderId, @Valid @RequestBody ReviewRequestDto dto) {
         // 로그인 나오면 HttpServletRequest
 
@@ -44,7 +51,7 @@ public class ReviewController {
     }
     
     // 리뷰 삭제
-    @DeleteMapping
+    @DeleteMapping("/orders/{orderId}/reviews")
     public ResponseEntity<String> deleteReview(@PathVariable Long orderId, @Valid @RequestBody DeleteReviewRequestDto dto) {
         // 로그인 나오면 HttpServletRequest
 
