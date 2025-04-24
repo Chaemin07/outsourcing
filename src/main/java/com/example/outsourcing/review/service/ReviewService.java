@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -22,14 +23,24 @@ public class ReviewService {
 
     public ReviewResponseDto saveReview(Long userId, Long orderId, ReviewRequestDto dto) {
 
-        // orderId로 userId, storeId 조회
-
-        // 본인의 주문이 맞는 지 확인(userId == orderId.getUserId())
-        // 주문이 배달 완료가 아닐 경우 리뷰 작성 불가
-
-        // Order order = 주문 레포에서 주문 찾아오기
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("주문 없음"));
+
+        // TODO: 본인의 주문이 맞는 지 확인(userId == orderId.getUserId())
+        // userId => 로그인 되이었는 유저의 userId
+        // orderId.getUserId => 주문을 한 유저의 userID
+
+        if (!order.getDeliveryStatus().equals("DELIVERED")) {
+            // 배송 완료가 아닐시 예외 처리
+            throw new RuntimeException("배송이 완료되지 않았습니다.");
+        }
+
+        LocalDateTime deliveredAt = order.getUpdatedAt();
+        // 테스트를 위해 1분 뒤로 변경.
+        // 3일뒤 => plusDays(3)
+        if (deliveredAt.plusMinutes(1).isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("배송 완료 후 3일이 지났습니다.");
+        }
 
         Review savedReview = new Review(dto.getContent(), dto.getScore(), order.getStoreId(), order);
 
