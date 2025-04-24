@@ -17,6 +17,7 @@ public class Image {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   Long id;
 
+  // TODO: S3 링크로 대체
   @Column(nullable = false)
   String path;
 }
