@@ -64,4 +64,12 @@ public class StoreService {
             findStore.getMinOderPrice(), findStore.getOpeningTimes(), findStore.getClosingTimes(), findStore.getNotification(),
             findStore.getCreatedAt(),findStore.getUpdatedAt());
     }
+
+    public void closedDownStore(Long id) {
+
+        Store fingStore = storeRepository.findByIdOrElseThrow(id);
+
+        storeRepository.delete(fingStore);
+
+    }
 }
