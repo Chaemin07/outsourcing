@@ -9,6 +9,7 @@ import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.store.repository.StoreRepository;
 import com.example.outsourcing.user.entity.User;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,5 +41,15 @@ public class StoreService {
             .stream()
             .map(StoreResponseDto::toDto)
             .toList();
+    }
+
+    public StoreResponseDto findById(Long id) {
+
+        Store findStore = storeRepository.findByIdOrElseThrow(id);
+
+        return new StoreResponseDto(findStore.getId(), findStore.getName(), findStore.getStatus(),
+            findStore.getStorePhoneNumber(), findStore.getMinOderPrice(),
+            findStore.getOpeningTimes(), findStore.getClosingTimes(), findStore.getNotification(), findStore.getCreatedAt(),
+            findStore.getUpdatedAt());
     }
 }
