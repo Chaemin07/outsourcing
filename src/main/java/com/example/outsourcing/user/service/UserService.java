@@ -1,13 +1,13 @@
-package com.example.outsourcing.user.entity.service;
+package com.example.outsourcing.user.service;
 
 import com.example.outsourcing.common.config.PasswordEncoder;
+import com.example.outsourcing.user.dto.PwdUpdateRequestDTO;
+import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
+import com.example.outsourcing.user.dto.UserResponseDTO;
+import com.example.outsourcing.user.dto.UserSignupRequestDTO;
+import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
 import com.example.outsourcing.user.entity.User;
-import com.example.outsourcing.user.entity.dto.PwdUpdateRequestDTO;
-import com.example.outsourcing.user.entity.dto.UserDeactiveRequestDTO;
-import com.example.outsourcing.user.entity.dto.UserResponseDTO;
-import com.example.outsourcing.user.entity.dto.UserSignupRequestDTO;
-import com.example.outsourcing.user.entity.dto.UserUpdateRequestDTO;
-import com.example.outsourcing.user.entity.repository.UserRepository;
+import com.example.outsourcing.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

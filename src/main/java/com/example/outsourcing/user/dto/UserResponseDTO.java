@@ -1,4 +1,4 @@
-package com.example.outsourcing.user.entity.dto;
+package com.example.outsourcing.user.dto;
 
 import com.example.outsourcing.user.entity.Role;
 import java.util.List;

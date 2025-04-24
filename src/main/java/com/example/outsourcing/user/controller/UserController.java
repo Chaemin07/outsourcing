@@ -1,12 +1,12 @@
-package com.example.outsourcing.user.entity.controller;
+package com.example.outsourcing.user.controller;
 
 import com.example.outsourcing.common.response.ApiResponse;
-import com.example.outsourcing.user.entity.dto.PwdUpdateRequestDTO;
-import com.example.outsourcing.user.entity.dto.UserDeactiveRequestDTO;
-import com.example.outsourcing.user.entity.dto.UserResponseDTO;
-import com.example.outsourcing.user.entity.dto.UserSignupRequestDTO;
-import com.example.outsourcing.user.entity.dto.UserUpdateRequestDTO;
-import com.example.outsourcing.user.entity.service.UserService;
+import com.example.outsourcing.user.dto.PwdUpdateRequestDTO;
+import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
+import com.example.outsourcing.user.dto.UserResponseDTO;
+import com.example.outsourcing.user.dto.UserSignupRequestDTO;
+import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
+import com.example.outsourcing.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
