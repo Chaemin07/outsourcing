@@ -27,4 +27,10 @@ public class Review extends BaseEntity {
     private Order order;
     
     // 이미지 연결
+
+    public Review(String content, int score, Order order) {
+        this.content = content;
+        this.score = score;
+        this.order = order;
+    }
 }
