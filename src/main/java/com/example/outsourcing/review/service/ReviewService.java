@@ -59,16 +59,19 @@ public class ReviewService {
         LocalDateTime deliveredAt = order.getUpdatedAt();
         isReviewPeriodExpired(deliveredAt);
 
-        Review savedReview = reviewRepository.findByOrderId(orderId);
+        Review savedReview = reviewRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new RuntimeException("해당 주문에 대한 리뷰가 없습니다."));
 
         savedReview.updateReview(dto.getContent(), dto.getScore());
-
-        // 수정 기간은 주문후 3일 - 주문의 created_at
 
         return new ReviewResponseDto(savedReview);
     }
 
     public void deleteReview(Long userId, Long orderId, String password) {
+
+        // TODO: 본인의 주문이 맞는 지 확인(userId == orderId.getUserId())
+        // userId => 로그인 되이었는 유저의 userId
+        // orderId.getUserId => 주문을 한 유저의 userID
 
         String userPassword = "1234";
 
@@ -79,10 +82,14 @@ public class ReviewService {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        // orderId로 reviewId를 찾아옴
-        // 해당 orderId에 대한 리뷰가 없을 때 예외처리
-        // 해당 orderId에 해당하는 주문이 없을 때 예외처리
-        Long reviewId = reviewRepository.findByOrderId(orderId).getId();
+        // orderId에 해당하는 주문이 없을 때 예외처리
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("주문이 존재하지 않습니다."));
+        // orderId에 대한 리뷰가 없을 때 예외처리
+        Review savedReview = reviewRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new RuntimeException("해당 주문에 대한 리뷰가 없습니다."));
+
+        Long reviewId = savedReview.getId();
 
         reviewRepository.deleteById(reviewId);
     }
