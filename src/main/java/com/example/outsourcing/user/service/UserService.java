@@ -1,13 +1,13 @@
-package com.example.outsourcing.user.entity.service;
+package com.example.outsourcing.user.service;
 
 import com.example.outsourcing.common.config.PasswordEncoder;
+import com.example.outsourcing.user.dto.PwdUpdateRequestDTO;
+import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
+import com.example.outsourcing.user.dto.UserResponseDTO;
+import com.example.outsourcing.user.dto.UserSignupRequestDTO;
+import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
 import com.example.outsourcing.user.entity.User;
-import com.example.outsourcing.user.entity.dto.PwdUpdateRequestDTO;
-import com.example.outsourcing.user.entity.dto.UserDeactiveRequestDTO;
-import com.example.outsourcing.user.entity.dto.UserResponseDTO;
-import com.example.outsourcing.user.entity.dto.UserSignupRequestDTO;
-import com.example.outsourcing.user.entity.dto.UserUpdateRequestDTO;
-import com.example.outsourcing.user.entity.repository.UserRepository;
+import com.example.outsourcing.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,8 +24,8 @@ public class UserService {
   @Transactional
   public void signup(UserSignupRequestDTO requestDTO) {
     // 유저 이메일(아이디) 중복 검사
-    if (!isExistsEmail(requestDTO.getEmail())) {
-      // 예외 던지기
+    if (isExistsEmail(requestDTO.getEmail())) {
+      throw new RuntimeException("이메일 중복입니다.");
     }
 
     // 비밀번호 인코딩
@@ -41,16 +41,18 @@ public class UserService {
     // 유효한 id 인지 검사
 
     // TODO: 레포지토리 조회 후 DTO 변환해서 반환
-    userRepository.findById(userId);
-    return new UserResponseDTO();
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+    return new UserResponseDTO(user);
   }
 
   // 회원 정보 업데이트
   @Transactional
   public void updateUser(Long userId, UserUpdateRequestDTO requestDTO) {
-    User user = userRepository.findById(userId).orElseThrow();
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
     if (!isValidPassword(requestDTO.getPassword(), user.getPassword())) {
-      return;
+      throw new RuntimeException("비밀번호가 일치하지 않습니다.");
     }
     user.update(requestDTO);
   }
@@ -61,10 +63,10 @@ public class UserService {
     User user = userRepository.findById(userId).orElseThrow();
 
     // 비밀번호 검증
-    if (!isValidPassword(requestDTO.getOldPwd(), user.getPassword())) {
-      return;
+    if (!isValidPassword(requestDTO.getOldPassword(), user.getPassword())) {
+      throw new RuntimeException("비밀번호가 일치하지 않습니다.");
     }
-    user.updatePwd(passwordEncoder.encode(requestDTO.getNewPwd()));
+    user.updatePwd(passwordEncoder.encode(requestDTO.getNewPassword()));
   }
 
   // 비밀번호 일치 검사
@@ -80,16 +82,17 @@ public class UserService {
   // 유저 탈퇴
   @Transactional
   public void deactiveUser(Long userId, UserDeactiveRequestDTO requestDTO) {
-    User user = userRepository.findById(userId).orElseThrow();
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
 
     // 비밀번호 검증
     if (!isValidPassword(requestDTO.getPassword(), user.getPassword())) {
-      return;
+      throw new RuntimeException("비밀번호가 일치하지 않습니다.");
     }
 
     // 탈퇴된 유저인지 확인
-    if (user.getDeletedAt() == null) {
-      // TODO: 탈퇴된 회원 예외처리 추가
+    if (user.getDeletedAt() != null) {
+      throw new RuntimeException("이미 탈퇴한 회원입니다.");
     }
     user.setDeletedAt(LocalDateTime.now());
   }
