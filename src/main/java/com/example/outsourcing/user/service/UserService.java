@@ -100,9 +100,9 @@ public class UserService {
     user.setDeletedAt(LocalDateTime.now());
   }
 
-  // 유저 이미지 업로드
+  // 유저 프로필 이미지 업로드
   @Transactional(rollbackFor = RuntimeException.class)
-  public void uploadProfile(Long userId, MultipartFile file) {
+  public void uploadProfileImg(Long userId, MultipartFile file) {
     User user = userRepository.findById(userId).orElseThrow(
         () -> new RuntimeException("유저를 찾을 수 없습니다."));
 
@@ -111,5 +111,12 @@ public class UserService {
     } catch (RuntimeException e) {
       new RuntimeException("파일 업로드에 실패하였습니다.", e);
     }
+  }
+
+  // 유저 프로필 이미지 조회
+  public Long getProfileImgId(Long userId) {
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+    return user.getProfileImg().getId();
   }
 }

@@ -2,6 +2,7 @@ package com.example.outsourcing.user.controller;
 
 import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.common.response.ApiResponse;
+import com.example.outsourcing.image.util.ImageUtil;
 import com.example.outsourcing.user.dto.PwdUpdateRequestDTO;
 import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
 import com.example.outsourcing.user.dto.UserResponseDTO;
@@ -11,6 +12,7 @@ import com.example.outsourcing.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
   private final UserService userService;
+  private final ImageUtil imageUtil;
 
   // TODO: userId 없애기
 
@@ -42,8 +45,14 @@ public class UserController {
   @PostMapping("/users/profile")
   public ResponseEntity<Void> uploadProfile(@AuthUser Long userId,
       @RequestParam MultipartFile image) {
-    userService.uploadProfile(userId, image);
+    userService.uploadProfileImg(userId, image);
     return ResponseEntity.ok().build();
+  }
+
+  // 프로필 이미지 조회
+  @GetMapping("/users/profile")
+  public ResponseEntity<Resource> getImage(@AuthUser Long userId) {
+    return imageUtil.getImage(userService.getProfileImgId(userId));
   }
 
   // 회원 조회
