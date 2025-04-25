@@ -1,6 +1,5 @@
 package com.example.outsourcing.menu.controller;
 
-import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.image.util.ImageUtil;
 import com.example.outsourcing.menu.dto.request.AddMenuRequestDto;
 import com.example.outsourcing.menu.dto.request.UpdateMenuRequestDto;
@@ -41,9 +40,8 @@ public class MenuController {
 
   // 메뉴 이미지 업로드
   @PostMapping("/{menuId}/img")
-  public ResponseEntity<Void> uploadProfile(@AuthUser Long userId,
-      @PathVariable Long menuId,
-      @RequestParam MultipartFile image) {
+  public ResponseEntity<Void> uploadImage(
+      @PathVariable Long menuId, @RequestParam MultipartFile image) {
     menuService.uploadMenuImg(menuId, image);
     return ResponseEntity.ok().build();
   }
