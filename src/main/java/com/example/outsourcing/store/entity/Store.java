@@ -3,25 +3,22 @@ package com.example.outsourcing.store.entity;
 import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
-import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.user.entity.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -57,31 +54,31 @@ public class Store extends BaseEntity {
     @Column(nullable = false)
     private String notification;
 
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
     private Image image;
 
-    public Store(CreateStoreRequestDto requestDto) {
+    public Store(CreateStoreRequestDto requestDto, User user) {
         this.name = requestDto.getName();
-        this.status = StoreStatus.valueOf(requestDto.getStatus());
+        this.status = StoreStatus.OPEN;
         this.storePhoneNumber = requestDto.getStorePhoneNumber();
         this.minOrderPrice = requestDto.getMinOrderPrice();
         this.openingTimes = requestDto.getOpeningTimes();
         this.closingTimes = requestDto.getClosingTimes();
         this.notification = requestDto.getNotification();
+        this.user = user;
     }
 
     public void updateStore(UpdateStoreRequestDto requestDto) {
         this.name = requestDto.getName();
-        this.status = StoreStatus.valueOf(requestDto.getStatus());
         this.storePhoneNumber = requestDto.getStorePhoneNumber();
         this.minOrderPrice = requestDto.getMinOrderPrice();
         this.openingTimes = requestDto.getOpeningTimes();
@@ -89,8 +86,7 @@ public class Store extends BaseEntity {
         this.notification = requestDto.getNotification();
     }
 
-    public void softDelete() {
-        this.deletedAt = LocalDateTime.now();
+    public void closeDown() {
+        this.status = StoreStatus.CLOSED_DOWN;
     }
-
 }
