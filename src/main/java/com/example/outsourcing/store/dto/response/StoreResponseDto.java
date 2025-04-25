@@ -33,7 +33,7 @@ public class StoreResponseDto {
         return new StoreResponseDto(
             store.getId(),
             store.getName(),
-            store.getStatus(),
+            store.getStatus().name(),
             store.getStorePhoneNumber(),
             store.getMinOrderPrice(),
             store.getOpeningTimes(),
