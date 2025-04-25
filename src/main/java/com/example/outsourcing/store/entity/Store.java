@@ -9,6 +9,8 @@ import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -37,7 +39,8 @@ public class Store extends BaseEntity {
     private String name;
 
     @Column(nullable = false)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private StoreStatus status;
 
     @Column(nullable = false)
     private String storePhoneNumber;
@@ -68,7 +71,7 @@ public class Store extends BaseEntity {
 
     public Store(CreateStoreRequestDto requestDto) {
         this.name = requestDto.getName();
-        this.status = requestDto.getStatus();
+        this.status = StoreStatus.valueOf(requestDto.getStatus());
         this.storePhoneNumber = requestDto.getStorePhoneNumber();
         this.minOrderPrice = requestDto.getMinOrderPrice();
         this.openingTimes = requestDto.getOpeningTimes();
@@ -78,7 +81,7 @@ public class Store extends BaseEntity {
 
     public void updateStore(UpdateStoreRequestDto requestDto) {
         this.name = requestDto.getName();
-        this.status = requestDto.getStatus();
+        this.status = StoreStatus.valueOf(requestDto.getStatus());
         this.storePhoneNumber = requestDto.getStorePhoneNumber();
         this.minOrderPrice = requestDto.getMinOrderPrice();
         this.openingTimes = requestDto.getOpeningTimes();
