@@ -188,6 +188,7 @@ public class OrderService {
         return orderResponseDtoList;
     }
 
+    @Transactional
     public void cancelOrderByUser(Long userId, Long orderId, String cancelReason) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
@@ -296,7 +297,7 @@ public class OrderService {
         return  new ArrayList<>(groupedDetails.values());
     }
 
-
+    @Transactional
     public OrderStatusChangeResponse updateOrderStatus(Long ownerId, Long storeId, Long orderId, String status) {
         User user = userRepository.findById(ownerId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
@@ -329,7 +330,7 @@ public class OrderService {
                 .newOrderStatus(order.getOrderStatus().getValue())
                 .build();
     }
-
+    @Transactional
     public DeliveryStatusChangeResponse updateDeliveryStatus(Long ownerId, Long storeId, Long orderId, String status) {
         User user = userRepository.findById(ownerId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
