@@ -3,6 +3,7 @@ package com.example.outsourcing.menu.entity;
 import com.example.outsourcing.cart.entity.Cart;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
+import com.example.outsourcing.menu.dto.request.AddMenuRequestDto;
 import com.example.outsourcing.store.entity.Store;
 import jakarta.persistence.*;
 
@@ -19,29 +20,41 @@ import lombok.NoArgsConstructor;
 @Table(name = "menu")
 public class Menu extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String name;
+    @Column(nullable = false)
+    private String name;
 
-  private Integer price;
+    @Column(nullable = false)
+    private Integer price;
 
-  // 상태는 enum으로 구현하는게 좋을거 같은데요??
-  private String status;
+    @Column(nullable = false)
+    private String descrption;
 
-  private LocalDateTime deletedAt;
+    // 상태는 enum으로 구현하는게 좋을거 같은데요??
+    private String status;
 
-  @ManyToOne
-  @JoinColumn(name = "store_id")
-  private Store store;
+    private LocalDateTime deletedAt;
 
-  @OneToOne
-  private Image image;
+    @ManyToOne
+    @JoinColumn(name = "store_id")
+    private Store store;
 
-  @OneToMany(mappedBy = "menu")
-  private List<Cart> cartList = new ArrayList<>();
+    @OneToOne
+    private Image image;
 
-  @OneToMany(mappedBy = "menu", orphanRemoval = true, fetch = FetchType.LAZY)
-  private List<MenuOption> options = new ArrayList<>();
+    @OneToMany(mappedBy = "menu")
+    private List<Cart> cartList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "menu", orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<MenuOption> options = new ArrayList<>();
+
+    public Menu(AddMenuRequestDto requestDto) {
+        this.name = requestDto.getName();
+        this.price = requestDto.getPrice();
+        this.descrption = requestDto.getDescrption();
+        this.status = requestDto.getStatus();
+    }
 }

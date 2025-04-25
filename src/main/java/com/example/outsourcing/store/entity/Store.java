@@ -33,18 +33,25 @@ public class Store extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String status;
 
+    @Column(nullable = false)
     private String storePhoneNumber;
 
+    @Column(nullable = false)
     private Integer minOrderPrice;
 
+    @Column(nullable = false)
     private String openingTimes;
 
+    @Column(nullable = false)
     private String closingTimes;
 
+    @Column(nullable = false)
     private String notification;
 
     @ManyToOne
