@@ -5,6 +5,8 @@ import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.menu.dto.request.AddMenuRequestDto;
 import com.example.outsourcing.menu.dto.request.UpdateMenuRequestDto;
+import com.example.outsourcing.order.entity.OrderDetail;
+import com.example.outsourcing.order.entity.OrderItemOption;
 import com.example.outsourcing.store.entity.Store;
 import jakarta.persistence.*;
 
@@ -50,10 +52,20 @@ public class Menu extends BaseEntity {
     @OneToMany(mappedBy = "menu")
     private List<Cart> cartList = new ArrayList<>();
 
+    // 사장설정 메뉴 옵션
     @OneToMany(mappedBy = "menu", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<MenuOption> options = new ArrayList<>();
 
+    // 주문 상세
+    @OneToMany(mappedBy = "menu", orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<OrderDetail> orderDetailList = new ArrayList<>();
+
+    // 주문 항목 옵션
+    @OneToMany(mappedBy = "menu")
+    private List<OrderItemOption> orderItemOptionList = new ArrayList<>();
+
     public Menu(Store store, AddMenuRequestDto requestDto) {
+
         this.store = store;
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();
