@@ -117,6 +117,10 @@ public class UserService {
   public Long getProfileImgId(Long userId) {
     User user = userRepository.findById(userId).orElseThrow(
         () -> new RuntimeException("유저를 찾을 수 없습니다."));
-    return user.getProfileImg().getId();
+    if (user.getProfileImg() != null) {
+      return user.getProfileImg().getId();
+    } else {
+      return null;
+    }
   }
 }

@@ -20,6 +20,10 @@ public class ImageUtil {
 
   // 이미지 조회
   public ResponseEntity<Resource> getImage(@RequestParam Long imageId) {
+    if (imageId == null) {
+      return ResponseEntity.notFound().build();
+    }
+
     Image image = imageService.getImage(imageId);
     Path path = Path.of(image.getPath());
 
