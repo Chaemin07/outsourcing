@@ -1,5 +1,7 @@
 package com.example.outsourcing.user.service;
 
+import com.example.outsourcing.address.dto.UpdateUserAddressRequestDTO;
+import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.config.PasswordEncoder;
 import com.example.outsourcing.image.service.ImageService;
 import com.example.outsourcing.user.dto.PwdUpdateRequestDTO;
@@ -10,6 +12,8 @@ import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
 import com.example.outsourcing.user.entity.User;
 import com.example.outsourcing.user.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,8 +46,6 @@ public class UserService {
   // 회원 조회
   public UserResponseDTO getUser(Long userId) {
     // 유효한 id 인지 검사
-
-    // TODO: 레포지토리 조회 후 DTO 변환해서 반환
     User user = userRepository.findById(userId).orElseThrow(
         () -> new RuntimeException("유저를 찾을 수 없습니다."));
     return new UserResponseDTO(user);
@@ -122,5 +124,99 @@ public class UserService {
     } else {
       return null;
     }
+  }
+
+  // 유저 주소 등록 // TODO: 도메인을 옮겨말아
+  @Transactional
+  public void createAddress(Long userId, UpdateUserAddressRequestDTO requestDTO) {
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+
+    // 최대 주소(3개) 인지 검사
+    if (user.hasMaxAddresses()) {
+      throw new RuntimeException("주소는 최대 3개 등록 가능합니다.");
+    }
+
+    Address address = new Address(requestDTO, user);
+
+    // 주소를 가지지 않거나, 새로 추가하면서 디폴트 설정을 해주고 싶다면
+    if (user.getAddresses().isEmpty() || requestDTO.isDefault()) {
+      address.setDefault(true);
+    }
+
+    user.getAddresses().add(address);
+  }
+
+  // 유저 주소 업데이트
+  @Transactional
+  public void updateAddress(Long userId, Long addressId,
+      UpdateUserAddressRequestDTO requestDTO) {
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+
+    Address defaultAddress = null;
+    for (Address address : user.getAddresses()) {
+      if (address.isDefault()) {
+        defaultAddress = address;
+      }
+
+      if (Objects.equals(address.getId(), addressId)) {
+        address.setAddress(requestDTO.getAddress());
+        if (requestDTO.isDefault()) {
+          if (defaultAddress != null) {
+            defaultAddress.setDefault(false);
+          }
+          address.setDefault(true);
+        }
+        return;
+      }
+    }
+    throw new RuntimeException("사용자의 주소가 아닙니다.");
+  }
+
+  @Transactional
+  public void setDefaultAddress(Long userId, Long addressId) {
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+    Address defaultAddress = null;
+    for (Address address : user.getAddresses()) {
+      if (address.isDefault()) {
+        defaultAddress = address;
+      }
+
+      if (Objects.equals(address.getId(), addressId)) {
+        if (defaultAddress != null) {
+          defaultAddress.setDefault(false);
+        }
+        address.setDefault(true);
+        return;
+      }
+    }
+    throw new RuntimeException("사용자의 주소가 아닙니다.");
+  }
+
+  // TODO: 테스트랑 중복 로직 제거
+  @Transactional
+  public void deleteAddress(Long userId, Long addressId) {
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+    Address defaultAddress = null;
+    List<Address> addresses = user.getAddresses();
+    for (Address address : addresses) {
+      if (address.isDefault()) {
+        defaultAddress = address;
+      }
+
+      if (Objects.equals(address.getId(), addressId)) {
+        if (Objects.equals(defaultAddress.getId(), addressId)) {
+          addresses.remove(address);
+          addresses.get(addresses.size() - 1).setDefault(true);
+          return;
+        }
+        addresses.remove(address);
+        return;
+      }
+    }
+    throw new RuntimeException("사용자의 주소가 아닙니다.");
   }
 }

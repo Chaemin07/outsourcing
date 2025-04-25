@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails.Address;
 
 @Getter
 public class UserSignupRequestDTO {
@@ -39,5 +38,5 @@ public class UserSignupRequestDTO {
   // 010-xxxx-xxxx 만 되도록 허용
   private String phoneNumber;
 
-  private Address address;
+  private String address;
 }
