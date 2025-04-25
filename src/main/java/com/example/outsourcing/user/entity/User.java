@@ -89,4 +89,14 @@ public class User extends BaseEntity {
     this.phoneNumber = requestDTO.getPhoneNumber();
     this.role = Role.valueOf(requestDTO.getRole());
   }
+
+  public User(UserSignupRequestDTO requestDTO, Image image) {
+    this.nickname = requestDTO.getNickname();
+    this.password = requestDTO.getPassword();
+    this.email = requestDTO.getEmail();
+    this.name = requestDTO.getName();
+    this.phoneNumber = requestDTO.getPhoneNumber();
+    this.role = Role.valueOf(requestDTO.getRole());
+    this.profileImg = image;
+  }
 }

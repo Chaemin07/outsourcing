@@ -19,8 +19,8 @@ public class UserSignupRequestDTO {
   @NotBlank(message = "권한은 필수값입니다.")
   private String role;
 
-  // 단순 이미지 url
-  private String profileImg;
+//  // Multipart-file
+//  private MultipartFile profileImg;
 
   @NotBlank(message = "이름은 필수값입니다.")
   private String name;

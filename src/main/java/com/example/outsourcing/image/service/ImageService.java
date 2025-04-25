@@ -34,9 +34,9 @@ public class ImageService {
 
   // 단일 파일 저장 후 이미지 id 반환
   @Transactional(rollbackFor = IOException.class)
-  public Long uploadImage(MultipartFile image) {
+  public Image uploadImage(MultipartFile image) {
     // 파일 타입 검사
-    if (!isValidFileType(image.getContentType())) {
+    if (!isValidFileType(image.getOriginalFilename())) {
       throw new RuntimeException("지원하지 않는 파일 형식입니다.");
     }
 
@@ -46,7 +46,7 @@ public class ImageService {
     // 파일 저장 경로 설정
     Path filePath = Paths.get(RESOURCE_DIR + uuidFilename);
     try {
-      Files.write(filePath, uuidFilename.getBytes()); // TODO : 핸들러로 빼서 병행 처리?
+      Files.write(filePath, image.getBytes()); // TODO : 핸들러로 빼서 병행 처리?
     } catch (IOException e) {
       log.info("PATH: {}", filePath.toString());
       throw new RuntimeException("파일 쓰기 실패", e);
@@ -56,8 +56,8 @@ public class ImageService {
     Image img = new Image(filePath.toString());
     imageRepository.save(img);
 
-    // 이미지 id 반환
-    return img.getId();
+    // 이미지 반환
+    return img;
   }
 
   // 파일 아이디로 조회
@@ -82,12 +82,13 @@ public class ImageService {
   }
 
   // 파일 확장자 검사
-  private boolean isValidFileType(String contentType) {
+  private boolean isValidFileType(String uploadFileType) {
     for (String fileType : ALLOWED_FILE_TYPES) {
-      if (!(contentType.endsWith(fileType))) {
-        return false;
+      if (uploadFileType.toLowerCase().endsWith(fileType)) {
+        System.out.println("FILE TYPE: " + uploadFileType);
+        return true;
       }
     }
-    return true;
+    return false;
   }
 }
