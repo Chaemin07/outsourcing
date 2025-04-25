@@ -31,8 +31,6 @@ public class UserController {
   private final UserService userService;
   private final ImageUtil imageUtil;
 
-  // TODO: userId 없애기
-
   // 회원 가입
   @PostMapping(value = "/signup")
   public ResponseEntity<ApiResponse<Void>> signup(
@@ -56,14 +54,14 @@ public class UserController {
   }
 
   // 회원 조회
-  @GetMapping("/users/{userId}")
+  @GetMapping("/users")
   public ResponseEntity<ApiResponse<UserResponseDTO>> getUser(@AuthUser Long userId) {
     return ResponseEntity.ok(
         ApiResponse.success(userService.getUser(userId)));
   }
 
   // 회원 정보 수정
-  @PatchMapping("/users/{userId}")
+  @PatchMapping("/users")
   public ResponseEntity<ApiResponse<Void>> updateUser(@AuthUser Long userId,
       @RequestBody UserUpdateRequestDTO requestDTO) {
     userService.updateUser(userId, requestDTO);
@@ -71,7 +69,7 @@ public class UserController {
   }
 
   // 비밀번호 수정
-  @PatchMapping("/users/{userId}/password")
+  @PatchMapping("/users/password")
   public ResponseEntity<ApiResponse<Void>> updatePassword(@AuthUser Long userId,
       @RequestBody PwdUpdateRequestDTO requestDTO) {
     userService.updatePassword(userId, requestDTO);
@@ -79,7 +77,7 @@ public class UserController {
   }
 
   // 회원 탈퇴
-  @DeleteMapping("/users/{userId}")
+  @DeleteMapping("/users")
   public ResponseEntity<ApiResponse<Void>> deactiveUser(@AuthUser Long userId,
       @RequestBody UserDeactiveRequestDTO requestDTO) {
     userService.deactiveUser(userId, requestDTO);
