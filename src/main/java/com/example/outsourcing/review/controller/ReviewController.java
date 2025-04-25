@@ -1,5 +1,6 @@
 package com.example.outsourcing.review.controller;
 
+import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.common.enums.SortType;
 import com.example.outsourcing.review.dto.request.DeleteReviewRequestDto;
 import com.example.outsourcing.review.dto.request.ReviewRequestDto;
@@ -20,10 +21,7 @@ public class ReviewController {
 
     // 리뷰 생성
     @PostMapping("/orders/{orderId}/reviews")
-    public ResponseEntity<ReviewResponseDto> saveReview(@PathVariable Long orderId, @Valid @RequestBody ReviewRequestDto dto) {
-        // 로그인 나오면 HttpServletRequest
-
-        Long userId = 1L;
+    public ResponseEntity<ReviewResponseDto> saveReview(@PathVariable Long orderId, @Valid @RequestBody ReviewRequestDto dto, @AuthUser Long userId) {
 
         ReviewResponseDto reviewResponseDto = reviewService.saveReview(userId, orderId, dto);
 
@@ -42,10 +40,7 @@ public class ReviewController {
     
     // 리뷰 수정
     @PatchMapping("/orders/{orderId}/reviews")
-    public ResponseEntity<ReviewResponseDto> updateReview(@PathVariable Long orderId, @Valid @RequestBody ReviewRequestDto dto) {
-        // 로그인 나오면 HttpServletRequest
-
-        Long userId = 1L;
+    public ResponseEntity<ReviewResponseDto> updateReview(@PathVariable Long orderId, @Valid @RequestBody ReviewRequestDto dto, @AuthUser Long userId) {
 
         ReviewResponseDto reviewResponseDto = reviewService.updateReview(userId, orderId, dto);
 
@@ -54,10 +49,7 @@ public class ReviewController {
     
     // 리뷰 삭제
     @DeleteMapping("/orders/{orderId}/reviews")
-    public ResponseEntity<String> deleteReview(@PathVariable Long orderId, @Valid @RequestBody DeleteReviewRequestDto dto) {
-        // 로그인 나오면 HttpServletRequest
-
-        long userId = 1L;
+    public ResponseEntity<String> deleteReview(@PathVariable Long orderId, @Valid @RequestBody DeleteReviewRequestDto dto, @AuthUser Long userId) {
 
         reviewService.deleteReview(userId, orderId, dto.getPassword());
 
