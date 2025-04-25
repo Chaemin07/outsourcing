@@ -41,14 +41,16 @@ public class UserService {
     // 유효한 id 인지 검사
 
     // TODO: 레포지토리 조회 후 DTO 변환해서 반환
-    userRepository.findById(userId);
-    return new UserResponseDTO();
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+    return new UserResponseDTO(user);
   }
 
   // 회원 정보 업데이트
   @Transactional
   public void updateUser(Long userId, UserUpdateRequestDTO requestDTO) {
-    User user = userRepository.findById(userId).orElseThrow();
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
     if (!isValidPassword(requestDTO.getPassword(), user.getPassword())) {
       return;
     }
@@ -80,7 +82,8 @@ public class UserService {
   // 유저 탈퇴
   @Transactional
   public void deactiveUser(Long userId, UserDeactiveRequestDTO requestDTO) {
-    User user = userRepository.findById(userId).orElseThrow();
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
 
     // 비밀번호 검증
     if (!isValidPassword(requestDTO.getPassword(), user.getPassword())) {

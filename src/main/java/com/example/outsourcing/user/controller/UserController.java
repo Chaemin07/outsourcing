@@ -1,5 +1,6 @@
 package com.example.outsourcing.user.controller;
 
+import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.common.response.ApiResponse;
 import com.example.outsourcing.user.dto.PwdUpdateRequestDTO;
 import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
@@ -36,7 +37,7 @@ public class UserController {
 
   // 회원 조회
   @GetMapping("/users/{userId}")
-  public ResponseEntity<ApiResponse<UserResponseDTO>> getUser(@PathVariable Long userId) {
+  public ResponseEntity<ApiResponse<UserResponseDTO>> getUser(@AuthUser Long userId) {
     return ResponseEntity.ok(
         ApiResponse.success(userService.getUser(userId)));    // TODO: 토큰, 세션에서 가져오는 방식으로 변경
   }
