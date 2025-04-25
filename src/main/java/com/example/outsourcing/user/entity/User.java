@@ -57,6 +57,7 @@ public class User extends BaseEntity {
   @Column(nullable = false)
   String phoneNumber;
 
+  @Setter
   @ManyToOne
   @JoinColumn(name = "profile_image_id")
   private Image profileImg;
@@ -92,5 +93,15 @@ public class User extends BaseEntity {
     this.name = requestDTO.getName();
     this.phoneNumber = requestDTO.getPhoneNumber();
     this.role = Role.valueOf(requestDTO.getRole());
+  }
+
+  public User(UserSignupRequestDTO requestDTO, Image image) {
+    this.nickname = requestDTO.getNickname();
+    this.password = requestDTO.getPassword();
+    this.email = requestDTO.getEmail();
+    this.name = requestDTO.getName();
+    this.phoneNumber = requestDTO.getPhoneNumber();
+    this.role = Role.valueOf(requestDTO.getRole());
+    this.profileImg = image;
   }
 }
