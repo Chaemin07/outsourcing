@@ -7,6 +7,7 @@ import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
 import com.example.outsourcing.user.dto.UserResponseDTO;
 import com.example.outsourcing.user.dto.UserSignupRequestDTO;
 import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
+import com.example.outsourcing.user.dto.userLoginRequestDTO;
 import com.example.outsourcing.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,12 @@ public class UserController {
   }
 
   // TODO : 로그인, 로그아웃, 유저 주소 추가 등록 API 작업
+  @PostMapping("/login")
+  public ResponseEntity<ApiResponse<Void>> login(
+      @Valid @RequestBody userLoginRequestDTO requestDTO) {
+    userService.login(requestDTO);
+    return ResponseEntity.ok().build();
+  }
 
   // 회원 조회
   @GetMapping("/users/{userId}")
