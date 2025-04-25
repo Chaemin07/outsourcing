@@ -1,11 +1,14 @@
 package com.example.outsourcing.store.controller;
 
+import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.image.util.ImageUtil;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.store.dto.response.CreateStoreResponseDto;
+import com.example.outsourcing.store.dto.response.GetStoreWithMenuResponseDto;
 import com.example.outsourcing.store.dto.response.StoreResponseDto;
 import com.example.outsourcing.store.service.StoreService;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -26,66 +29,65 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/stores")
 public class StoreController {
 
-  private final StoreService storeService;
-  private final ImageUtil imageUtil;
+    private final StoreService storeService;
+    private final ImageUtil imageUtil;
 
-  @PostMapping
-  public ResponseEntity<CreateStoreResponseDto> createStore(
-      @RequestBody CreateStoreRequestDto requestDto) {
+    @PostMapping
+    public ResponseEntity<CreateStoreResponseDto> createStore(
+        @Valid @RequestBody CreateStoreRequestDto requestDto,
+        @AuthUser Long userId) {
 
-    CreateStoreResponseDto createStoreResponseDto =
-        storeService.createStore(requestDto);
+        CreateStoreResponseDto responseDto = storeService.createStore(requestDto, userId);
 
-    return ResponseEntity.ok(createStoreResponseDto);
-  }
+        return ResponseEntity.ok(responseDto);
+    }
 
-  // 가게 이미지 업로드
-  @PostMapping("/{id}/img")
-  public ResponseEntity<Void> uploadImage(
-      @PathVariable Long id, @RequestParam MultipartFile image) {
-    storeService.uploadStoreImg(id, image);
-    return ResponseEntity.ok().build();
-  }
+    // 가게 이미지 업로드
+    @PostMapping("/{id}/img")
+    public ResponseEntity<Void> uploadImage(
+        @PathVariable Long id, @RequestParam MultipartFile image) {
+        storeService.uploadStoreImg(id, image);
+        return ResponseEntity.ok().build();
+    }
 
-  // 가게 이미지 조회
-  @GetMapping("/{id}/img")
-  public ResponseEntity<Resource> getImage(@PathVariable Long menuId) {
-    return imageUtil.getImage(storeService.getStoreImgId(menuId));
-  }
+    // 가게 이미지 조회
+    @GetMapping("/{id}/img")
+    public ResponseEntity<Resource> getImage(@PathVariable Long menuId) {
+        return imageUtil.getImage(storeService.getStoreImgId(menuId));
+    }
 
-  @GetMapping
-  public ResponseEntity<List<StoreResponseDto>> getStore() {
+    @GetMapping
+    public ResponseEntity<List<StoreResponseDto>> getStore() {
+        List<StoreResponseDto> storeList = storeService.getStore();
+        return ResponseEntity.ok(storeList);
+    }
 
-    List<StoreResponseDto> storeResponseDtoList = storeService.getStore();
+    @GetMapping("/search")
+    public ResponseEntity<List<StoreResponseDto>> searchStores(@RequestParam String keyword) {
+        List<StoreResponseDto> storeList = storeService.searchStores(keyword);
+        return ResponseEntity.ok(storeList);
+    }
 
-    return ResponseEntity.ok(storeResponseDtoList);
-  }
+    @GetMapping("/{id}")
+    public ResponseEntity<GetStoreWithMenuResponseDto> getStoreById(@PathVariable Long id) {
+        GetStoreWithMenuResponseDto responseDto = storeService.getStoreById(id);
+        return ResponseEntity.ok(responseDto);
+    }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<StoreResponseDto> getStoreById(@PathVariable Long id) {
+    @PutMapping("/{id}")
+    public ResponseEntity<StoreResponseDto> updateStore(
+        @PathVariable Long id,
+        @AuthUser Long userId,
+        @Valid @RequestBody UpdateStoreRequestDto requestDto) {
 
-    StoreResponseDto storeResponseDto = storeService.getStoreById(id);
+        StoreResponseDto responseDto = storeService.updateStore(id, requestDto, userId);
+        return ResponseEntity.ok(responseDto);
+    }
 
-    return ResponseEntity.ok(storeResponseDto);
-  }
-
-  @PutMapping("/{id}")
-  public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long id, @RequestBody
-  UpdateStoreRequestDto requestDto) {
-
-    StoreResponseDto storeResponseDto = storeService.updateStore(id, requestDto);
-
-    return ResponseEntity.ok(storeResponseDto);
-  }
-
-  @DeleteMapping("/{id}")
-  public ResponseEntity<String> closedDownStore(@PathVariable Long id) {
-
-    storeService.closedDownStore(id);
-
-    String deleteMessage = "삭제되었습니다";
-
-    return ResponseEntity.ok(deleteMessage);
-  }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> closedDownStore(@PathVariable Long id, @AuthUser Long userId) {
+        storeService.closedDownStore(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }
