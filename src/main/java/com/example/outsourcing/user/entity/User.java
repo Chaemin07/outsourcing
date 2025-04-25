@@ -4,8 +4,8 @@ import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.cart.entity.Cart;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
-import com.example.outsourcing.user.entity.dto.UserSignupRequestDTO;
-import com.example.outsourcing.user.entity.dto.UserUpdateRequestDTO;
+import com.example.outsourcing.user.dto.UserSignupRequestDTO;
+import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,8 +26,8 @@ import lombok.Setter;
 
 @Entity
 @Getter
-@NoArgsConstructor
 @Table(name = "user")
+@NoArgsConstructor
 public class User extends BaseEntity {
 
   @Id
