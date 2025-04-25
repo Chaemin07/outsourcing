@@ -4,23 +4,22 @@ import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.menu.entity.MenuOption;
 import com.example.outsourcing.menu.repository.ManuOptionRepository;
 import com.example.outsourcing.menu.repository.MenuRepository;
-import com.example.outsourcing.order.dto.OrderItemRequestDto;
-import com.example.outsourcing.order.dto.OrderRequestDto;
-import com.example.outsourcing.order.dto.OrderResponseDto;
+import com.example.outsourcing.order.dto.*;
 import com.example.outsourcing.order.entity.*;
 import com.example.outsourcing.order.repository.OrderDetailRepository;
 import com.example.outsourcing.order.repository.OrderItemOptionRepository;
 import com.example.outsourcing.order.repository.OrderRepository;
 import com.example.outsourcing.store.entity.Store;
+import com.example.outsourcing.store.repository.StoreRepository;
+import com.example.outsourcing.user.entity.Role;
 import com.example.outsourcing.user.entity.User;
 import com.example.outsourcing.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -31,11 +30,12 @@ public class OrderService {
     private final ManuOptionRepository manuOptionRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final OrderItemOptionRepository orderItemOptionRepository;
+    private final StoreRepository storeRepository;
 
     @Transactional
-    public OrderResponseDto createOrder(Long userId,OrderRequestDto requestDto) {
+    public OrderResponseDto createOrder(Long userId, OrderRequestDto requestDto) {
         // TODO 캐시로 가게별 주문 최소 금액 가져오기
-        Integer storeMinOrderPrice= 10000;
+        Integer storeMinOrderPrice = 10000;
         String returnMessage = "";
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
@@ -117,7 +117,7 @@ public class OrderService {
 
     // 주문금액 계산 메서드
     private Integer orderPriceCheck(List<OrderItemRequestDto> orderItems) {
-        Integer totalPrice=0;
+        Integer totalPrice = 0;
         for (OrderItemRequestDto orderItem : orderItems) {
             // TODO 장바구니에 없어도 주문 가능하도록 (throw 처리 고민)
             // 단, 메뉴 DB에는 해당 메뉴가 있어야함
@@ -208,4 +208,160 @@ public class OrderService {
             order.setCancelReason(cancelReason);
         }
     }
+
+    public List<StoreOrderResponseDto> getOrdersByStoreId(Long userId, Long storeId) {
+        User owner = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 가게입니다!"));
+        // 일반 사용자이거나 가게 주인이 아닌경우
+        if (owner.getRole() == Role.USER || !store.getUser().getId().equals(owner.getId())) {
+            throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
+        }
+
+        // TODO 주문을 dto로 변환해야함
+        List<Order> orderList = orderRepository.findByStoreId(storeId);
+        return convertOrdersToDto(orderList);
+    }
+    // StoreOrderResponseDto 변환 메서드
+    private List<StoreOrderResponseDto> convertOrdersToDto(List<Order> orders) {
+        List<StoreOrderResponseDto> responseDtos = new ArrayList<>();
+
+        for (Order order : orders) {
+            // 주문 금액 계산
+            int totalPrice = calculateTotalPrice(order);
+
+            StoreOrderResponseDto dto = StoreOrderResponseDto.builder()
+                    .orderId(order.getId())
+                    .orderStatus(order.getOrderStatus())
+                    .deliveryStatus(order.getDeliveryStatus())
+                    .createdAt(order.getCreatedAt())
+                    .customerName(order.getUser().getName())
+                    .customerPhone(order.getUser().getPhoneNumber())
+                    .deliveryAddress(order.getDeliveryAddress())
+                    .requestMessage(order.getRequestMessage())
+                    .orderDetailList(convertOrderDetails(order.getOrderDetailList())) // 주문 상세 변환
+                    .totalPrice(totalPrice)
+                    .build();
+
+            responseDtos.add(dto);
+        }
+
+        return responseDtos;
+    }
+    
+    // StoreOrderDetailDto 주문 상세 정보 처리 메서드
+    private List<StoreOrderDetailDto> convertOrderDetails(List<OrderDetail> orderDetailList) {
+        Map<String, StoreOrderDetailDto> groupedDetails = new HashMap<>();
+        StringBuilder menuKey;
+        // 주문 상세 - 주문 메뉴 전체 조회
+        for (OrderDetail orderDetail : orderDetailList) {
+            String menuName = orderDetail.getMenuName();
+            // 정렬 안하면 순서에 따라서 같은 내용 다른 key가 될수도 있음 → (메뉴+옵션리스트)가 하나의 key임
+            List<String> sortedOptionNameList = orderDetail.getOrderItemOptionList().stream()
+                    .map(option -> option.getMenuOption().getOptionName())
+                    .sorted()
+                    .collect(Collectors.toList());
+            menuKey = new StringBuilder();
+            menuKey.append(menuName).append(" "+sortedOptionNameList.toString());
+            
+            // 메뉴 옵션 Dto 변환
+            List<StoreOrderOptionDto> storeOrderOptionDtoList = new ArrayList<>();
+            for (OrderItemOption orderItemOption : orderDetail.getOrderItemOptionList()) {
+                StoreOrderOptionDto orderOptionDto = StoreOrderOptionDto.builder()
+                        .optionName(orderItemOption.getMenuOption().getOptionName())
+                        .optionPrice(orderItemOption.getOptionPrice())
+                        .build();
+                storeOrderOptionDtoList.add(orderOptionDto);
+            }
+
+            if (groupedDetails.containsKey(menuKey)) {
+                StoreOrderDetailDto storeOrderDetailDto = groupedDetails.get(menuKey);
+                int updatedQuantity = storeOrderDetailDto.getQuantity() + 1;
+
+                groupedDetails.put(menuKey.toString(), StoreOrderDetailDto.builder()
+                        .menuName(orderDetail.getMenuName())
+                        .menuPrice(orderDetail.getPrice())
+                        .quantity(updatedQuantity)
+                        .build());
+            }else{
+                groupedDetails.put(menuKey.toString(), StoreOrderDetailDto.builder()
+                        .menuName(orderDetail.getMenuName())
+                        .menuPrice(orderDetail.getPrice())
+                        .quantity(1)
+                        .build());
+            }
+        }
+        // 최종 결과: groupedDetails(Map) value만 리스트로 변환해서 리턴
+        return  new ArrayList<>(groupedDetails.values());
+    }
+
+
+    public OrderStatusChangeResponse updateOrderStatus(Long ownerId, Long storeId, Long orderId, String status) {
+        User user = userRepository.findById(ownerId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        // 가게 아이디를 통해서 store -> 가게 주인과 ownerId같아야함
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 가게입니다!"));
+        // 사장님 role아니거나 가게주인과 ownerId다르다면 throw
+        if (user.getRole()!=Role.OWNER||!store.getUser().getId().equals(ownerId)){
+            throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
+        }
+        // 주문 아이디를 통해서 order -> 주문한 가게와 storeId같아야함
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다!"));
+        // 주문한 가게의 Id와 storeId가 다르다면 throw
+        if (!order.getStore().getId().equals(storeId)) {
+            throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
+        }
+        String previousOrderStatus = order.getOrderStatus().getValue();
+        try {
+            // 입력받은 상태값 체크
+            OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
+            order.setOrderStatus(orderStatus);
+        } catch (IllegalArgumentException error) {
+            throw new IllegalArgumentException("잘못된 상태가 입력되었습니다! : " + status);
+        }
+
+        return OrderStatusChangeResponse.builder()
+                .orderId(orderId)
+                .previousOrderStatus(previousOrderStatus)
+                .newOrderStatus(order.getOrderStatus().getValue())
+                .build();
+    }
+
+    public DeliveryStatusChangeResponse updateDeliveryStatus(Long ownerId, Long storeId, Long orderId, String status) {
+        User user = userRepository.findById(ownerId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+        // 가게 아이디를 통해서 store -> 가게 주인과 ownerId같아야함
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 가게입니다!"));
+        // 사장님 role아니거나 가게주인과 ownerId다르다면 throw
+        if (user.getRole()!=Role.OWNER||!store.getUser().getId().equals(ownerId)){
+            throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
+        }
+        // 주문 아이디를 통해서 order -> 주문한 가게와 storeId같아야함
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다!"));
+        // 주문한 가게의 Id와 storeId가 다르다면 throw
+        if (!order.getStore().getId().equals(storeId)) {
+            throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
+        }
+        String previousDeliveryStatus = order.getDeliveryStatus().getValue();
+        try {
+            // 입력받은 상태값 체크
+            DeliveryStatus deliveryStatus = DeliveryStatus.valueOf(status.toUpperCase());
+            order.setDeliveryStatus(deliveryStatus);
+        } catch (IllegalArgumentException error) {
+            throw new IllegalArgumentException("잘못된 상태가 입력되었습니다! : " + status);
+        }
+
+        return DeliveryStatusChangeResponse.builder()
+                .orderId(orderId)
+                .previousDeliveryStatus(previousDeliveryStatus)
+                .newDeliveryStatus(order.getOrderStatus().getValue())
+                .build();
+
+    }
+
 }

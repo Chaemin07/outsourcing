@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-public class OrderController {
+public class OrderUserController {
 
     private final OrderService orderService;
 
@@ -60,9 +60,5 @@ public class OrderController {
         String message = "주문이 성공적으로 취소되었습니다.";
         return ResponseEntity.ok(ApiResponse.success(message));
     }
-
-
-    // ############################사장님############################
-    //
 
 }

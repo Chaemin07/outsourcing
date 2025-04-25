@@ -55,9 +55,11 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetailList = new ArrayList<>();
 
-
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+    public void setDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
     }
 
     public void setCanceledBy(Role canceledBy) {
