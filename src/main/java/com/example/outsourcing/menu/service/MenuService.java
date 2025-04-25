@@ -7,6 +7,7 @@ import com.example.outsourcing.menu.repository.MenuRepository;
 import com.example.outsourcing.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class MenuService {
     private final MenuRepository menuRepository;
     private final StoreRepository storeRepository;
 
+    @Transactional
     public MenuResponseDto addMenu (Long storeId, AddMenuRequestDto requestDto) {
 
         storeRepository.findByIdOrElseThrow(storeId);
