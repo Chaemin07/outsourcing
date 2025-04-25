@@ -51,7 +51,7 @@ public class ReviewService {
         LocalDateTime deliveredAt = order.getUpdatedAt();
         isReviewPeriodExpired(deliveredAt);
 
-        Review savedReview = new Review(dto.getContent(), dto.getScore(), order.getStoreId(), order);
+        Review savedReview = new Review(dto.getContent(), dto.getScore(), order.getStore().getId(), order);
 
         Review saved = reviewRepository.save(savedReview);
 
@@ -161,7 +161,7 @@ public class ReviewService {
     }
 
     public void checkMyOrder(Order order, Long userId) {
-        if (!order.getUserId().equals(userId)) {
+        if (!order.getUser().getId().equals(userId)) {
             throw new RuntimeException("본인의 주문이 아닙니다.");
         }
     }
