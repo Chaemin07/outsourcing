@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
@@ -21,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtFilter extends OncePerRequestFilter {
 
   private final JwtUtil jwtUtil;
+  private final AntPathMatcher pathMatcher = new AntPathMatcher();
 
   // 로그인 필터 제외 대상 URL
   private static final List<String> WHITE_LIST = List.of(
@@ -30,7 +32,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
   // 사장 전용 URL    // TODO: URL 추가
   private static final List<String> OWNER_LIST = List.of(
-      "/owners"
+      "/owners",
+      "/stores/*/categories/**",
+      "/reviews/*/comments/**"
   );
 
   // 토큰이 없다면 발급해주고 만료되었으면?
@@ -75,11 +79,11 @@ public class JwtFilter extends OncePerRequestFilter {
     } catch (Exception e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JWT 토큰에 문제가 있습니다.");
     }
-
     // 유저 역할 검증 // TODO: 추후 early return 하도록 변경
     for (String matcher : OWNER_LIST) {
       // 사장만 접근 가능 URL 에
-      if (url.startsWith(matcher)) {
+      // if (url.startsWith(matcher)) {
+      if (pathMatcher.match(matcher, url)) {
         Role userRole = Role.valueOf(claims.get("role", String.class));
 
         // 만약 유저 role 이 일반 사용자(USER)라면

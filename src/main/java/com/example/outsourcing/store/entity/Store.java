@@ -3,6 +3,11 @@ package com.example.outsourcing.store.entity;
 import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
+<<<<<<< HEAD
+=======
+import com.example.outsourcing.menu.entity.Menu;
+import com.example.outsourcing.order.entity.Order;
+>>>>>>> dev
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.user.entity.User;
@@ -12,8 +17,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -54,6 +62,9 @@ public class Store extends BaseEntity {
 
   @OneToOne
   private Address address;
+
+    @OneToMany(mappedBy = "store")
+    private List<Order> orderList = new ArrayList<>();
 
   @Setter
   @ManyToOne

@@ -1,5 +1,6 @@
 package com.example.outsourcing.favorite.controller;
 
+import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.favorite.dto.reponse.FavoriteResponseDto;
 import com.example.outsourcing.favorite.service.FavoriteService;
 import lombok.RequiredArgsConstructor;
@@ -14,24 +15,18 @@ public class FavoriteController {
 
     private final FavoriteService favoriteService;
 
+    // 즐겨찾기 추가
     @PostMapping
-    public ResponseEntity<FavoriteResponseDto> favoriteStore(@PathVariable Long storeId) {
-
-        // TODO: 로그인 유저의 ID 값
-
-        Long userId = 1L;
+    public ResponseEntity<FavoriteResponseDto> favoriteStore(@PathVariable Long storeId, @AuthUser Long userId) {
 
         FavoriteResponseDto favoriteResponseDto = favoriteService.favoriteStore(userId, storeId);
 
         return new ResponseEntity<>(favoriteResponseDto, HttpStatus.OK);
     }
 
+    // 즐겨찾기 삭제
     @DeleteMapping
-    public ResponseEntity<String> deleteFavorite(@PathVariable Long storeId) {
-
-        // TODO: 로그인 유저의 ID 값
-
-        Long userId = 1L;
+    public ResponseEntity<String> deleteFavorite(@PathVariable Long storeId, @AuthUser Long userId) {
 
         favoriteService.deleteFavorite(userId, storeId);
 
