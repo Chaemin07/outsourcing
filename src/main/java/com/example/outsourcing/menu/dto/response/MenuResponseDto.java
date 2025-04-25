@@ -1,6 +1,7 @@
 package com.example.outsourcing.menu.dto.response;
 
 import com.example.outsourcing.menu.entity.Menu;
+import com.example.outsourcing.store.entity.Store;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

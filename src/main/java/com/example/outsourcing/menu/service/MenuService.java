@@ -6,6 +6,7 @@ import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.menu.repository.MenuRepository;
 import com.example.outsourcing.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,5 +25,15 @@ public class MenuService {
         Menu menu = menuRepository.save(new Menu(requestDto));
 
         return MenuResponseDto.toDto(menu);
+    }
+
+    @Transactional
+    public MenuResponseDto getMenuById(Long storeId, Long menuId) {
+
+        storeRepository.findByIdOrElseThrow(storeId);
+
+        Menu getMenu = menuRepository.findByIdOrElseThrow(menuId);
+
+        return MenuResponseDto.toDto(getMenu);
     }
 }
