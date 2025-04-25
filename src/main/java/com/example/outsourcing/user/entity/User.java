@@ -1,6 +1,7 @@
 package com.example.outsourcing.user.entity;
 
 import com.example.outsourcing.address.entity.Address;
+import com.example.outsourcing.cart.entity.Cart;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.user.entity.dto.UserSignupRequestDTO;
@@ -17,12 +18,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "user")
 public class User extends BaseEntity {
 
@@ -58,6 +62,9 @@ public class User extends BaseEntity {
 
   @OneToMany(mappedBy = "user")
   private List<Address> addresses;
+
+  @OneToMany(mappedBy = "user")
+  private List<Cart> cartList = new ArrayList<>();
 
   @Setter
   private LocalDateTime deletedAt = null;
