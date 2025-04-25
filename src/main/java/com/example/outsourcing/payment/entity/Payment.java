@@ -43,7 +43,7 @@ public class Payment extends BaseEntity {
         this.order = order;
     }
     public void cancel() {
-        this.status = PaymentStatus.CANCELLED;
+        this.status = PaymentStatus.CANCELED;
         this.cancelTime = LocalDateTime.now();
     }
 

@@ -10,12 +10,9 @@ import com.example.outsourcing.payment.entity.PaymentMethod;
 import com.example.outsourcing.payment.entity.PaymentStatus;
 import com.example.outsourcing.payment.exception.InsufficientBalanceException;
 import com.example.outsourcing.payment.repository.PaymentRepository;
-import com.example.outsourcing.user.entity.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Service
@@ -84,7 +81,7 @@ public class PaymentService {
         // 응답 생성
         PaymentResponseDto.PaymentResponseDtoBuilder responseBuilder = PaymentResponseDto.builder()
                 .paymentId(payment.getId())
-                .paymentStatus(PaymentStatus.CANCELLED)
+                .paymentStatus(PaymentStatus.CANCELED)
                 .paymentTime(payment.getCreatedAt())
                 .cancelTime(payment.getCancelTime());
 
