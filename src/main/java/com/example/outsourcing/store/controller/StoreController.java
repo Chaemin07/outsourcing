@@ -35,16 +35,17 @@ public class StoreController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StoreResponseDto>> findAll() {
-        List<StoreResponseDto> storeResponseDtoList = storeService.findAll();
+    public ResponseEntity<List<StoreResponseDto>> getStore() {
+
+        List<StoreResponseDto> storeResponseDtoList = storeService.getStore();
 
         return ResponseEntity.ok(storeResponseDtoList);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StoreResponseDto> findById(@PathVariable Long id) {
+    public ResponseEntity<StoreResponseDto> getStoreById(@PathVariable Long id) {
 
-        StoreResponseDto storeResponseDto = storeService.findById(id);
+        StoreResponseDto storeResponseDto = storeService.getStoreById(id);
 
         return ResponseEntity.ok(storeResponseDto);
     }
