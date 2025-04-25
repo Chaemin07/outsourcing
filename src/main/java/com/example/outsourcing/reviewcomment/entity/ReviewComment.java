@@ -19,7 +19,7 @@ public class ReviewComment extends BaseEntity {
 
     private String content;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private Review review;
 
