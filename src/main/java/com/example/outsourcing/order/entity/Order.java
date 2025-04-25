@@ -1,12 +1,17 @@
 package com.example.outsourcing.order.entity;
 
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.user.entity.Role;
+import com.example.outsourcing.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Builder
 @Getter
@@ -39,10 +44,27 @@ public class Order extends BaseEntity {
 
     private String canceledReason;
 
-    @Column(nullable = false)
-    private Long userId;
-    @Column(nullable = false)
-    private Long storeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id",nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="store_id",nullable = false)
+    private Store store;
+
+    @OneToMany(mappedBy = "order")
+    private List<OrderDetail> orderDetailList = new ArrayList<>();
 
 
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+    public void setCanceledBy(Role canceledBy) {
+        this.canceledBy = canceledBy;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.canceledReason = cancelReason;
+    }
 }

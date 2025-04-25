@@ -4,6 +4,7 @@ import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.menu.entity.Menu;
+import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.user.entity.User;
@@ -59,6 +60,9 @@ public class Store extends BaseEntity {
 
     @OneToOne
     private Address address;
+
+    @OneToMany(mappedBy = "store")
+    private List<Order> orderList = new ArrayList<>();
 
     @ManyToOne
     private Image image;
