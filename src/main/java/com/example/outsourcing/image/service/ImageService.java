@@ -33,7 +33,7 @@ public class ImageService {
   // 저장 resources 폴더에 or 따로 DB에 바이너리 값이든 넣어주기
 
   // 단일 파일 저장 후 이미지 id 반환
-  @Transactional
+  @Transactional(rollbackFor = IOException.class)
   public Long uploadImage(MultipartFile image) {
     // 파일 타입 검사
     if (!isValidFileType(image.getContentType())) {
@@ -67,7 +67,7 @@ public class ImageService {
   }
 
   // 파일 삭제
-  @Transactional
+  @Transactional(rollbackFor = IOException.class)
   public void deleteImage(Long imageId) {
     Image image = imageRepository.findById(imageId).orElseThrow(
         () -> new RuntimeException("파일을 찾을 수 없습니다 / File Id: " + imageId));
