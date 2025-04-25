@@ -6,7 +6,7 @@ import com.example.outsourcing.favorite.repository.FavoriteRepository;
 import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.store.repository.StoreRepository;
 import com.example.outsourcing.user.entity.User;
-import com.example.outsourcing.user.entity.repository.UserRepository;
+import com.example.outsourcing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

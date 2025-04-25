@@ -9,7 +9,7 @@ import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.menu.entity.MenuOption;
 import com.example.outsourcing.menu.repository.MenuRepository;
 import com.example.outsourcing.user.entity.User;
-import com.example.outsourcing.user.entity.repository.UserRepository;
+import com.example.outsourcing.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
