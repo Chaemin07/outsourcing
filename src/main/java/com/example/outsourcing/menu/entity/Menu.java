@@ -4,6 +4,7 @@ import com.example.outsourcing.cart.entity.Cart;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.menu.dto.request.AddMenuRequestDto;
+import com.example.outsourcing.menu.dto.request.UpdateMenuRequestDto;
 import com.example.outsourcing.store.entity.Store;
 import jakarta.persistence.*;
 
@@ -52,6 +53,13 @@ public class Menu extends BaseEntity {
     private List<MenuOption> options = new ArrayList<>();
 
     public Menu(AddMenuRequestDto requestDto) {
+        this.name = requestDto.getName();
+        this.price = requestDto.getPrice();
+        this.descrption = requestDto.getDescrption();
+        this.status = requestDto.getStatus();
+    }
+
+    public void updateMenu(UpdateMenuRequestDto requestDto) {
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();
         this.descrption = requestDto.getDescrption();

@@ -1,12 +1,12 @@
 package com.example.outsourcing.menu.service;
 
 import com.example.outsourcing.menu.dto.request.AddMenuRequestDto;
+import com.example.outsourcing.menu.dto.request.UpdateMenuRequestDto;
 import com.example.outsourcing.menu.dto.response.MenuResponseDto;
 import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.menu.repository.MenuRepository;
 import com.example.outsourcing.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,5 +35,17 @@ public class MenuService {
         Menu getMenu = menuRepository.findByIdOrElseThrow(menuId);
 
         return MenuResponseDto.toDto(getMenu);
+    }
+
+    public MenuResponseDto updateMenu(Long storeId, Long menuId,
+        UpdateMenuRequestDto requestDto) {
+
+        storeRepository.findByIdOrElseThrow(storeId);
+
+        Menu findMenu = menuRepository.findByIdOrElseThrow(menuId);
+
+        findMenu.updateMenu(requestDto);
+
+        return MenuResponseDto.toDto(findMenu);
     }
 }
