@@ -1,14 +1,13 @@
 package com.example.outsourcing.menu.dto.response;
 
 import com.example.outsourcing.menu.entity.Menu;
-import com.example.outsourcing.store.entity.Store;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class MenuResponseDto {
+public class AllMenuResponseDto {
 
     private final Long id;
 
@@ -24,8 +23,8 @@ public class MenuResponseDto {
 
     private final LocalDateTime updatedAt;
 
-    public static MenuResponseDto toDto(Menu menu) {
-        return new MenuResponseDto(
+    public static AllMenuResponseDto toDto(Menu menu) {
+        return new AllMenuResponseDto(
             menu.getId(),
             menu.getName(),
             menu.getPrice(),

@@ -54,6 +54,9 @@ public class Store extends BaseEntity {
     @Column(nullable = false)
     private String notification;
 
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @ManyToOne
     private User user;
 
@@ -81,6 +84,10 @@ public class Store extends BaseEntity {
         this.openingTimes = requestDto.getOpeningTimes();
         this.closingTimes = requestDto.getClosingTimes();
         this.notification = requestDto.getNotification();
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
     }
 
 }

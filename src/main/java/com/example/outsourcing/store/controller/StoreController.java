@@ -3,6 +3,7 @@ package com.example.outsourcing.store.controller;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.store.dto.response.CreateStoreResponseDto;
+import com.example.outsourcing.store.dto.response.GetStoreWithMenuResponseDto;
 import com.example.outsourcing.store.dto.response.StoreResponseDto;
 import com.example.outsourcing.store.service.StoreService;
 import java.util.List;
@@ -43,11 +44,11 @@ public class StoreController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StoreResponseDto> getStoreById(@PathVariable Long id) {
+    public ResponseEntity<GetStoreWithMenuResponseDto> getStoreById(@PathVariable Long id) {
 
-        StoreResponseDto storeResponseDto = storeService.getStoreById(id);
+        GetStoreWithMenuResponseDto ResponseDto = storeService.getStoreById(id);
 
-        return ResponseEntity.ok(storeResponseDto);
+        return ResponseEntity.ok(ResponseDto);
     }
 
     @PutMapping("/{id}")
@@ -60,13 +61,11 @@ public class StoreController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> closedDownStore (@PathVariable Long id) {
+    public ResponseEntity<Void> closedDownStore (@PathVariable Long id) {
 
         storeService.closedDownStore(id);
 
-        String deleteMessage = "삭제되었습니다";
-
-        return ResponseEntity.ok(deleteMessage);
+        return ResponseEntity.noContent().build();
     }
 
 }
