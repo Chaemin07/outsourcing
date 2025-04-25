@@ -5,6 +5,7 @@ import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
+import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -55,27 +56,24 @@ public class Store extends BaseEntity {
     @ManyToOne
     private Image image;
 
-    public Store(String name, String status, String storePhoneNumber,
-        Integer minOrderPrice, String openingTimes, String closingTimes, String notification
-       ) {
-        this.name = name;
-        this.status = status;
-        this.storePhoneNumber = storePhoneNumber;
-        this.minOrderPrice = minOrderPrice;
-        this.openingTimes = openingTimes;
-        this.closingTimes = closingTimes;
-        this.notification = notification;
+    public Store(CreateStoreRequestDto requestDto) {
+        this.name = requestDto.getName();
+        this.status = requestDto.getStatus();
+        this.storePhoneNumber = requestDto.getStorePhoneNumber();
+        this.minOrderPrice = requestDto.getMinOrderPrice();
+        this.openingTimes = requestDto.getOpeningTimes();
+        this.closingTimes = requestDto.getClosingTimes();
+        this.notification = requestDto.getNotification();
     }
 
-    public void updateStore(String name, String status, String storePhoneNumber,
-        Integer minOrderPrice, String openingTimes, String closingTimes, String notification) {
-        this.name = name;
-        this.status = status;
-        this.storePhoneNumber = storePhoneNumber;
-        this.minOrderPrice = minOrderPrice;
-        this.openingTimes = openingTimes;
-        this.closingTimes = closingTimes;
-        this.notification = notification;
+    public void updateStore(UpdateStoreRequestDto requestDto) {
+        this.name = requestDto.getName();
+        this.status = requestDto.getStatus();
+        this.storePhoneNumber = requestDto.getStorePhoneNumber();
+        this.minOrderPrice = requestDto.getMinOrderPrice();
+        this.openingTimes = requestDto.getOpeningTimes();
+        this.closingTimes = requestDto.getClosingTimes();
+        this.notification = requestDto.getNotification();
     }
 
 }

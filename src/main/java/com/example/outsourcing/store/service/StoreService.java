@@ -3,6 +3,7 @@ package com.example.outsourcing.store.service;
 import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
+import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.store.dto.response.CreateStoreResponseDto;
 import com.example.outsourcing.store.dto.response.StoreResponseDto;
 import com.example.outsourcing.store.entity.Store;
@@ -21,19 +22,11 @@ public class StoreService {
     private final StoreRepository storeRepository;
 
     @Transactional
-    public CreateStoreResponseDto createStore(String name, String status, String storePhoneNumber,
-        Integer minOderPrice, String openingTimes, String closingTimes, String notification) {
+    public CreateStoreResponseDto createStore(CreateStoreRequestDto requestDto) {
 
-        Store store = new Store(name, status, storePhoneNumber,
-            minOderPrice, openingTimes, closingTimes, notification);
+        Store savedStore = storeRepository.save(new Store(requestDto));
 
-        Store savedStore = storeRepository.save(store);
-
-        return new CreateStoreResponseDto(savedStore.getId(), savedStore.getName(),
-            savedStore.getStatus(), savedStore.getStorePhoneNumber(),
-            savedStore.getMinOrderPrice(), savedStore.getOpeningTimes(),
-            savedStore.getClosingTimes(), savedStore.getNotification(), savedStore.getCreatedAt(),
-            savedStore.getUpdatedAt());
+        return CreateStoreResponseDto.toDto(savedStore);
     }
 
     public List<StoreResponseDto> findAll() {
@@ -47,22 +40,16 @@ public class StoreService {
 
         Store findStore = storeRepository.findByIdOrElseThrow(id);
 
-        return new StoreResponseDto(findStore.getId(), findStore.getName(), findStore.getStatus(),
-            findStore.getStorePhoneNumber(), findStore.getMinOrderPrice(),
-            findStore.getOpeningTimes(), findStore.getClosingTimes(), findStore.getNotification(), findStore.getCreatedAt(),
-            findStore.getUpdatedAt());
+        return StoreResponseDto.toDto(findStore);
     }
 
-    public StoreResponseDto updateStore(Long id, String name, String status, String storePhoneNumber,
-        Integer minOderPrice, String openingTimes, String closingTimes, String notification) {
+    public StoreResponseDto updateStore(Long id, UpdateStoreRequestDto requestDto) {
 
         Store findStore = storeRepository.findByIdOrElseThrow(id);
 
-        findStore.updateStore(name, status, storePhoneNumber, minOderPrice, openingTimes, closingTimes, notification);
+        findStore.updateStore(requestDto);
 
-        return new StoreResponseDto(findStore.getId(), findStore.getName(), findStore.getStatus(), findStore.getStorePhoneNumber(),
-            findStore.getMinOrderPrice(), findStore.getOpeningTimes(), findStore.getClosingTimes(), findStore.getNotification(),
-            findStore.getCreatedAt(),findStore.getUpdatedAt());
+        return StoreResponseDto.toDto(findStore);
     }
 
     public void closedDownStore(Long id) {

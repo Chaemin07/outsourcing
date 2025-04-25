@@ -29,15 +29,7 @@ public class StoreController {
         @RequestBody CreateStoreRequestDto requestDto) {
 
         CreateStoreResponseDto createStoreResponseDto =
-            storeService.createStore(
-                requestDto.getName(),
-                requestDto.getStatus(),
-                requestDto.getStorePhoneNumber(),
-                requestDto.getMinOrderPrice(),
-                requestDto.getOpeningTimes(),
-                requestDto.getClosingTimes(),
-                requestDto.getNotification()
-            );
+            storeService.createStore(requestDto);
 
         return ResponseEntity.ok(createStoreResponseDto);
     }
@@ -61,16 +53,7 @@ public class StoreController {
     public ResponseEntity<StoreResponseDto> updateStore(@PathVariable Long id, @RequestBody
     UpdateStoreRequestDto requestDto) {
 
-        StoreResponseDto storeResponseDto = storeService.updateStore(
-            id,
-            requestDto.getName(),
-            requestDto.getStatus(),
-            requestDto.getStorePhoneNumber(),
-            requestDto.getMinOrderPrice(),
-            requestDto.getOpeningTimes(),
-            requestDto.getClosingTimes(),
-            requestDto.getNotification()
-        );
+        StoreResponseDto storeResponseDto = storeService.updateStore(id, requestDto);
 
         return ResponseEntity.ok(storeResponseDto);
     }

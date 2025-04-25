@@ -31,4 +31,18 @@ public class CreateStoreResponseDto {
 
     private final LocalDateTime updatedAt;
 
+    public static CreateStoreResponseDto toDto(Store store) {
+        return new CreateStoreResponseDto(
+            store.getId(),
+            store.getName(),
+            store.getStatus(),
+            store.getStorePhoneNumber(),
+            store.getMinOrderPrice(),
+            store.getOpeningTimes(),
+            store.getClosingTimes(),
+            store.getNotification(),
+            store.getCreatedAt(),
+            store.getUpdatedAt()
+        );
+    }
 }
