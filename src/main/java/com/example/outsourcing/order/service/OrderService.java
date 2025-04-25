@@ -138,7 +138,7 @@ public class OrderService {
     }
 
     // 주문 계산
-    private Integer calculateTotalPrice(Order order) {
+    public Integer calculateTotalPrice(Order order) {
         Integer totalPrice = 0;
         for (OrderDetail orderDetail : order.getOrderDetailList()) {
             Integer menuPrice = orderDetail.getPrice();
@@ -220,7 +220,6 @@ public class OrderService {
             throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
         }
 
-        // TODO 주문을 dto로 변환해야함
         List<Order> orderList = orderRepository.findByStoreId(storeId);
         return convertOrdersToDto(orderList);
     }
