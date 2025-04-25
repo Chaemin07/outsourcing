@@ -3,6 +3,7 @@ package com.example.outsourcing.review.dto.response;
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.review.entity.Review;
 import com.example.outsourcing.reviewcomment.dto.response.ReviewCommentResponseDto;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -31,6 +32,7 @@ public class ReviewResponseDto {
     // 리뷰를 작성하는 가게 id
     private final long storeId;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String commentContent;
 
     public ReviewResponseDto(Review review) {
