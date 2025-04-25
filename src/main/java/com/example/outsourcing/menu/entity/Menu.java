@@ -1,17 +1,15 @@
 package com.example.outsourcing.menu.entity;
 
+import com.example.outsourcing.cart.entity.Cart;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.store.entity.Store;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,6 +27,7 @@ public class Menu extends BaseEntity {
 
   private Integer price;
 
+  // 상태는 enum으로 구현하는게 좋을거 같은데요??
   private String status;
 
   private LocalDateTime deletedAt;
@@ -40,5 +39,9 @@ public class Menu extends BaseEntity {
   @OneToOne
   private Image image;
 
+  @OneToMany(mappedBy = "menu")
+  private List<Cart> cartList = new ArrayList<>();
 
+  @OneToMany(mappedBy = "menu", orphanRemoval = true, fetch = FetchType.LAZY)
+  private List<MenuOption> options = new ArrayList<>();
 }
