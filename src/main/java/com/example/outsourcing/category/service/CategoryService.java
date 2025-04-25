@@ -6,7 +6,6 @@ import com.example.outsourcing.category.dto.response.CategoryResponseDto;
 import com.example.outsourcing.category.entity.Category;
 import com.example.outsourcing.category.repository.CategoryRepository;
 import com.example.outsourcing.common.enums.CategoryType;
-import com.example.outsourcing.review.entity.Review;
 import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.store.repository.StoreRepository;
 import com.example.outsourcing.user.entity.User;
