@@ -9,8 +9,6 @@ public class UpdateStoreRequestDto {
 
     private final String name;
 
-    private final String status;
-
     private final String storePhoneNumber;
 
     private final Integer minOrderPrice;
