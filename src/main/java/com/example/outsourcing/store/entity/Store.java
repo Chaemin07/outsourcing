@@ -3,7 +3,6 @@ package com.example.outsourcing.store.entity;
 import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
-import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.user.entity.User;
@@ -30,31 +29,31 @@ import lombok.Setter;
 @Table(name = "store")
 public class Store extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  @Column(nullable = false)
-  private String name;
+    @Column(nullable = false)
+    private String name;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private StoreStatus status;
 
-  @Column(nullable = false)
-  private String storePhoneNumber;
+    @Column(nullable = false)
+    private String storePhoneNumber;
 
-  @Column(nullable = false)
-  private Integer minOrderPrice;
+    @Column(nullable = false)
+    private Integer minOrderPrice;
 
-  @Column(nullable = false)
-  private String openingTimes;
+    @Column(nullable = false)
+    private String openingTimes;
 
-  @Column(nullable = false)
-  private String closingTimes;
+    @Column(nullable = false)
+    private String closingTimes;
 
-  @Column(nullable = false)
-  private String notification;
+    @Column(nullable = false)
+    private String notification;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -64,6 +63,7 @@ public class Store extends BaseEntity {
     @JoinColumn(name = "address_id")
     private Address address;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")
     private Image image;

@@ -29,8 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/stores")
 public class StoreController {
 
-  private final StoreService storeService;
-  private final ImageUtil imageUtil;
+    private final StoreService storeService;
+    private final ImageUtil imageUtil;
 
     @PostMapping
     public ResponseEntity<CreateStoreResponseDto> createStore(
@@ -42,22 +42,20 @@ public class StoreController {
         return ResponseEntity.ok(responseDto);
     }
 
-  // 가게 이미지 업로드
-  @PostMapping("/{id}/img")
-  public ResponseEntity<Void> uploadImage(
-      @PathVariable Long id, @RequestParam MultipartFile image) {
-    storeService.uploadStoreImg(id, image);
-    return ResponseEntity.ok().build();
-  }
+    // 가게 이미지 업로드
+    @PostMapping("/{id}/img")
+    public ResponseEntity<Void> uploadImage(
+        @PathVariable Long id, @RequestParam MultipartFile image) {
+        storeService.uploadStoreImg(id, image);
+        return ResponseEntity.ok().build();
+    }
 
-  // 가게 이미지 조회
-  @GetMapping("/{id}/img")
-  public ResponseEntity<Resource> getImage(@PathVariable Long menuId) {
-    return imageUtil.getImage(storeService.getStoreImgId(menuId));
-  }
+    // 가게 이미지 조회
+    @GetMapping("/{id}/img")
+    public ResponseEntity<Resource> getImage(@PathVariable Long menuId) {
+        return imageUtil.getImage(storeService.getStoreImgId(menuId));
+    }
 
-  @GetMapping
-  public ResponseEntity<List<StoreResponseDto>> getStore() {
     @GetMapping
     public ResponseEntity<List<StoreResponseDto>> getStore() {
         List<StoreResponseDto> storeList = storeService.getStore();
