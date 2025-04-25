@@ -3,15 +3,23 @@ package com.example.outsourcing.store.entity;
 import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
+import com.example.outsourcing.menu.entity.Menu;
+import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
+import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.user.entity.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,35 +29,51 @@ import lombok.NoArgsConstructor;
 @Table(name = "store")
 public class Store extends BaseEntity {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-  private String name;
+    private String name;
 
-  private String status;
+    private String status;
 
-  private String phone;
+    private String storePhoneNumber;
 
-  private String storePhoneNumber;
+    private Integer minOrderPrice;
 
-  private Integer minOderPrice;
+    private String openingTimes;
 
-  private String openingTimes;
+    private String closingTimes;
 
-  private String closingTimes;
+    private String notification;
 
-  private String notification;
+    @ManyToOne
+    private User user;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  private User user;
+    @OneToOne
+    private Address address;
 
-  @OneToOne
-  private Address address;
+    @ManyToOne
+    private Image image;
 
-  @OneToOne
-  private Image image;
+    public Store(CreateStoreRequestDto requestDto) {
+        this.name = requestDto.getName();
+        this.status = requestDto.getStatus();
+        this.storePhoneNumber = requestDto.getStorePhoneNumber();
+        this.minOrderPrice = requestDto.getMinOrderPrice();
+        this.openingTimes = requestDto.getOpeningTimes();
+        this.closingTimes = requestDto.getClosingTimes();
+        this.notification = requestDto.getNotification();
+    }
 
+    public void updateStore(UpdateStoreRequestDto requestDto) {
+        this.name = requestDto.getName();
+        this.status = requestDto.getStatus();
+        this.storePhoneNumber = requestDto.getStorePhoneNumber();
+        this.minOrderPrice = requestDto.getMinOrderPrice();
+        this.openingTimes = requestDto.getOpeningTimes();
+        this.closingTimes = requestDto.getClosingTimes();
+        this.notification = requestDto.getNotification();
+    }
 
 }
