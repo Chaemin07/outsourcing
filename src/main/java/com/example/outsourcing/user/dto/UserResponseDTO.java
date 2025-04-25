@@ -24,6 +24,6 @@ public class UserResponseDTO {
     this.addresses = user.getAddresses();
     this.nickname = user.getNickname();
     this.role = user.getRole();
-    this.profileImg = user.getProfileImg().getPath();
+    // this.profileImg = user.getProfileImg().getPath();
   }
 }

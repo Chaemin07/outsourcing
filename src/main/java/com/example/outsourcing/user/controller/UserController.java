@@ -7,10 +7,10 @@ import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
 import com.example.outsourcing.user.dto.UserResponseDTO;
 import com.example.outsourcing.user.dto.UserSignupRequestDTO;
 import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
-import com.example.outsourcing.user.dto.userLoginRequestDTO;
 import com.example.outsourcing.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
   private final UserService userService;
@@ -31,14 +32,6 @@ public class UserController {
   public ResponseEntity<ApiResponse<Void>> signup(
       @Valid @RequestBody UserSignupRequestDTO requestDTO) {
     userService.signup(requestDTO);
-    return ResponseEntity.ok().build();
-  }
-
-  // TODO : 로그인, 로그아웃, 유저 주소 추가 등록 API 작업
-  @PostMapping("/login")
-  public ResponseEntity<ApiResponse<Void>> login(
-      @Valid @RequestBody userLoginRequestDTO requestDTO) {
-    userService.login(requestDTO);
     return ResponseEntity.ok().build();
   }
 
@@ -72,4 +65,6 @@ public class UserController {
     userService.deactiveUser(userId, requestDTO);
     return ResponseEntity.ok(ApiResponse.success());
   }
+
+  // TODO : 유저 주소 추가 등록 API 작업
 }

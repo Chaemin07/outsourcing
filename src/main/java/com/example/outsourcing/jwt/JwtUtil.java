@@ -12,6 +12,7 @@ import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class JwtUtil {
   }
 
   // 토큰 발급
-  public String createToken(String userId, String email, Role role) {
+  public String createToken(Long userId, String email, Role role) {
     // 페이로드
     Date now = new Date();
 
@@ -51,6 +52,13 @@ public class JwtUtil {
         .claim("role", role)
         .signWith(key, signatureAlgorithm)   // 서명 (사용 알고리즘, 서명 생성-검증 용 비밀 키)
         .compact();
+  }
+
+  public String substringToken(String tokenValue) {
+    if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
+      return tokenValue.substring(7);
+    }
+    throw new RuntimeException("토큰을 찾을 수 없습니다.");
   }
 
   // 토큰 바디(Claims) 반환

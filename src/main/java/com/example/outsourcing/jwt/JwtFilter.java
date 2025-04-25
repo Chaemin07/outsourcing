@@ -13,49 +13,53 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
   private final JwtUtil jwtUtil;
 
   // 로그인 필터 제외 대상 URL
-  private static final List<AntPathRequestMatcher> WHITE_LIST = List.of(
-      new AntPathRequestMatcher("/", "GET"),
-      new AntPathRequestMatcher("/signup", "POST"),  // 회원가입
-      new AntPathRequestMatcher("/login", "POST")   // 로그아웃
+  private static final List<String> WHITE_LIST = List.of(
+      "/signup",  // 회원가입
+      "/login"    // 로그아웃
   );
 
   // 사장 전용 URL
-  private static final List<AntPathRequestMatcher> OWNER_LIST = List.of(
-      new AntPathRequestMatcher("/owners", "GET")
+  private static final List<String> OWNER_LIST = List.of(
+      "/owners"
   );
 
-  // 토큰이 없다면 발급해주고 만료되었으면 어케하지?
+  // 토큰이 없다면 발급해주고 만료되었으면?
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
     String url = request.getRequestURI();
+    log.info("Request url :" + url);
 
     // WHITE_LIST 는 필터 적용 제외
-    for (AntPathRequestMatcher matcher : WHITE_LIST) {
-      if (matcher.matches(request)) {
+    for (String matcher : WHITE_LIST) {
+      if (url.startsWith(matcher)) {
+        log.info("WHITE LIST REQUEST");
         filterChain.doFilter(request, response);
         return;
       }
     }
 
-    String token = request.getHeader("Authorization");
+    String bearerToken = request.getHeader("Authorization");
+    log.info("Authorization Header: {}", bearerToken);
 
     // 토큰이 비어있다면
-    if (token == null) {
+    if (bearerToken == null) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "로그인 해주세요.");
       return;
     }
 
     // 유효한 토큰인지 검사
+    String token = jwtUtil.substringToken(bearerToken);
     Claims claims = null;
 
     try {
@@ -68,29 +72,29 @@ public class JwtFilter extends OncePerRequestFilter {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "지원되지 않는 JWT 토큰입니다.");
     } catch (IllegalArgumentException e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "잘못된 JWT 토큰입니다.");
+    } catch (Exception e) {
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JWT 토큰에 문제가 있습니다.");
+    }
+
+    // 유저 역할 검증 // TODO: 추후 early return 하도록 변경
+    for (String matcher : OWNER_LIST) {
+      // 사장만 접근 가능 URL 에
+      if (url.startsWith(matcher)) {
+        Role userRole = Role.valueOf(claims.get("role", String.class));
+
+        // 만약 유저 role 이 일반 사용자(USER)라면
+        if (!Role.OWNER.equals(userRole)) {
+          log.info("JwtFilter Role : Invalid");
+          response.sendError(HttpServletResponse.SC_FORBIDDEN, "유효하지 않은 접근입니다.");
+          return;
+        }
+      }
     }
 
     // request attributes 세팅
     request.setAttribute("userId", Long.valueOf(claims.getSubject()));
     request.setAttribute("role", claims.get("role"));
     request.setAttribute("email", claims.get("email"));
-
-    // 유저 역할 검증 // TODO: 추후 early return 하도록 변경
-    for (AntPathRequestMatcher matcher : OWNER_LIST) {
-      // 사장만 접근 가능 URL 에
-      if (matcher.matches(request)) {
-        Role userRole = Role.valueOf(claims.get("role", String.class));
-
-        // 만약 유저 role 이 일반 사용자(USER)라면
-        if (!Role.OWNER.equals(userRole)) {
-          response.sendError(HttpServletResponse.SC_FORBIDDEN, "유효하지 않은 접근입니다.");
-          return;
-        }
-
-        filterChain.doFilter(request, response);
-        return;
-      }
-    }
 
     filterChain.doFilter(request, response);
   }

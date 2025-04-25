@@ -6,7 +6,6 @@ import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
 import com.example.outsourcing.user.dto.UserResponseDTO;
 import com.example.outsourcing.user.dto.UserSignupRequestDTO;
 import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
-import com.example.outsourcing.user.dto.userLoginRequestDTO;
 import com.example.outsourcing.user.entity.User;
 import com.example.outsourcing.user.repository.UserRepository;
 import java.time.LocalDateTime;
@@ -25,7 +24,7 @@ public class UserService {
   @Transactional
   public void signup(UserSignupRequestDTO requestDTO) {
     // 유저 이메일(아이디) 중복 검사
-    if (!isExistsEmail(requestDTO.getEmail())) {
+    if (isExistsEmail(requestDTO.getEmail())) {
       throw new RuntimeException("이메일 중복입니다.");
     }
 
@@ -96,17 +95,5 @@ public class UserService {
       // TODO: 탈퇴된 회원 예외처리 추가
     }
     user.setDeletedAt(LocalDateTime.now());
-  }
-
-  // 로그인
-  public void login(userLoginRequestDTO requestDTO) {
-    // 이메일 검증
-    User user = userRepository.findUserByEmail(requestDTO.getEmail()).orElseThrow(
-        () -> new RuntimeException("유저를 찾을 수 없습니다."));
-
-    // 비밀번호 검증
-    if (!isValidPassword(requestDTO.getPassword(), user.getPassword())) {
-      throw new RuntimeException("비밀번호가 일치하지 않습니다.");
-    }
   }
 }

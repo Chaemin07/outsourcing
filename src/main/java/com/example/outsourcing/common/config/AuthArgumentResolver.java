@@ -2,12 +2,15 @@ package com.example.outsourcing.common.config;
 
 import com.example.outsourcing.common.annotation.AuthUser;
 import jakarta.servlet.ServletException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver;
 
+@Slf4j
 public class AuthArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
   public AuthArgumentResolver() {
@@ -27,7 +30,9 @@ public class AuthArgumentResolver extends AbstractNamedValueMethodArgumentResolv
 
   @org.springframework.lang.Nullable
   protected Object resolveName(String name, MethodParameter parameter, NativeWebRequest request) {
-    return request.getAttribute(name, 1);
+    Object val = request.getAttribute(name, RequestAttributes.SCOPE_REQUEST);
+    log.info("RESOLVING NAME: {}, value: {}, type: {}", name, val, val.getClass());
+    return val;
   }
 
   protected void handleMissingValue(String name, MethodParameter parameter)
