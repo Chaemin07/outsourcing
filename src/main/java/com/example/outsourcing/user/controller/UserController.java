@@ -39,7 +39,7 @@ public class UserController {
   }
 
   // 프로필 이미지 업로드
-  @PostMapping("/profile")
+  @PostMapping("/users/profile")
   public ResponseEntity<Void> uploadProfile(@AuthUser Long userId,
       @RequestParam MultipartFile image) {
     userService.uploadProfile(userId, image);

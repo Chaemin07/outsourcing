@@ -1,4 +1,4 @@
-package com.example.outsourcing.image.controller;
+package com.example.outsourcing.image.util;
 
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.image.service.ImageService;
@@ -9,18 +9,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Component
 @RequiredArgsConstructor
-public class ImageController {
+public class ImageUtil {
 
   private final ImageService imageService;
 
   // 이미지 조회
-  @GetMapping("/profile")
   public ResponseEntity<Resource> getImage(@RequestParam Long imageId) {
     Image image = imageService.getImage(imageId);
     Path path = Path.of(image.getPath());
@@ -65,5 +63,4 @@ public class ImageController {
         return MediaType.APPLICATION_OCTET_STREAM;  // 바이너리 파일
     }
   }
-
 }
