@@ -24,7 +24,7 @@ public class Review extends BaseEntity {
     @Column(nullable = false)
     private int score;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
