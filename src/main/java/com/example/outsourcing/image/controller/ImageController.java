@@ -1,4 +1,4 @@
-package com.example.outsourcing.image;
+package com.example.outsourcing.image.controller;
 
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.image.service.ImageService;
@@ -10,10 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,14 +19,9 @@ public class ImageController {
 
   private final ImageService imageService;
 
-  @PostMapping("/profile")
-  public ResponseEntity<Void> uploadProfile(@RequestParam MultipartFile image) {
-    imageService.uploadImage(image);
-    return ResponseEntity.ok().build();
-  }
-
+  // 이미지 조회
   @GetMapping("/profile")
-  public ResponseEntity<Resource> getProfile(@RequestParam Long imageId) {
+  public ResponseEntity<Resource> getImage(@RequestParam Long imageId) {
     Image image = imageService.getImage(imageId);
     Path path = Path.of(image.getPath());
 
@@ -36,36 +29,40 @@ public class ImageController {
     String fileExtension = getFileExtension(image.getPath());
     MediaType mediaType = getMediaType(fileExtension);
 
+    // 경로로 들어가 파일 불러오기
     Resource resource = new FileSystemResource(path.toFile());
 
     return ResponseEntity.ok()
         .contentType(mediaType)
-        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + image.getPath() + "\"")
+        .header(HttpHeaders.CONTENT_DISPOSITION,
+            "inline; filename=\"" + image.getPath() + "\"")   // 바디에 바로 이미지 보이도록
         .body(resource);
   }
 
-  // 파일 확장자 추출 메소드
+  // 파일 확장자 추출
   private String getFileExtension(String filename) {
     String extension = "";
     int i = filename.lastIndexOf('.');
-    if (i > 0) {
+
+    if (i > 0) {  // 확장자가 존재한다면 (. 이 포함되어있다면)
       extension = filename.substring(i + 1);
     }
+
     return extension;
   }
 
-  // 확장자에 맞는 미디어 타입 반환
+  // 파일 확장자와 미디어 타입 매치
   private MediaType getMediaType(String extension) {
     switch (extension.toLowerCase()) {
       case "jpg":
       case "jpeg":
-        return MediaType.IMAGE_JPEG;
+        return MediaType.IMAGE_JPEG;                // jpg, jpeg
+
       case "png":
-        return MediaType.IMAGE_PNG;
-      case "gif":
-        return MediaType.IMAGE_GIF;
+        return MediaType.IMAGE_PNG;                 // png
+
       default:
-        return MediaType.APPLICATION_OCTET_STREAM; // 기본적으로 바이너리 파일로 처리
+        return MediaType.APPLICATION_OCTET_STREAM;  // 바이너리 파일
     }
   }
 

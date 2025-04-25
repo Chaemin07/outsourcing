@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,11 +28,21 @@ public class UserController {
 
   private final UserService userService;
 
+  // TODO: userId 없애기
+
   // 회원 가입
   @PostMapping(value = "/signup")
   public ResponseEntity<ApiResponse<Void>> signup(
       @Valid @RequestBody UserSignupRequestDTO requestDTO) {
     userService.signup(requestDTO);
+    return ResponseEntity.ok().build();
+  }
+
+  // 프로필 이미지 업로드
+  @PostMapping("/profile")
+  public ResponseEntity<Void> uploadProfile(@AuthUser Long userId,
+      @RequestParam MultipartFile image) {
+    userService.uploadProfile(userId, image);
     return ResponseEntity.ok().build();
   }
 

@@ -56,6 +56,7 @@ public class User extends BaseEntity {
   @Column(nullable = false)
   String phoneNumber;
 
+  @Setter
   @ManyToOne
   @JoinColumn(name = "profile_image_id")
   private Image profileImg;

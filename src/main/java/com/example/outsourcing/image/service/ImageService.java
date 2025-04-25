@@ -27,12 +27,7 @@ public class ImageService {
       ".jpeg", ".jpg", ".png"
   );
 
-  // 멀티파트 파일로 받기
-  // 컨트롤러에 넘어온 멀티파트 파일을 여기로 넘기기
-  // 저장 작업 후 이미지 반환
-  // 저장 resources 폴더에 or 따로 DB에 바이너리 값이든 넣어주기
-
-  // 단일 파일 저장 후 이미지 id 반환
+  // 단일 파일 저장 후 이미지 반환
   @Transactional(rollbackFor = IOException.class)
   public Image uploadImage(MultipartFile image) {
     // 파일 타입 검사
@@ -48,7 +43,7 @@ public class ImageService {
     try {
       Files.write(filePath, image.getBytes()); // TODO : 핸들러로 빼서 병행 처리?
     } catch (IOException e) {
-      log.info("PATH: {}", filePath.toString());
+      log.info("FAILED TO WRITE FILE PATH: {}", filePath.toString());
       throw new RuntimeException("파일 쓰기 실패", e);
     }
 

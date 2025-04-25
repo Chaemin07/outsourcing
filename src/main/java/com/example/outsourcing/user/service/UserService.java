@@ -1,6 +1,7 @@
 package com.example.outsourcing.user.service;
 
 import com.example.outsourcing.common.config.PasswordEncoder;
+import com.example.outsourcing.image.service.ImageService;
 import com.example.outsourcing.user.dto.PwdUpdateRequestDTO;
 import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
 import com.example.outsourcing.user.dto.UserResponseDTO;
@@ -12,12 +13,14 @@ import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
   private final UserRepository userRepository;
+  private final ImageService imageService;
   private final PasswordEncoder passwordEncoder;
 
   // 회원 가입
@@ -95,5 +98,18 @@ public class UserService {
       throw new RuntimeException("이미 탈퇴한 회원입니다.");
     }
     user.setDeletedAt(LocalDateTime.now());
+  }
+
+  // 유저 이미지 업로드
+  @Transactional(rollbackFor = RuntimeException.class)
+  public void uploadProfile(Long userId, MultipartFile file) {
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+
+    try {
+      user.setProfileImg(imageService.uploadImage(file));   // 업로드 후 유저 프로필 이미지에 값 설정
+    } catch (RuntimeException e) {
+      new RuntimeException("파일 업로드에 실패하였습니다.", e);
+    }
   }
 }
