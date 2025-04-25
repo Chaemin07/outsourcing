@@ -37,7 +37,7 @@ public class StoreService {
 
     @Transactional
     public List<StoreResponseDto> getStore() {
-        return storeRepository.findAll()
+        return storeRepository.findAllByDeletedAtIsNull()
             .stream()
             .map(StoreResponseDto::toDto)
             .toList();
