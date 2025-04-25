@@ -2,7 +2,6 @@ package com.example.outsourcing.review.dto.response;
 
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.review.entity.Review;
-import com.example.outsourcing.reviewcomment.dto.response.ReviewCommentResponseDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,9 +40,6 @@ public class ReviewResponseDto {
         this.score = review.getScore();
 
         Order order = review.getOrder();
-        // this.orderId = order.getId();
-        // this.userId = order.getUser().getId();
-        // this.storeId = order.getStore().getId();
         this.orderId = order.getId();
         this.userId = order.getUserId();
         this.storeId = order.getStoreId();

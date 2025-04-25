@@ -1,5 +1,6 @@
 package com.example.outsourcing.review.service;
 
+import com.example.outsourcing.common.config.PasswordEncoder;
 import com.example.outsourcing.common.enums.SortType;
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.order.repository.OrderRepository;
@@ -8,6 +9,8 @@ import com.example.outsourcing.review.dto.response.ReviewListResponseDto;
 import com.example.outsourcing.review.dto.response.ReviewResponseDto;
 import com.example.outsourcing.review.entity.Review;
 import com.example.outsourcing.review.repository.ReviewRepository;
+import com.example.outsourcing.user.entity.User;
+import com.example.outsourcing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,23 +25,29 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class ReviewService {
 
+    private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final OrderRepository orderRepository;
+    private final PasswordEncoder passwordEncoder;
 
+    // 리뷰 저장
     public ReviewResponseDto saveReview(Long userId, Long orderId, ReviewRequestDto dto) {
 
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("주문 없음"));
+        // orderId에 해당하는 주문이 없을 때 예외처리
+        Order order = getOrderByOrderId(orderId);
 
-        // TODO: 본인의 주문이 맞는 지 확인(userId == orderId.getUserId())
-        // userId => 로그인 되이었는 유저의 userId
-        // orderId.getUserId => 주문을 한 유저의 userID
+        // userId에 해당하는 유저가 없을 때 예외처리
+        User user = getUserByUserId(userId);
+
+        // 본인의 주문이 아니면 예외처리
+        checkMyOrder(order, userId);
 
         if (!order.getDeliveryStatus().equals("DELIVERED")) {
             // 배송 완료가 아닐시 예외 처리
             throw new RuntimeException("배송이 완료되지 않았습니다.");
         }
 
+        // 배송이 완료된지 일정 시간이 지나면 예외처리
         LocalDateTime deliveredAt = order.getUpdatedAt();
         isReviewPeriodExpired(deliveredAt);
 
@@ -52,48 +61,48 @@ public class ReviewService {
     @Transactional
     public ReviewResponseDto updateReview(Long userId, Long orderId, ReviewRequestDto dto) {
 
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("주문 없음"));
+        // orderId에 해당하는 주문이 없을 때 예외처리
+        Order order = getOrderByOrderId(orderId);
 
-        // TODO: 본인의 주문이 맞는 지 확인(userId == orderId.getUserId())
-        // userId => 로그인 되이었는 유저의 userId
-        // orderId.getUserId => 주문을 한 유저의 userID
-        // save의 확인이랑 묶어서 메서드화?
+        // userId에 해당하는 유저가 없을 때 예외처리
+        User user = getUserByUserId(userId);
 
+        // orderId에 해당하는 리뷰가 없을 때 예외처리
+        Review review = getReviewByOrderId(orderId);
+
+        // 본인의 주문이 아니면 예외처리
+        checkMyOrder(order, userId);
+
+        // 배송이 완료된지 일정 시간이 지나면 예외처리
         LocalDateTime deliveredAt = order.getUpdatedAt();
         isReviewPeriodExpired(deliveredAt);
 
-        Review savedReview = reviewRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new RuntimeException("해당 주문에 대한 리뷰가 없습니다."));
+        review.updateReview(dto.getContent(), dto.getScore());
 
-        savedReview.updateReview(dto.getContent(), dto.getScore());
-
-        return new ReviewResponseDto(savedReview);
+        return new ReviewResponseDto(review);
     }
 
     public void deleteReview(Long userId, Long orderId, String password) {
 
-        // TODO: 본인의 주문이 맞는 지 확인(userId == orderId.getUserId())
-        // userId => 로그인 되이었는 유저의 userId
-        // orderId.getUserId => 주문을 한 유저의 userID
+        // orderId에 해당하는 주문이 없을 때 예외처리
+        Order order = getOrderByOrderId(orderId);
 
-        String userPassword = "1234";
+        // userId에 해당하는 유저가 없을 때 예외처리
+        User user = getUserByUserId(userId);
 
-        // TODO: Bcrypt => 비밀번호 matches로 검증
-        if (!password.equals(userPassword)) {
+        // orderId에 해당하는 리뷰가 없을 때 예외처리
+        Review review = getReviewByOrderId(orderId);
 
-            // 예외처리
+        // 본인의 주문이 아니면 예외처리
+        checkMyOrder(order, userId);
+
+        String userPassword = user.getPassword();
+
+        if (!passwordEncoder.matches(password, userPassword)) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        // orderId에 해당하는 주문이 없을 때 예외처리
-        Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("주문이 존재하지 않습니다."));
-        // orderId에 대한 리뷰가 없을 때 예외처리
-        Review savedReview = reviewRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new RuntimeException("해당 주문에 대한 리뷰가 없습니다."));
-
-        Long reviewId = savedReview.getId();
+        Long reviewId = review.getId();
 
         reviewRepository.deleteById(reviewId);
     }
@@ -121,20 +130,6 @@ public class ReviewService {
         return new ReviewListResponseDto(count, average, reviewList);
     }
 
-    // private ReviewResponseDto convertToDto(Review review) {
-    //     return new ReviewResponseDto(
-    //             review.getId(),
-    //             review.getContent(),
-    //             review.getScore(),
-    //             // 음식 이름 추가
-    //             // 이미지 주소 추가
-    //             review.getOrder().getUserId(),
-    //             review.getOrder().getId(),
-    //             review.getStoreId(),
-    //             review.getReviewComment().getContent()
-    //     );
-    // }
-
     private ReviewResponseDto convertToDto(Review review) {
         return new ReviewResponseDto(review);
     }
@@ -150,6 +145,24 @@ public class ReviewService {
         // 3일뒤 => plusDays(3)
         if (deliveredAt.plusMinutes(1).isBefore(LocalDateTime.now())) {
             throw new RuntimeException("배송 완료 후 3일이 지났습니다.");
+        }
+    }
+
+    public Order getOrderByOrderId(Long orderId) {
+        return orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("주문이 존재하지 않습니다."));
+    }
+
+    public User getUserByUserId(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("유저가 존재하지 않습니다."));
+    }
+
+    public Review getReviewByOrderId(Long orderId) {
+        return reviewRepository.findByOrderId(orderId).orElseThrow(() -> new RuntimeException("해당 주문에 대한 리뷰가 없습니다."));
+    }
+
+    public void checkMyOrder(Order order, Long userId) {
+        if (!order.getUserId().equals(userId)) {
+            throw new RuntimeException("본인의 주문이 아닙니다.");
         }
     }
 }
