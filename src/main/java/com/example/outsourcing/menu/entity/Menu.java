@@ -37,6 +37,7 @@ public class Menu extends BaseEntity {
     // 상태는 enum으로 구현하는게 좋을거 같은데요??
     private String status;
 
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     @ManyToOne
@@ -52,7 +53,8 @@ public class Menu extends BaseEntity {
     @OneToMany(mappedBy = "menu", orphanRemoval = true, fetch = FetchType.LAZY)
     private List<MenuOption> options = new ArrayList<>();
 
-    public Menu(AddMenuRequestDto requestDto) {
+    public Menu(Store store, AddMenuRequestDto requestDto) {
+        this.store = store;
         this.name = requestDto.getName();
         this.price = requestDto.getPrice();
         this.descrption = requestDto.getDescrption();
@@ -64,5 +66,15 @@ public class Menu extends BaseEntity {
         this.price = requestDto.getPrice();
         this.descrption = requestDto.getDescrption();
         this.status = requestDto.getStatus();
+    }
+
+    public void validateStore(Long storeId) {
+        if(!this.store.getId().equals(storeId)) {
+            throw new RuntimeException();
+        }
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
