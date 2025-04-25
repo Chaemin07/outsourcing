@@ -1,5 +1,6 @@
 package com.example.outsourcing.reviewcomment.controller;
 
+import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.review.dto.request.DeleteReviewRequestDto;
 import com.example.outsourcing.reviewcomment.dto.request.ReviewCommentRequestDto;
 import com.example.outsourcing.reviewcomment.dto.response.ReviewCommentResponseDto;
@@ -19,28 +20,16 @@ public class ReviewCommentController {
     
     // 리뷰 댓글 생성
     @PostMapping
-    public ResponseEntity<ReviewCommentResponseDto> saveReviewComment(@PathVariable Long reviewId, @Valid @RequestBody ReviewCommentRequestDto dto) {
-        // 로그인 생기면
-        // TODO: 현재 로그인 된 유저의 id
-
-        // 테스트용
-        Long userId = 1L;
+    public ResponseEntity<ReviewCommentResponseDto> saveReviewComment(@PathVariable Long reviewId, @Valid @RequestBody ReviewCommentRequestDto dto, @AuthUser Long userId) {
 
         ReviewCommentResponseDto reviewCommentResponseDto = reviewCommentService.saveReviewComment(userId, reviewId, dto);
 
         return new ResponseEntity<>(reviewCommentResponseDto, HttpStatus.CREATED);
     }
     
-    // 리뷰 댓글 조회
-    
     // 리뷰 댓글 수정
     @PatchMapping
-    public ResponseEntity<ReviewCommentResponseDto> updateReviewComment(@PathVariable Long reviewId, @Valid @RequestBody ReviewCommentRequestDto dto) {
-        // 로그인 생기면
-        // TODO: 현재 로그인 된 유저의 id
-
-        // 테스트용
-        Long userId = 1L;
+    public ResponseEntity<ReviewCommentResponseDto> updateReviewComment(@PathVariable Long reviewId, @Valid @RequestBody ReviewCommentRequestDto dto, @AuthUser Long userId) {
 
         ReviewCommentResponseDto reviewCommentResponseDto = reviewCommentService.updateReviewComment(userId, reviewId, dto);
 
@@ -49,12 +38,7 @@ public class ReviewCommentController {
     
     // 리뷰 댓글 삭제
     @DeleteMapping
-    public ResponseEntity<String> deleteReviewComment(@PathVariable Long reviewId, @Valid @RequestBody DeleteReviewRequestDto dto) {
-        // 로그인 생기면
-        // TODO: 현재 로그인 된 유저의 id
-
-        // 테스트용
-        Long userId = 1L;
+    public ResponseEntity<String> deleteReviewComment(@PathVariable Long reviewId, @Valid @RequestBody DeleteReviewRequestDto dto, @AuthUser Long userId) {
 
         reviewCommentService.deleteReviewComment(userId, reviewId, dto.getPassword());
 

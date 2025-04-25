@@ -1,12 +1,16 @@
 package com.example.outsourcing.reviewcomment.service;
 
+import com.example.outsourcing.common.config.PasswordEncoder;
 import com.example.outsourcing.review.entity.Review;
 import com.example.outsourcing.review.repository.ReviewRepository;
 import com.example.outsourcing.reviewcomment.dto.request.ReviewCommentRequestDto;
 import com.example.outsourcing.reviewcomment.dto.response.ReviewCommentResponseDto;
 import com.example.outsourcing.reviewcomment.entity.ReviewComment;
 import com.example.outsourcing.reviewcomment.repository.ReviewCommentRepository;
-import jakarta.validation.Valid;
+import com.example.outsourcing.store.entity.Store;
+import com.example.outsourcing.store.repository.StoreRepository;
+import com.example.outsourcing.user.entity.User;
+import com.example.outsourcing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +19,20 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReviewCommentService {
 
+    private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewCommentRepository reviewCommentRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ReviewCommentResponseDto saveReviewComment(Long userId, Long reviewId, @Valid ReviewCommentRequestDto dto) {
+    public ReviewCommentResponseDto saveReviewComment(Long userId, Long reviewId, ReviewCommentRequestDto dto) {
 
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("리뷰 없음"));
+        User user = getUserByUserId(userId);
+        Review review = getReviewByReviewId(reviewId);
+        Store store = getStoreByStoreId(review.getStoreId());
 
-        // TODO: OWNER 사용자가 맞는지 확인
-        // TODO: 본인 가게가 맞는 지 확인
+        // 해당 가게의 사장님이 아닌 유저는 리뷰 댓글 작성불가
+        validateMyStore(store, userId);
 
         ReviewComment savedReviewComment = new ReviewComment(dto.getContent(), review);
 
@@ -36,13 +44,12 @@ public class ReviewCommentService {
     @Transactional
     public ReviewCommentResponseDto updateReviewComment(Long userId, Long reviewId, ReviewCommentRequestDto dto) {
 
-        // TODO: 본인 댓글인지 확인
+        Review review = getReviewByReviewId(reviewId);
+        Store store = getStoreByStoreId(review.getStoreId());
+        ReviewComment reviewComment = getReviewCommentByReviewId(reviewId);
 
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("리뷰 없음"));
-
-        ReviewComment reviewComment = reviewCommentRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("리뷰 댓글 없음"));
+        // 해당 가게의 사장님이 아닌 유저는 리뷰 댓글 수정불가
+        validateMyStore(store, userId);
 
         reviewComment.updateReviewComment(dto.getContent());
 
@@ -51,23 +58,42 @@ public class ReviewCommentService {
 
     public void deleteReviewComment(Long userId, Long reviewId, String password) {
 
-        // TODO: 본인 댓글인지 확인
+        User user = getUserByUserId(userId);
+        Review review = getReviewByReviewId(reviewId);
+        Store store = getStoreByStoreId(review.getStoreId());
+        ReviewComment reviewComment = getReviewCommentByReviewId(reviewId);
 
-        String userPassword = "1234";
+        // 해당 가게의 사장님이 아닌 유저는 리뷰 댓글 삭제
+        validateMyStore(store, userId);
 
-        // TODO: Bcrypt => 비밀번호 matches로 검증
-        if (!password.equals(userPassword)) {
+        String userPassword =user.getPassword();
 
-            // 예외처리
+        if (!passwordEncoder.matches(password, userPassword)) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("리뷰 없음"));
-
-        ReviewComment reviewComment = reviewCommentRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("리뷰 댓글 없음"));
-
         reviewCommentRepository.deleteById(reviewId);
+    }
+
+    public User getUserByUserId(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("유저가 존재하지 않습니다."));
+    }
+
+    public Store getStoreByStoreId(Long storeId) {
+        return storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("해당 가게가 존재하지 않습니다."));
+    }
+
+    public Review getReviewByReviewId(Long reviewId) {
+        return reviewRepository.findById(reviewId).orElseThrow(() -> new RuntimeException("해당 리뷰가 없습니다."));
+    }
+
+    public ReviewComment getReviewCommentByReviewId(Long reviewId) {
+        return reviewCommentRepository.findById(reviewId).orElseThrow(() -> new RuntimeException("리뷰 댓글이 없습니다."));
+    }
+
+    public void validateMyStore(Store store, Long userId) {
+        if (store.getUser().getId().equals(userId)) {
+            throw new RuntimeException("해당 가게의 사장님이 아닌 유저는 리뷰 댓글 작성불가");
+        }
     }
 }
