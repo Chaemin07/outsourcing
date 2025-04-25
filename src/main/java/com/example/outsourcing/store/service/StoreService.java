@@ -19,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -96,5 +97,27 @@ public class StoreService {
         Store findStore = storeRepository.findByIdOrElseThrow(id);
 
         findStore.closeDown();
+  }
+
+  // 가게 이미지 업로드
+  @Transactional(rollbackFor = RuntimeException.class)
+  public void uploadStoreImg(Long id, MultipartFile file) {
+    Store findStore = storeRepository.findByIdOrElseThrow(id);
+
+    try {
+      findStore.setImage(imageService.uploadImage(file));   // 업로드 후 가게 이미지에 값 설정
+    } catch (RuntimeException e) {
+      new RuntimeException("파일 업로드에 실패하였습니다.", e);
     }
+  }
+
+  // 가게 이미지 조회
+  public Long getStoreImgId(Long id) {
+    Store findStore = storeRepository.findByIdOrElseThrow(id);
+    if (findStore.getImage() != null) {
+      return findStore.getImage().getId();
+    } else {
+      return null;
+    }
+  }
 }

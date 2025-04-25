@@ -4,6 +4,7 @@ import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.cart.entity.Cart;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
+import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.user.dto.UserSignupRequestDTO;
 import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
 import jakarta.persistence.Column;
@@ -56,6 +57,7 @@ public class User extends BaseEntity {
   @Column(nullable = false)
   String phoneNumber;
 
+  @Setter
   @ManyToOne
   @JoinColumn(name = "profile_image_id")
   private Image profileImg;
@@ -65,6 +67,9 @@ public class User extends BaseEntity {
 
   @OneToMany(mappedBy = "user")
   private List<Cart> cartList = new ArrayList<>();
+
+  @OneToMany(mappedBy = "user")
+  private List<Order> orderList = new ArrayList<>();
 
   @Setter
   private LocalDateTime deletedAt = null;
@@ -88,5 +93,15 @@ public class User extends BaseEntity {
     this.name = requestDTO.getName();
     this.phoneNumber = requestDTO.getPhoneNumber();
     this.role = Role.valueOf(requestDTO.getRole());
+  }
+
+  public User(UserSignupRequestDTO requestDTO, Image image) {
+    this.nickname = requestDTO.getNickname();
+    this.password = requestDTO.getPassword();
+    this.email = requestDTO.getEmail();
+    this.name = requestDTO.getName();
+    this.phoneNumber = requestDTO.getPhoneNumber();
+    this.role = Role.valueOf(requestDTO.getRole());
+    this.profileImg = image;
   }
 }

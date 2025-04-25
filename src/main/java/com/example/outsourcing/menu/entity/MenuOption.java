@@ -2,9 +2,13 @@ package com.example.outsourcing.menu.entity;
 
 
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.order.entity.OrderItemOption;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -30,4 +34,6 @@ public class MenuOption extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    @OneToMany(mappedBy = "menuOption")
+    private List<OrderItemOption> orderItemOptionList = new ArrayList<>();
 }

@@ -41,8 +41,8 @@ public class ReviewResponseDto {
 
         Order order = review.getOrder();
         this.orderId = order.getId();
-        this.userId = order.getUserId();
-        this.storeId = order.getStoreId();
+        this.userId = order.getUser().getId();
+        this.storeId = order.getStore().getId();
         this.commentContent = review.getReviewComment() != null ? review.getReviewComment().getContent() : null;
     }
 }

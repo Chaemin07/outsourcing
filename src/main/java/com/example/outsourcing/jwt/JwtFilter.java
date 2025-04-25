@@ -30,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
       "/login"    // 로그아웃
   );
 
-  // 사장 전용 URL
+  // 사장 전용 URL    // TODO: URL 추가
   private static final List<String> OWNER_LIST = List.of(
       "/owners",
       "/stores/*/categories/**",

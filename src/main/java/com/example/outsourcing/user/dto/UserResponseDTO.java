@@ -15,7 +15,6 @@ public class UserResponseDTO {
   private List<Address> addresses;
   private String nickname;
   private Role role;
-  private String profileImg;
 
   public UserResponseDTO(User user) {
     this.name = user.getName();
@@ -24,6 +23,5 @@ public class UserResponseDTO {
     this.addresses = user.getAddresses();
     this.nickname = user.getNickname();
     this.role = user.getRole();
-    // this.profileImg = user.getProfileImg().getPath();
   }
 }

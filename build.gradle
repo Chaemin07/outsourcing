@@ -33,6 +33,10 @@ dependencies {
     runtimeOnly 'com.mysql:mysql-connector-j'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
+    // 캐시 사용
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // bcrypt
     implementation 'at.favre.lib:bcrypt:0.10.2'
 

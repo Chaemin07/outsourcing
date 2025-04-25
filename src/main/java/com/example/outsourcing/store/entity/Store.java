@@ -3,6 +3,7 @@ package com.example.outsourcing.store.entity;
 import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.image.entity.Image;
+import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.user.entity.User;
@@ -21,6 +22,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Entity
@@ -28,31 +30,31 @@ import lombok.NoArgsConstructor;
 @Table(name = "store")
 public class Store extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false)
-    private String name;
+  @Column(nullable = false)
+  private String name;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private StoreStatus status;
 
-    @Column(nullable = false)
-    private String storePhoneNumber;
+  @Column(nullable = false)
+  private String storePhoneNumber;
 
-    @Column(nullable = false)
-    private Integer minOrderPrice;
+  @Column(nullable = false)
+  private Integer minOrderPrice;
 
-    @Column(nullable = false)
-    private String openingTimes;
+  @Column(nullable = false)
+  private String openingTimes;
 
-    @Column(nullable = false)
-    private String closingTimes;
+  @Column(nullable = false)
+  private String closingTimes;
 
-    @Column(nullable = false)
-    private String notification;
+  @Column(nullable = false)
+  private String notification;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

@@ -7,9 +7,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @Table(name = "image")
 public class Image {
 
@@ -18,6 +20,10 @@ public class Image {
   Long id;
 
   // TODO: S3 링크로 대체
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   String path;
+
+  public Image(String path) {
+    this.path = path;
+  }
 }
