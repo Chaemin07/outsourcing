@@ -29,20 +29,23 @@ public class StoreService {
         return CreateStoreResponseDto.toDto(savedStore);
     }
 
-    public List<StoreResponseDto> findAll() {
+    @Transactional
+    public List<StoreResponseDto> getStore() {
         return storeRepository.findAll()
             .stream()
             .map(StoreResponseDto::toDto)
             .toList();
     }
 
-    public StoreResponseDto findById(Long id) {
+    @Transactional
+    public StoreResponseDto getStoreById(Long id) {
 
         Store findStore = storeRepository.findByIdOrElseThrow(id);
 
         return StoreResponseDto.toDto(findStore);
     }
 
+    @Transactional
     public StoreResponseDto updateStore(Long id, UpdateStoreRequestDto requestDto) {
 
         Store findStore = storeRepository.findByIdOrElseThrow(id);
@@ -52,6 +55,7 @@ public class StoreService {
         return StoreResponseDto.toDto(findStore);
     }
 
+    @Transactional
     public void closedDownStore(Long id) {
 
         Store fingStore = storeRepository.findByIdOrElseThrow(id);
