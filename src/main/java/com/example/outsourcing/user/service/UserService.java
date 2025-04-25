@@ -91,8 +91,8 @@ public class UserService {
     }
 
     // 탈퇴된 유저인지 확인
-    if (user.getDeletedAt() == null) {
-      // TODO: 탈퇴된 회원 예외처리 추가
+    if (user.getDeletedAt() != null) {
+      throw new RuntimeException("이미 탈퇴한 회원입니다.");
     }
     user.setDeletedAt(LocalDateTime.now());
   }
