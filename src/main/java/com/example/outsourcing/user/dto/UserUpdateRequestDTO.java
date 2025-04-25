@@ -12,9 +12,6 @@ public class UserUpdateRequestDTO {
   @Pattern(regexp = "^[a-z|A-Z|0-9|ㄱ-ㅎ|가-힣]+$", message = "닉네임은 영문자, 한글, 숫자만 입력 가능합니다.")
   private String nickname;
 
-  // 단순 이미지 url
-  private String profileImg;
-
   @NotBlank(message = "기존 비밀번호는 필수값입니다.")
   @Size(min = 8, max = 20, message = "기존 비밀번호는 8자 이상 20자리 이하입니다.")
   @Pattern(regexp = ".*\\d.*", message = "기존 비밀번호는 숫자를 포함해야 합니다.")
