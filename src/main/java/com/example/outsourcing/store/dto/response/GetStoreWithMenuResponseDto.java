@@ -2,6 +2,7 @@ package com.example.outsourcing.store.dto.response;
 
 import com.example.outsourcing.menu.dto.response.AllMenuResponseDto;
 import com.example.outsourcing.store.entity.Store;
+import com.example.outsourcing.store.entity.StoreStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -37,7 +38,7 @@ public class GetStoreWithMenuResponseDto {
         return new GetStoreWithMenuResponseDto(
             store.getId(),
             store.getName(),
-            store.getStatus(),
+            store.getStatus().name(),
             store.getStorePhoneNumber(),
             store.getMinOrderPrice(),
             store.getOpeningTimes(),

@@ -1,9 +1,7 @@
 package com.example.outsourcing.store.dto.response;
 
-import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.store.entity.Store;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -35,7 +33,7 @@ public class CreateStoreResponseDto {
         return new CreateStoreResponseDto(
             store.getId(),
             store.getName(),
-            store.getStatus(),
+            store.getStatus().name(),
             store.getStorePhoneNumber(),
             store.getMinOrderPrice(),
             store.getOpeningTimes(),
