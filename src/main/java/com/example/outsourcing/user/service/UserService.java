@@ -63,10 +63,10 @@ public class UserService {
     User user = userRepository.findById(userId).orElseThrow();
 
     // 비밀번호 검증
-    if (!isValidPassword(requestDTO.getOldPwd(), user.getPassword())) {
+    if (!isValidPassword(requestDTO.getOldPassword(), user.getPassword())) {
       throw new RuntimeException("비밀번호가 일치하지 않습니다.");
     }
-    user.updatePwd(passwordEncoder.encode(requestDTO.getNewPwd()));
+    user.updatePwd(passwordEncoder.encode(requestDTO.getNewPassword()));
   }
 
   // 비밀번호 일치 검사
