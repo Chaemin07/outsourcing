@@ -53,7 +53,16 @@ public class MenuController {
     return imageUtil.getImage(menuService.getMenuImgId(menuId));
   }
 
-  // 메뉴 단독 조회 삭제
+  @GetMapping("/{menuId}")
+  public ResponseEntity<MenuResponseDto> getMenuById(
+      @PathVariable Long storeId,
+      @PathVariable Long menuId
+  ) {
+    MenuResponseDto menuById = menuService.getMenuById(storeId, menuId);
+
+    return ResponseEntity.ok(menuById);
+
+  }
 
   @PutMapping("/{menuId}")
   public ResponseEntity<MenuResponseDto> updateMenu(

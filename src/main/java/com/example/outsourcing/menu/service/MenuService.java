@@ -9,6 +9,7 @@ import com.example.outsourcing.menu.repository.MenuRepository;
 import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,11 +35,19 @@ public class MenuService {
   @Transactional
   public MenuResponseDto getMenuById(Long storeId, Long menuId) {
 
-    Menu getMenu = menuRepository.findByIdOrElseThrow(menuId);
+    Menu menu = menuRepository.findByIdOrElseThrow(menuId);
 
-    getMenu.validateStore(storeId);
+    // 우리 가게 메뉴인지 검증
+    if(!menu.getStore().getId().equals(storeId)){
+      throw new RuntimeException("저희 가게 음식이 아닙니다.");
+    }
 
-    return MenuResponseDto.toDto(getMenu);
+    // 삭제된 메뉴 검증
+    if(menu.isDeleted()) {
+      throw new RuntimeException("더 이상 이 메뉴는 만들지 않습니다.");
+    }
+
+    return MenuResponseDto.toDto(menu);
   }
 
   @Transactional
@@ -46,8 +55,13 @@ public class MenuService {
       UpdateMenuRequestDto requestDto) {
 
     Menu findMenu = menuRepository.findByIdOrElseThrow(menuId);
-
+    // 가게 본인 소유 검증
     findMenu.validateStore(storeId);
+
+    // 삭제 메뉴 수정 불가
+    if (findMenu.isDeleted()) {
+      throw new RuntimeException("삭제된 메뉴는 수정할 수 없습니다.");
+    }
 
     findMenu.updateMenu(requestDto);
 
@@ -59,6 +73,7 @@ public class MenuService {
 
     Menu menu = menuRepository.findByIdOrElseThrow(menuId);
 
+    // 가게 본인 소유 검증
     menu.validateStore(storeId);
 
     menu.softDelete();
@@ -72,7 +87,7 @@ public class MenuService {
     try {
       findMenu.setImage(imageService.uploadImage(file));   // 업로드 후 메뉴 이미지에 값 설정
     } catch (RuntimeException e) {
-      new RuntimeException("파일 업로드에 실패하였습니다.", e);
+      throw new RuntimeException("파일 업로드에 실패하였습니다.", e);
     }
   }
 
