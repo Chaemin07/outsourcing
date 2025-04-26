@@ -8,6 +8,7 @@ import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.store.dto.response.CreateStoreResponseDto;
 import com.example.outsourcing.store.dto.response.GetStoreWithMenuResponseDto;
 import com.example.outsourcing.store.dto.response.StoreResponseDto;
+import com.example.outsourcing.store.dto.response.UpdateStoreResponseDto;
 import com.example.outsourcing.store.service.StoreService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -76,12 +77,12 @@ public class StoreController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StoreResponseDto> updateStore(
+    public ResponseEntity<UpdateStoreResponseDto> updateStore(
         @PathVariable Long id,
         @AuthUser Long userId,
         @Valid @RequestBody UpdateStoreRequestDto requestDto) {
 
-        StoreResponseDto responseDto = storeService.updateStore(id, requestDto, userId);
+        UpdateStoreResponseDto responseDto = storeService.updateStore(id, requestDto, userId);
         return ResponseEntity.ok(responseDto);
     }
 

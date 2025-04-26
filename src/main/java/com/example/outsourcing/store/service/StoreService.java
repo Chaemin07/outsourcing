@@ -9,6 +9,7 @@ import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.store.dto.response.CreateStoreResponseDto;
 import com.example.outsourcing.store.dto.response.GetStoreWithMenuResponseDto;
 import com.example.outsourcing.store.dto.response.StoreResponseDto;
+import com.example.outsourcing.store.dto.response.UpdateStoreResponseDto;
 import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.store.entity.StoreStatus;
 import com.example.outsourcing.store.repository.StoreRepository;
@@ -87,7 +88,7 @@ public class StoreService {
     }
 
     @Transactional
-    public StoreResponseDto updateStore(Long id, UpdateStoreRequestDto requestDto, Long userId) {
+    public UpdateStoreResponseDto updateStore(Long id, UpdateStoreRequestDto requestDto, Long userId) {
         Store findStore = storeRepository.findByIdOrElseThrow(id);
 
         if (!findStore.getUser().getId().equals(userId)) {
@@ -96,7 +97,7 @@ public class StoreService {
 
         findStore.updateStore(requestDto);
 
-        return StoreResponseDto.toDto(findStore);
+        return UpdateStoreResponseDto.toDto(findStore);
     }
 
     @Transactional
