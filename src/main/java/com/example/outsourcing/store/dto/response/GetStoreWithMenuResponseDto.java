@@ -1,8 +1,7 @@
 package com.example.outsourcing.store.dto.response;
 
-import com.example.outsourcing.menu.dto.response.AllMenuResponseDto;
+import com.example.outsourcing.menu.dto.response.MenuSummaryResponseDto;
 import com.example.outsourcing.store.entity.Store;
-import com.example.outsourcing.store.entity.StoreStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -32,9 +31,9 @@ public class GetStoreWithMenuResponseDto {
 
     private final LocalDateTime updatedAt;
 
-    private final List<AllMenuResponseDto> menus;
+    private final List<MenuSummaryResponseDto> menus;
 
-    public static GetStoreWithMenuResponseDto toDto(Store store, List<AllMenuResponseDto> menus) {
+    public static GetStoreWithMenuResponseDto toDto(Store store, List<MenuSummaryResponseDto> menus) {
         return new GetStoreWithMenuResponseDto(
             store.getId(),
             store.getName(),
