@@ -67,7 +67,7 @@ public class StoreService {
 
     @Transactional
     public List<StoreResponseDto> searchStores(String keyword) {
-        //
+
         return storeRepository.findByNameContainingAndStatusNot(keyword, StoreStatus.CLOSED_DOWN)
             .stream()
             .map(StoreResponseDto::toDto)
