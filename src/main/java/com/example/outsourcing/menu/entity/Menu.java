@@ -10,6 +10,8 @@ import com.example.outsourcing.order.entity.OrderItemOption;
 import com.example.outsourcing.store.entity.Store;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -45,13 +47,14 @@ public class Menu extends BaseEntity {
   @Column(nullable = false)
   private String descrption;
 
-  // 상태는 enum으로 구현하는게 좋을거 같은데요??
-  private String status;
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private Status status = Status.ACTIVE;
 
   @Column(name = "deleted_at")
   private LocalDateTime deletedAt;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "store_id")
   private Store store;
 
@@ -80,23 +83,30 @@ public class Menu extends BaseEntity {
     this.name = requestDto.getName();
     this.price = requestDto.getPrice();
     this.descrption = requestDto.getDescrption();
-    this.status = requestDto.getStatus();
+    this.status = Status.ACTIVE;
   }
 
   public void updateMenu(UpdateMenuRequestDto requestDto) {
     this.name = requestDto.getName();
     this.price = requestDto.getPrice();
     this.descrption = requestDto.getDescrption();
-    this.status = requestDto.getStatus();
+    this.status = Status.ACTIVE;
   }
 
   public void validateStore(Long storeId) {
     if (!this.store.getId().equals(storeId)) {
-      throw new RuntimeException();
+      throw new RuntimeException("가게 소유주가 아닙니다.");
     }
   }
 
   public void softDelete() {
     this.deletedAt = LocalDateTime.now();
+    this.status = Status.DELETED;
   }
+
+  // 삭제 처리 확인 메서드
+  public boolean isDeleted() {
+    return deletedAt != null;
+  }
+
 }
