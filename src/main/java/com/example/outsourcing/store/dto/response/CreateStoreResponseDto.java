@@ -1,6 +1,7 @@
 package com.example.outsourcing.store.dto.response;
 
 import com.example.outsourcing.store.entity.Store;
+import com.example.outsourcing.store.util.StoreStatusUtil;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,8 @@ public class CreateStoreResponseDto {
 
     private final String closingTimes;
 
+    private final boolean isOpen;
+
     private final String notification;
 
     private final LocalDateTime createdAt;
@@ -30,6 +33,9 @@ public class CreateStoreResponseDto {
     private final LocalDateTime updatedAt;
 
     public static CreateStoreResponseDto toDto(Store store) {
+
+        boolean isOpen = StoreStatusUtil.isOpen(store.getOpeningTimes(), store.getClosingTimes());
+
         return new CreateStoreResponseDto(
             store.getId(),
             store.getName(),
@@ -38,6 +44,7 @@ public class CreateStoreResponseDto {
             store.getMinOrderPrice(),
             store.getOpeningTimes(),
             store.getClosingTimes(),
+            isOpen,
             store.getNotification(),
             store.getCreatedAt(),
             store.getUpdatedAt()
