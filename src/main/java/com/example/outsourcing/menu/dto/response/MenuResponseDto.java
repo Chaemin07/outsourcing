@@ -30,7 +30,7 @@ public class MenuResponseDto {
             menu.getName(),
             menu.getPrice(),
             menu.getDescrption(),
-            menu.getStatus(),
+            menu.getStatus().name(),
             menu.getCreatedAt(),
             menu.getUpdatedAt()
         );
