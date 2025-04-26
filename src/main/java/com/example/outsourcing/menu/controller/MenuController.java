@@ -5,6 +5,7 @@ import com.example.outsourcing.menu.dto.request.AddMenuRequestDto;
 import com.example.outsourcing.menu.dto.request.UpdateMenuRequestDto;
 import com.example.outsourcing.menu.dto.response.MenuResponseDto;
 import com.example.outsourcing.menu.service.MenuService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class MenuController {
   @PostMapping
   public ResponseEntity<MenuResponseDto> addMenu(
       @PathVariable Long storeId,
-      @RequestBody AddMenuRequestDto requestDto
+      @Valid @RequestBody AddMenuRequestDto requestDto
   ) {
     MenuResponseDto menuResponseDto = menuService.addMenu(storeId, requestDto);
 
@@ -52,22 +53,13 @@ public class MenuController {
     return imageUtil.getImage(menuService.getMenuImgId(menuId));
   }
 
-  @GetMapping("/{menuId}")
-  public ResponseEntity<MenuResponseDto> getMenuById(
-      @PathVariable Long storeId,
-      @PathVariable Long menuId
-  ) {
-    MenuResponseDto menuById = menuService.getMenuById(storeId, menuId);
-
-    return ResponseEntity.ok(menuById);
-
-  }
+  // 메뉴 단독 조회 삭제
 
   @PutMapping("/{menuId}")
   public ResponseEntity<MenuResponseDto> updateMenu(
       @PathVariable Long storeId,
       @PathVariable Long menuId,
-      @RequestBody UpdateMenuRequestDto requestDto
+      @Valid @RequestBody UpdateMenuRequestDto requestDto
   ) {
     MenuResponseDto menuResponseDto = menuService.updateMenu(storeId, menuId, requestDto);
 
