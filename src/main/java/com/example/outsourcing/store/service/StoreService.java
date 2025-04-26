@@ -1,7 +1,7 @@
 package com.example.outsourcing.store.service;
 
 import com.example.outsourcing.image.service.ImageService;
-import com.example.outsourcing.menu.dto.response.AllMenuResponseDto;
+import com.example.outsourcing.menu.dto.response.MenuSummaryResponseDto;
 import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.menu.repository.MenuRepository;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
@@ -12,6 +12,7 @@ import com.example.outsourcing.store.dto.response.StoreResponseDto;
 import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.store.entity.StoreStatus;
 import com.example.outsourcing.store.repository.StoreRepository;
+import com.example.outsourcing.user.entity.Role;
 import com.example.outsourcing.user.entity.User;
 import com.example.outsourcing.user.repository.UserRepository;
 import java.util.List;
@@ -39,6 +40,11 @@ public class StoreService {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다"));
 
+        // User_Role 검증
+        if (!user.getRole().equals(Role.OWNER)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "사장님만 가게를 생성할 수 있습니다.");
+        }
+
         // 사장님 점포 수 검증 3개 이하 인지
         int storeCount = storeRepository.countByUserIdAndStatusNot(userId, StoreStatus.CLOSED_DOWN);
         if (storeCount >= 3) {
@@ -51,7 +57,6 @@ public class StoreService {
         return CreateStoreResponseDto.toDto(savedStore);
     }
 
-    @Transactional
     public List<StoreResponseDto> getStore() {
         return storeRepository.findAllByStatusNot(StoreStatus.CLOSED_DOWN)
             .stream()
@@ -74,8 +79,8 @@ public class StoreService {
 
         List<Menu> menus = menuRepository.findByStoreId(id);
 
-        List<AllMenuResponseDto> menuList = menus.stream()
-            .map(AllMenuResponseDto::toDto)
+        List<MenuSummaryResponseDto> menuList = menus.stream()
+            .map(MenuSummaryResponseDto::toDto)
             .collect(Collectors.toList());
 
         return GetStoreWithMenuResponseDto.toDto(findStore, menuList);
@@ -95,8 +100,13 @@ public class StoreService {
     }
 
     @Transactional
-    public void closedDownStore(Long id) {
+    public void closedDownStore(Long id, Long userId) {
         Store findStore = storeRepository.findByIdOrElseThrow(id);
+
+        // 가게 주인 검증
+        if (!findStore.getUser().getId().equals(userId)) {
+            throw new RuntimeException("본인의 가게만 폐업할 수 있습니다.");
+        }
 
         findStore.closeDown();
     }
