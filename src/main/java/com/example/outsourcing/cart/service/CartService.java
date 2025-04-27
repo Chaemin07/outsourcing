@@ -3,6 +3,8 @@ package com.example.outsourcing.cart.service;
 import com.example.outsourcing.cart.dto.*;
 import com.example.outsourcing.cart.entity.Cart;
 import com.example.outsourcing.cart.entity.SelectedMenuOption;
+import com.example.outsourcing.cart.exception.CartEmptyException;
+import com.example.outsourcing.cart.exception.CartExpiredException;
 import com.example.outsourcing.cart.repository.CartRepository;
 import com.example.outsourcing.cart.repository.SelectedMenuOptionRepository;
 import com.example.outsourcing.menu.entity.Menu;
@@ -14,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -102,8 +105,15 @@ public class CartService {
 
     // TODO 엔티티를 DTO로 변환필요
     public CartResponseDto getCartDetails(Long userId) {
+        // 장바구니 수정일 기준 +24시간이라면 삭제
+        if (autoClearExpiredCart(userId)) {
+            throw new CartExpiredException("장바구니가 만료되어 삭제되었습니다!");
+        }
         List<CartItemDto> cartItemDtoList = new ArrayList<>();
         List<Cart> cartList = cartRepository.findByUserId(userId);
+        if (cartList.isEmpty()) {
+            throw new CartEmptyException("장바구니에 담긴 메뉴가 없습니다!");
+        }
         Integer totalPrice = 0;
         for (Cart cart : cartList) {
             Integer optionTotalPrice = 0;
@@ -149,5 +159,21 @@ public class CartService {
 
     public void clearCart(Long userId) {
         cartRepository.deleteByUserId(userId);
+    }
+
+    // 만료된 장바구니 자동 삭제 메서드
+    private boolean autoClearExpiredCart(Long userId) {
+
+        Optional<LocalDateTime> lastUpdatedAtOp = cartRepository.findMaxUpdatedAtByUserId(userId);
+        if (lastUpdatedAtOp.isPresent()) {
+            LocalDateTime lastUpdatedAt = lastUpdatedAtOp.get();
+            // 장바구니 마지막 수정일기준 24시간과 현재 시간 비교
+            if (lastUpdatedAt.plusDays(1).isBefore(LocalDateTime.now())) {
+                // 해당 사용자 장바구니 삭제
+                clearCart(userId);
+                return true;
+            }
+        }
+        return false;
     }
 }
