@@ -44,6 +44,7 @@ public class Address extends BaseEntity {
   User user;
 
   public Address(UpdateUserAddressRequestDTO requestDTO, User user) {
+    this.role = Role.USER;
     this.address = requestDTO.getAddress();
     this.user = user;
   }

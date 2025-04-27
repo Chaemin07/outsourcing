@@ -12,7 +12,7 @@ public class UserResponseDTO {
   private String name;
   private String email;
   private String phoneNumber;
-  private List<Address> addresses;
+  private List<Address> addresses;    // TODO: String 리스트로 변경 후 유저 조회 잘되는지 확인
   private String nickname;
   private Role role;
 

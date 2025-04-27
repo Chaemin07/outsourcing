@@ -142,6 +142,18 @@ public class UserService {
     // 주소를 가지지 않거나, 새로 추가하면서 디폴트 설정을 해주고 싶다면
     if (user.getAddresses().isEmpty() || requestDTO.isDefault()) {
       address.setDefault(true);
+      user.getAddresses().add(address);
+      return;
+    }
+
+    // 기존 주소가 있고, 디폴트 주소를 설정하고 싶다면
+    if (requestDTO.isDefault()) {
+      for (Address nowAddress : user.getAddresses()) {
+        // 디폴트 주소 획득
+        if (nowAddress.isDefault()) {
+          nowAddress.setDefault(false);
+        }
+      }
     }
 
     user.getAddresses().add(address);
@@ -155,60 +167,92 @@ public class UserService {
         () -> new RuntimeException("유저를 찾을 수 없습니다."));
 
     Address defaultAddress = null;
+    Address targetAddress = null;
+
     for (Address address : user.getAddresses()) {
-      if (address.isDefault()) {
+      // 디폴트 주소 획득
+      if (defaultAddress == null && address.isDefault()) {
         defaultAddress = address;
       }
-
-      if (Objects.equals(address.getId(), addressId)) {
-        address.setAddress(requestDTO.getAddress());
-        if (requestDTO.isDefault()) {
-          if (defaultAddress != null) {
-            defaultAddress.setDefault(false);
-          }
-          address.setDefault(true);
-        }
-        return;
+      // 디폴트 설정 대상 주소
+      if (targetAddress == null && Objects.equals(address.getId(), addressId)) {
+        targetAddress = address;
       }
     }
+
+    // 디폴트 설정 대상 주소 조회 성공이라면
+    if (targetAddress != null) {
+      targetAddress.setAddress(requestDTO.getAddress());
+
+      // 디폴트 주소 설정 한다면
+      if (requestDTO.isDefault()) {
+        targetAddress.setDefault(true);
+
+        // 디폴트 주소가 있다면
+        if (defaultAddress != null) {
+          defaultAddress.setDefault(false);
+        }
+      }
+      return;
+    }
+
     throw new RuntimeException("사용자의 주소가 아닙니다.");
   }
 
+  // 유저 주소 디폴트 설정
   @Transactional
   public void setDefaultAddress(Long userId, Long addressId) {
     User user = userRepository.findById(userId).orElseThrow(
         () -> new RuntimeException("유저를 찾을 수 없습니다."));
+
     Address defaultAddress = null;
+    Address targetAddress = null;
+
     for (Address address : user.getAddresses()) {
-      if (address.isDefault()) {
+      // 디폴트 주소 획득
+      if (defaultAddress == null && address.isDefault()) {
         defaultAddress = address;
       }
-
-      if (Objects.equals(address.getId(), addressId)) {
-        if (defaultAddress != null) {
-          defaultAddress.setDefault(false);
-        }
-        address.setDefault(true);
-        return;
+      // 디폴트 설정 대상 주소
+      if (targetAddress == null && Objects.equals(address.getId(), addressId)) {
+        targetAddress = address;
       }
     }
+
+    // 디폴트 설정 대상 주소 조회 성공이라면
+    if (targetAddress != null) {
+      targetAddress.setDefault(true);
+      // 디폴트 주소가 있다면
+      if (defaultAddress != null) {
+        defaultAddress.setDefault(false);
+      }
+      return;
+    }
+
     throw new RuntimeException("사용자의 주소가 아닙니다.");
   }
 
-  // TODO: 테스트랑 중복 로직 제거
+  // TODO: 주소 2개 추가 후 id=2 제거 안되는 버그 픽스 필요
   @Transactional
   public void deleteAddress(Long userId, Long addressId) {
     User user = userRepository.findById(userId).orElseThrow(
         () -> new RuntimeException("유저를 찾을 수 없습니다."));
-    Address defaultAddress = null;
     List<Address> addresses = user.getAddresses();
-    for (Address address : addresses) {
-      if (address.isDefault()) {
+    Address defaultAddress = null;
+    Address targetAddress = null;
+
+    for (Address address : user.getAddresses()) {
+      // 디폴트 주소 획득
+      if (defaultAddress == null && address.isDefault()) {
         defaultAddress = address;
       }
-
-      if (Objects.equals(address.getId(), addressId)) {
-        if (Objects.equals(defaultAddress.getId(), addressId)) {
+      // 삭제 대상 주소
+      if (targetAddress == null && Objects.equals(address.getId(), addressId)) {
+        targetAddress = address;
+      }
+      // 디폴트, 삭제 주소 모두 획득
+      if (targetAddress != null && defaultAddress != null) {
+        if (Objects.equals(defaultAddress.getId(), targetAddress.getId())) {
           addresses.remove(address);
           addresses.get(addresses.size() - 1).setDefault(true);
           return;

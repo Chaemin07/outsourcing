@@ -1,12 +1,12 @@
 package com.example.outsourcing.address.dto;
 
-import com.example.outsourcing.user.entity.Role;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Getter
 public class UpdateUserAddressRequestDTO {
 
-  private final Role role = Role.USER;
+  @NotBlank
   private String address;
   private boolean isDefault;
 }

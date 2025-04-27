@@ -63,7 +63,7 @@ public class User extends BaseEntity {
   @JoinColumn(name = "profile_image_id")
   private Image profileImg;
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Address> addresses;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
