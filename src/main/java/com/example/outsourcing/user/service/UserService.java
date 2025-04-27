@@ -126,7 +126,7 @@ public class UserService {
     }
   }
 
-  // 유저 주소 등록 // TODO: 도메인을 옮겨말아
+  // 유저 주소 등록
   @Transactional
   public void createAddress(Long userId, UpdateUserAddressRequestDTO requestDTO) {
     User user = userRepository.findById(userId).orElseThrow(
@@ -232,7 +232,6 @@ public class UserService {
     throw new RuntimeException("사용자의 주소가 아닙니다.");
   }
 
-  // TODO: 주소 2개 추가 후 id=2 제거 안되는 버그 픽스 필요
   @Transactional
   public void deleteAddress(Long userId, Long addressId) {
     User user = userRepository.findById(userId).orElseThrow(
