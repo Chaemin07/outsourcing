@@ -1,6 +1,7 @@
 package com.example.outsourcing.user.controller;
 
 import com.example.outsourcing.address.dto.UpdateUserAddressRequestDTO;
+import com.example.outsourcing.address.service.AddressService;
 import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.common.response.ApiResponse;
 import com.example.outsourcing.image.util.ImageUtil;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
   private final UserService userService;
+  private final AddressService addressService;
   private final ImageUtil imageUtil;
 
   // 회원 가입
@@ -90,32 +92,32 @@ public class UserController {
   @PostMapping("/addresses")
   public ResponseEntity<ApiResponse<Void>> createUserAddress(
       @AuthUser Long userId, @RequestBody UpdateUserAddressRequestDTO requestDTO) {
-    userService.createAddress(userId, requestDTO);
+    addressService.createAddress(userId, requestDTO);
     return ResponseEntity.ok(ApiResponse.success());
   }
 
   // 회원 주소 수정
-  @PatchMapping("/addresses/{addressId}")
+  @PatchMapping("/users/addresses/{addressId}")
   public ResponseEntity<ApiResponse<Void>> updateUserAddress(
       @AuthUser Long userId, @PathVariable Long addressId,
       @RequestBody UpdateUserAddressRequestDTO requestDTO) {
-    userService.updateAddress(userId, addressId, requestDTO);
+    addressService.updateAddress(userId, addressId, requestDTO);
     return ResponseEntity.ok(ApiResponse.success());
   }
 
   // 대표 주소 설정
-  @PatchMapping("/addresses/{addressId}/default")
+  @PatchMapping("/users/addresses/{addressId}/default")
   public ResponseEntity<ApiResponse<Void>> setUserDefaultAddress(
       @AuthUser Long userId, @PathVariable Long addressId) {
-    userService.setDefaultAddress(userId, addressId);
+    addressService.setDefaultAddress(userId, addressId);
     return ResponseEntity.ok(ApiResponse.success());
   }
 
   // 회원 주소 삭제
-  @DeleteMapping("/addresses/{addressId}")
+  @DeleteMapping("/users/addresses/{addressId}")
   public ResponseEntity<ApiResponse<Void>> deleteUserAddress(
       @AuthUser Long userId, @PathVariable Long addressId) {
-    userService.deleteAddress(userId, addressId);
+    addressService.deleteAddress(userId, addressId);
     return ResponseEntity.ok(ApiResponse.success());
   }
 }
