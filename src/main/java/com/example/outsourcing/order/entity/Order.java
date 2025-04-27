@@ -1,6 +1,7 @@
 package com.example.outsourcing.order.entity;
 
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.payment.entity.Payment;
 import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.user.entity.Role;
 import com.example.outsourcing.user.entity.User;
@@ -55,6 +56,9 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetailList = new ArrayList<>();
 
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Payment payment;
+
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
     }
@@ -68,5 +72,9 @@ public class Order extends BaseEntity {
 
     public void setCancelReason(String cancelReason) {
         this.canceledReason = cancelReason;
+    }
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+        payment.setOrder(this);
     }
 }
