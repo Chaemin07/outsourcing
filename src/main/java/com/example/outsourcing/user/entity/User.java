@@ -7,6 +7,7 @@ import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.user.dto.UserSignupRequestDTO;
 import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -62,13 +63,13 @@ public class User extends BaseEntity {
   @JoinColumn(name = "profile_image_id")
   private Image profileImg;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Address> addresses;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<Cart> cartList = new ArrayList<>();
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<Order> orderList = new ArrayList<>();
 
   @Setter
@@ -77,7 +78,6 @@ public class User extends BaseEntity {
   // 회원 정보 수정
   public void update(UserUpdateRequestDTO requestDTO) {
     this.nickname = requestDTO.getNickname();
-    // this.profileImg = requestDTO.getProfileImg();   // TODO: Img 레포지토리 사용
   }
 
   // 비밀번호 수정
@@ -103,5 +103,12 @@ public class User extends BaseEntity {
     this.phoneNumber = requestDTO.getPhoneNumber();
     this.role = Role.valueOf(requestDTO.getRole());
     this.profileImg = image;
+  }
+
+  public boolean hasMaxAddresses() {
+    if (addresses.size() >= 3) {
+      return true;
+    }
+    return false;
   }
 }
