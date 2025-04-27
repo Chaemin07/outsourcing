@@ -18,6 +18,6 @@ public interface CartRepository extends JpaRepository<Cart,Long> {
     void deleteByUserId(Long userId);
 
     // 사용자 id를 기준으로 마지막 장바구니의 수정시간 가져오기
-    @Query("SELECT MAX(c.updatedAt) FROM Cart c WHERE c.userId = :userId")
+    @Query("SELECT MAX(c.updatedAt) FROM Cart c WHERE c.user.id = :userId")
     Optional<LocalDateTime> findMaxUpdatedAtByUserId(@Param("userId") Long userId);
 }
