@@ -3,6 +3,7 @@ package com.example.outsourcing.menu.entity;
 
 import com.example.outsourcing.common.entity.BaseEntity;
 import com.example.outsourcing.menu.dto.request.AddMenuOptionRequestDto;
+import com.example.outsourcing.menu.dto.request.UpdateMenuOptionRequestDto;
 import com.example.outsourcing.order.entity.OrderItemOption;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -47,9 +48,9 @@ public class MenuOption extends BaseEntity {
         this.status = Status.ACTIVE; // 기본 상태를 ACTIVE로 생성
     }
 
-    public void updateOption(String optionName, Integer price) {
-        this.optionName = optionName;
-        this.price = price;
+    public void updateOption(UpdateMenuOptionRequestDto requestDto) {
+        this.optionName = requestDto.getOptionName();
+        this.price = requestDto.getPrice();
     }
 
     public void softDelete() {

@@ -53,7 +53,7 @@ public class MenuOptionService {
         }
 
         if (requestDto.getOptionName() != null || requestDto.getPrice() != null) {
-            menuOption.updateOption(requestDto.getOptionName(), requestDto.getPrice());
+            menuOption.updateOption(requestDto);
         }
 
         return MenuOptionResponseDto.of(menuOption);
