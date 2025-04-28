@@ -1,6 +1,8 @@
 package com.example.outsourcing.reviewcomment.service;
 
 import com.example.outsourcing.common.config.PasswordEncoder;
+import com.example.outsourcing.common.exception.BaseException;
+import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.review.entity.Review;
 import com.example.outsourcing.review.repository.ReviewRepository;
 import com.example.outsourcing.reviewcomment.dto.request.ReviewCommentRequestDto;
@@ -69,31 +71,31 @@ public class ReviewCommentService {
         String userPassword =user.getPassword();
 
         if (!passwordEncoder.matches(password, userPassword)) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new BaseException(ErrorCode.INVALID_PASSWORD);
         }
 
         reviewCommentRepository.deleteById(reviewId);
     }
 
     public User getUserByUserId(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("유저가 존재하지 않습니다."));
+        return userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER_ID));
     }
 
     public Store getStoreByStoreId(Long storeId) {
-        return storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("해당 가게가 존재하지 않습니다."));
+        return storeRepository.findById(storeId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_STORE_ID));
     }
 
     public Review getReviewByReviewId(Long reviewId) {
-        return reviewRepository.findById(reviewId).orElseThrow(() -> new RuntimeException("해당 리뷰가 없습니다."));
+        return reviewRepository.findByOrderId(reviewId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_REVIEW));
     }
 
     public ReviewComment getReviewCommentByReviewId(Long reviewId) {
-        return reviewCommentRepository.findById(reviewId).orElseThrow(() -> new RuntimeException("리뷰 댓글이 없습니다."));
+        return reviewCommentRepository.findById(reviewId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_REVIEW_COMMENT));
     }
 
     public void validateMyStore(Store store, Long userId) {
         if (store.getUser().getId().equals(userId)) {
-            throw new RuntimeException("해당 가게의 사장님이 아닌 유저는 리뷰 댓글 작성불가");
+            throw new BaseException(ErrorCode.UNAUTHORIZED_USER_ID);
         }
     }
 }

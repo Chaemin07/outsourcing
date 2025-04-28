@@ -2,6 +2,8 @@ package com.example.outsourcing.review.service;
 
 import com.example.outsourcing.common.config.PasswordEncoder;
 import com.example.outsourcing.common.enums.SortType;
+import com.example.outsourcing.common.exception.BaseException;
+import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.image.service.ImageService;
 import com.example.outsourcing.order.entity.DeliveryStatus;
 import com.example.outsourcing.order.entity.Order;
@@ -48,7 +50,7 @@ public class ReviewService {
 
         if (!order.getDeliveryStatus().equals(DeliveryStatus.DELIVERED)) {
             // 배송 완료가 아닐시 예외 처리
-            throw new RuntimeException("배송이 완료되지 않았습니다.");
+            throw new BaseException(ErrorCode.NOT_DELIVERED);
         }
 
         // 배송이 완료된지 일정 시간이 지나면 예외처리
@@ -117,7 +119,7 @@ public class ReviewService {
         String userPassword = user.getPassword();
 
         if (!passwordEncoder.matches(password, userPassword)) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new BaseException(ErrorCode.INVALID_PASSWORD);
         }
 
         Long reviewId = review.getId();
@@ -166,20 +168,20 @@ public class ReviewService {
     }
 
     public Order getOrderByOrderId(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("주문이 존재하지 않습니다."));
+        return orderRepository.findById(orderId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_ORDER_ID));
     }
 
     public User getUserByUserId(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("유저가 존재하지 않습니다."));
+        return userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER_ID));
     }
 
     public Review getReviewByOrderId(Long orderId) {
-        return reviewRepository.findByOrderId(orderId).orElseThrow(() -> new RuntimeException("해당 주문에 대한 리뷰가 없습니다."));
+        return reviewRepository.findByOrderId(orderId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_REVIEW));
     }
 
     public void checkMyOrder(Order order, Long userId) {
         if (!order.getUser().getId().equals(userId)) {
-            throw new RuntimeException("본인의 주문이 아닙니다.");
+            throw new BaseException(ErrorCode.NOT_CUSTOMER);
         }
     }
 }

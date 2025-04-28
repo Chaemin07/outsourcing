@@ -27,6 +27,10 @@ public enum ErrorCode {
   INVALID_POST_ID("유효하지 않은 게시글입니다.", HttpStatus.BAD_REQUEST, "400-004"),
   INVALID_FRIEND_REQUEST("유효하지 않은 요청입니다.", HttpStatus.BAD_REQUEST, "400-005"),
   INVALID_CODE("유효하지 않은 요청입니다.", HttpStatus.BAD_REQUEST, "400-006"),
+  NOT_DELIVERED("배송이 완료되지 않았습니다.", HttpStatus.BAD_REQUEST, "400-007"),
+  NOT_CUSTOMER("본인의 주문이 아닙니다.", HttpStatus.BAD_REQUEST, "400-008"),
+  EMPTY_CATEGORY("카테고리가 비어있습니다.", HttpStatus.BAD_REQUEST, "400-009"),
+  NOT_FAVORITE_STORE("즐겨찾기가 되어있지 않은 가게입니다.", HttpStatus.BAD_REQUEST, "400-010"),
 
   // 인증
   UNAUTHORIZED_USER_ID("인증되지 않은 사용자입니다.", HttpStatus.UNAUTHORIZED, "401-001"),
@@ -42,6 +46,11 @@ public enum ErrorCode {
   NOT_FOUND_POST_ID("게시글를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-004"),
   NOT_FOUND_COMMENT_ID("댓글를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-005"),
   NOT_FOUND_LIKE_ID("좋아요를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-006"),
+  NOT_FOUND_ORDER_ID("주문을 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-007"),
+  NOT_FOUND_REVIEW("해당 주문에 대한 리뷰를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-008"),
+  NOT_FOUND_STORE_ID("가게를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-009"),
+  NOT_FOUND_REVIEW_COMMENT("리뷰 댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-010"),
+  NOT_FOUND_CATEGORY("카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-011"),
 
   // 중복
   CONFLICT_EMAIL("중복된 이메일입니다.", HttpStatus.CONFLICT, "409-001"),
