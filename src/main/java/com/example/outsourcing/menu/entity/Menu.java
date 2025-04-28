@@ -2,6 +2,8 @@ package com.example.outsourcing.menu.entity;
 
 import com.example.outsourcing.cart.entity.Cart;
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.common.exception.BaseException;
+import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.menu.dto.request.AddMenuRequestDto;
 import com.example.outsourcing.menu.dto.request.UpdateMenuRequestDto;
@@ -60,7 +62,8 @@ public class Menu extends BaseEntity {
   private Store store;
 
   @Setter
-  @OneToOne
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "image_id")
   private Image image;
 
   @OneToMany(mappedBy = "menu")

@@ -16,6 +16,8 @@ public class GetStoreWithMenuResponseDto {
 
     private final String name;
 
+    private final String address;
+
     private final String status;
 
     private final String storePhoneNumber;
@@ -43,6 +45,7 @@ public class GetStoreWithMenuResponseDto {
         return new GetStoreWithMenuResponseDto(
             store.getId(),
             store.getName(),
+            store.getAddress(),
             store.getStatus().name(),
             store.getStorePhoneNumber(),
             store.getMinOrderPrice(),
