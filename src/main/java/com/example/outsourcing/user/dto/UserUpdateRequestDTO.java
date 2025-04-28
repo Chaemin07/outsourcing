@@ -3,9 +3,11 @@ package com.example.outsourcing.user.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class UserUpdateRequestDTO {
 
   @Size(min = 2, max = 20, message = "닉네임은 2글자 이상 20글자 이하입니다.")

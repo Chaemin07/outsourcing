@@ -1,5 +1,8 @@
 package com.example.outsourcing.jwt;
 
+import static com.example.outsourcing.common.exception.ErrorCode.MISSING_TOKEN;
+
+import com.example.outsourcing.common.exception.BaseException;
 import com.example.outsourcing.user.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -58,7 +61,7 @@ public class JwtUtil {
     if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
       return tokenValue.substring(7);
     }
-    throw new RuntimeException("토큰을 찾을 수 없습니다.");
+    throw new BaseException(MISSING_TOKEN);
   }
 
   // 토큰 바디(Claims) 반환

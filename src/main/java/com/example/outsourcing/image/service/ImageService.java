@@ -1,5 +1,11 @@
 package com.example.outsourcing.image.service;
 
+import static com.example.outsourcing.common.exception.ErrorCode.FAILED_DELETE_FILE;
+import static com.example.outsourcing.common.exception.ErrorCode.FAILED_WRITE_FILE;
+import static com.example.outsourcing.common.exception.ErrorCode.NOT_FOUND_FILE;
+import static com.example.outsourcing.common.exception.ErrorCode.UNSUPPORTED_MEDIA_TYPE;
+
+import com.example.outsourcing.common.exception.BaseException;
 import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.image.repository.ImageRepository;
 import java.io.IOException;
@@ -32,7 +38,7 @@ public class ImageService {
   public Image uploadImage(MultipartFile image) {
     // 파일 타입 검사
     if (!isValidFileType(image.getOriginalFilename())) {
-      throw new RuntimeException("지원하지 않는 파일 형식입니다.");
+      throw new BaseException(UNSUPPORTED_MEDIA_TYPE);
     }
 
     // 파일 이름 중복 방지
@@ -44,7 +50,7 @@ public class ImageService {
       Files.write(filePath, image.getBytes()); // TODO : 핸들러로 빼서 병행 처리?
     } catch (IOException e) {
       log.info("FAILED TO WRITE FILE PATH: {}", filePath.toString());
-      throw new RuntimeException("파일 쓰기 실패", e);
+      throw new BaseException(FAILED_WRITE_FILE);
     }
 
     // image 엔티티에 경로 등등 정보 저장
@@ -58,21 +64,21 @@ public class ImageService {
   // 파일 아이디로 조회
   public Image getImage(Long imageId) {
     return imageRepository.findById(imageId).orElseThrow(
-        () -> new RuntimeException("파일을 찾을 수 없습니다 / File Id: " + imageId));
+        () -> new BaseException(NOT_FOUND_FILE));
   }
 
   // 파일 삭제
   @Transactional(rollbackFor = IOException.class)
   public void deleteImage(Long imageId) {
     Image image = imageRepository.findById(imageId).orElseThrow(
-        () -> new RuntimeException("파일을 찾을 수 없습니다 / File Id: " + imageId));
+        () -> new BaseException(NOT_FOUND_FILE));
     Path path = Path.of(image.getPath());
     imageRepository.delete(image);
 
     try {
       Files.deleteIfExists(path);
     } catch (IOException e) {
-      throw new RuntimeException("파일 삭제에 실패하였습니다 / File Id: " + imageId);
+      throw new BaseException(FAILED_DELETE_FILE);
     }
   }
 
