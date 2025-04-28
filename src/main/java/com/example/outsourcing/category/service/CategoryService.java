@@ -6,6 +6,8 @@ import com.example.outsourcing.category.dto.response.CategoryResponseDto;
 import com.example.outsourcing.category.entity.Category;
 import com.example.outsourcing.category.repository.CategoryRepository;
 import com.example.outsourcing.common.enums.CategoryType;
+import com.example.outsourcing.common.exception.BaseException;
+import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.store.repository.StoreRepository;
 import com.example.outsourcing.user.entity.User;
@@ -154,7 +156,7 @@ public class CategoryService {
         for (CategoryRequestDto temp : newTypeList) {
             String upper = temp.getType().toString().toUpperCase();
             if (!typeCheck.add(upper)) {
-                throw new RuntimeException("중복된 카테고리 존재");
+                throw new BaseException(ErrorCode.CONFLICT_STATUS);
             }
         }
 
@@ -220,38 +222,38 @@ public class CategoryService {
     }
 
     public Store getStoreByStoreId(Long storeId) {
-        return storeRepository.findById(storeId).orElseThrow(() -> new RuntimeException("가게가 존재하지 않습니다."));
+        return storeRepository.findById(storeId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_STORE_ID));
     }
 
     public Category getCategoryByCategoryId(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("카테고리가 존재하지 않습니다."));
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_CATEGORY));
     }
 
     public User getUserByUserId(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("유저가 존재하지 않습니다."));
+        return userRepository.findById(userId).orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER_ID));
     }
 
     public void checkDuplicatedCategory(Long storeId, CategoryRequestDto dto) {
         if (categoryRepository.existsByStoreIdAndType(storeId, dto.getType())) {
-            throw new RuntimeException("중복된 카테고리 입니다.");
+            throw  new BaseException(ErrorCode.CONFLICT_STATUS);
         }
     }
 
     public void validateMyStore(Store store, Long userId) {
         if (!store.getUser().getId().equals(userId)) {
-            throw new RuntimeException("본인 가게가 아닙니다.");
+            throw new BaseException(ErrorCode.UNAUTHORIZED_USER_ID);
         }
     }
 
     public void validateCategoryNotEmpty(List<Category> categoryList) {
         if (categoryList.isEmpty()) {
-            throw new RuntimeException("카테고리가 비어있습니다.");
+            throw new BaseException(ErrorCode.EMPTY_CATEGORY);
         }
     }
 
     public void validateCategoryNotEmpty(CategoryListRequestDto dto) {
         if (dto.getTypeList() == null || dto.getTypeList().isEmpty()) {
-            throw new RuntimeException("카테고리가 비어있습니다.");
+            throw new BaseException(ErrorCode.EMPTY_CATEGORY);
         }
     }
 }
