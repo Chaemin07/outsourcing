@@ -3,10 +3,12 @@ package com.example.outsourcing.user.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-public class UserDeactiveRequestDTO {
+@AllArgsConstructor
+public class UserDeactivateRequestDTO {
 
   @NotBlank(message = "기존 비밀번호는 필수값입니다.")
   @Size(min = 8, max = 20, message = "기존 비밀번호는 8자 이상 20자리 이하입니다.")

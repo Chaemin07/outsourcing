@@ -3,7 +3,7 @@ package com.example.outsourcing.auth.controller;
 import com.example.outsourcing.auth.dto.LoginResponseDTO;
 import com.example.outsourcing.auth.service.AuthService;
 import com.example.outsourcing.common.response.ApiResponse;
-import com.example.outsourcing.user.dto.userLoginRequestDTO;
+import com.example.outsourcing.user.dto.UserLoginRequestDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class AuthController {
 
   @PostMapping("/login")
   public LoginResponseDTO login(
-      @Valid @RequestBody userLoginRequestDTO requestDTO) {
+      @Valid @RequestBody UserLoginRequestDTO requestDTO) {
     return authService.login(requestDTO);
   }
 

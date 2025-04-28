@@ -3,10 +3,12 @@ package com.example.outsourcing.user.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
+@AllArgsConstructor
 public class UserSignupRequestDTO {
 
   @NotBlank(message = "닉네임은 필수값입니다.")

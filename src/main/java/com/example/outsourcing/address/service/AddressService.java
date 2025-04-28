@@ -1,7 +1,12 @@
 package com.example.outsourcing.address.service;
 
+import static com.example.outsourcing.common.exception.ErrorCode.FORBIDDEN_ADDRESS;
+import static com.example.outsourcing.common.exception.ErrorCode.NOT_FOUND_USER_ID;
+import static com.example.outsourcing.common.exception.ErrorCode.OVER_MAX_ADDRESSES;
+
 import com.example.outsourcing.address.dto.UpdateUserAddressRequestDTO;
 import com.example.outsourcing.address.entity.Address;
+import com.example.outsourcing.common.exception.BaseException;
 import com.example.outsourcing.user.entity.User;
 import com.example.outsourcing.user.repository.UserRepository;
 import java.util.List;
@@ -20,11 +25,11 @@ public class AddressService {
   @Transactional
   public void createAddress(Long userId, UpdateUserAddressRequestDTO requestDTO) {
     User user = userRepository.findById(userId).orElseThrow(
-        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+        () -> new BaseException(NOT_FOUND_USER_ID));
 
     // 최대 주소(3개) 인지 검사
     if (user.hasMaxAddresses()) {
-      throw new RuntimeException("주소는 최대 3개 등록 가능합니다.");
+      throw new BaseException(OVER_MAX_ADDRESSES);
     }
 
     Address address = new Address(requestDTO, user);
@@ -54,7 +59,7 @@ public class AddressService {
   public void updateAddress(Long userId, Long addressId,
       UpdateUserAddressRequestDTO requestDTO) {
     User user = userRepository.findById(userId).orElseThrow(
-        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+        () -> new BaseException(NOT_FOUND_USER_ID));
 
     Address defaultAddress = null;
     Address targetAddress = null;
@@ -86,14 +91,14 @@ public class AddressService {
       return;
     }
 
-    throw new RuntimeException("사용자의 주소가 아닙니다.");
+    throw new BaseException(FORBIDDEN_ADDRESS);
   }
 
   // 유저 주소 디폴트 설정
   @Transactional
   public void setDefaultAddress(Long userId, Long addressId) {
     User user = userRepository.findById(userId).orElseThrow(
-        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+        () -> new BaseException(NOT_FOUND_USER_ID));
 
     Address defaultAddress = null;
     Address targetAddress = null;
@@ -119,13 +124,13 @@ public class AddressService {
       return;
     }
 
-    throw new RuntimeException("사용자의 주소가 아닙니다.");
+    throw new BaseException(FORBIDDEN_ADDRESS);
   }
 
   @Transactional
   public void deleteAddress(Long userId, Long addressId) {
     User user = userRepository.findById(userId).orElseThrow(
-        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+        () -> new BaseException(NOT_FOUND_USER_ID));
     List<Address> addresses = user.getAddresses();
     Address defaultAddress = null;
     Address targetAddress = null;
@@ -150,6 +155,6 @@ public class AddressService {
         return;
       }
     }
-    throw new RuntimeException("사용자의 주소가 아닙니다.");
+    throw new BaseException(FORBIDDEN_ADDRESS);
   }
 }

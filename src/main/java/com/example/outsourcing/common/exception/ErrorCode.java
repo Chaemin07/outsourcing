@@ -39,29 +39,31 @@ public enum ErrorCode {
   INVALID_ORDER_STATUS("잘못된 주문 상태가 입력되었습니다.", HttpStatus.BAD_REQUEST, "400-016"),
   INSUFFICIENT_BALANCE("잔액이 부족하여 결제할 수 없습니다.", HttpStatus.BAD_REQUEST, "400-017"),
   INVALID_PAYMENT_STATUS_FOR_CANCEL("완료된 결제만 취소할 수 있습니다.", HttpStatus.BAD_REQUEST, "400-019"),
+  OVER_MAX_ADDRESSES("최대 3개의 주소를 설정할 수 있습니다.", HttpStatus.BAD_REQUEST, "400-020"),
   EXCEED_STORE_LIMIT("사장님은 최대 3개의 점포만 운영할 수 있습니다.", HttpStatus.BAD_REQUEST, "400-020"),
-  IMAGE_UPLOAD_FAILED( "이미지 업로드에 실패했습니다.", HttpStatus.BAD_REQUEST, "400-021"),
+  IMAGE_UPLOAD_FAILED("이미지 업로드에 실패했습니다.", HttpStatus.BAD_REQUEST, "400-021"),
   MENU_ALREADY_DELETED("삭제된 메뉴는 수정할 수 없습니다.", HttpStatus.BAD_REQUEST, "400-022"),
+  DEACTIVATED_USER("탈퇴한 사용자입니다.", HttpStatus.BAD_REQUEST, "400-023"),
 
 
   // 인증
   UNAUTHORIZED_USER_ID("인증되지 않은 사용자입니다.", HttpStatus.UNAUTHORIZED, "401-001"),
   UNAUTHORIZED_CODE("인증되지 않은 코드 입니다.", HttpStatus.UNAUTHORIZED, "401-002"),
+  MISSING_TOKEN("토큰이 존재하지 않습니다.", HttpStatus.UNAUTHORIZED, "401-003"),
 
   // 권한
   FORBIDDEN_STORE("가게에 접근할 수 없습니다.", HttpStatus.FORBIDDEN, "403-001"),
   FORBIDDEN_CART_ACCESS("장바구니에 접근할 수 없습니다.", HttpStatus.FORBIDDEN, "403-002"),
   FORBIDDEN_ORDER_ACCESS("주문에 접근할 수 없습니다.", HttpStatus.FORBIDDEN, "403-003"),
   FORBIDDEN_STORE_ACCESS("해당 가게에 대한 권한이 없습니다.", HttpStatus.FORBIDDEN, "403-004"),
+  FORBIDDEN_ADDRESS("자신의 주소가 아닙니다.", HttpStatus.FORBIDDEN, "403-005"),
 
 
   // 엔티티 조회
   NOT_FOUND_EMAIL("이메일을 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-001"),
   NOT_FOUND_PASSWORD("비밀번호를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-002"),
   NOT_FOUND_USER_ID("사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-003"),
-  NOT_FOUND_POST_ID("게시글를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-004"),
-  NOT_FOUND_COMMENT_ID("댓글를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-005"),
-  NOT_FOUND_LIKE_ID("좋아요를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-006"),
+  NOT_FOUND_FILE("파일을 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-004"),
   NOT_FOUND_ORDER_ID("주문을 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-007"),
   NOT_FOUND_REVIEW("해당 주문에 대한 리뷰를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-008"),
   NOT_FOUND_STORE_ID("가게를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-009"),
@@ -74,7 +76,15 @@ public enum ErrorCode {
   // 중복
   CONFLICT_EMAIL("중복된 이메일입니다.", HttpStatus.CONFLICT, "409-001"),
   CONFLICT_PASSWORD("중복된 비밀번호입니다.", HttpStatus.CONFLICT, "409-002"),
-  CONFLICT_STATUS("중복된 요청입니다.", HttpStatus.CONFLICT, "409-003");
+  CONFLICT_STATUS("중복된 요청입니다.", HttpStatus.CONFLICT, "409-003"),
+
+  // 지원하지 않는 미디어 타입
+  UNSUPPORTED_MEDIA_TYPE("지원하지 않는 파일 형식입니다.", HttpStatus.UNSUPPORTED_MEDIA_TYPE, "415-001"),
+
+  // 서버
+  FAILED_WRITE_FILE("파일 쓰기에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR, "500-001"),
+  FAILED_DELETE_FILE("파일 삭제에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR, "500-002"),
+  FAILED_UPLOAD_IMAGE("이미지 업로드에 실패하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR, "50-003");
 
 
   private final String message;

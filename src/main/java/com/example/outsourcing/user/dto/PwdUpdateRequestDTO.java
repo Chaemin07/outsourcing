@@ -3,9 +3,11 @@ package com.example.outsourcing.user.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class PwdUpdateRequestDTO {
 
   @NotBlank(message = "기존 비밀번호는 필수값입니다.")
