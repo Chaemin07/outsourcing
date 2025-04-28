@@ -2,11 +2,13 @@ package com.example.outsourcing.store.controller;
 
 import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.image.util.ImageUtil;
+import com.example.outsourcing.menu.dto.response.MenuSummaryResponseDto;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.store.dto.response.CreateStoreResponseDto;
 import com.example.outsourcing.store.dto.response.GetStoreWithMenuResponseDto;
 import com.example.outsourcing.store.dto.response.StoreResponseDto;
+import com.example.outsourcing.store.dto.response.UpdateStoreResponseDto;
 import com.example.outsourcing.store.service.StoreService;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -75,18 +77,18 @@ public class StoreController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<StoreResponseDto> updateStore(
+    public ResponseEntity<UpdateStoreResponseDto> updateStore(
         @PathVariable Long id,
         @AuthUser Long userId,
         @Valid @RequestBody UpdateStoreRequestDto requestDto) {
 
-        StoreResponseDto responseDto = storeService.updateStore(id, requestDto, userId);
+        UpdateStoreResponseDto responseDto = storeService.updateStore(id, requestDto, userId);
         return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> closedDownStore(@PathVariable Long id, @AuthUser Long userId) {
-        storeService.closedDownStore(id);
+        storeService.closedDownStore(id, userId);
         return ResponseEntity.noContent().build();
     }
 
