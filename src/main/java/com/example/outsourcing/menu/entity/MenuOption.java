@@ -7,12 +7,17 @@ import com.example.outsourcing.menu.dto.request.UpdateMenuOptionRequestDto;
 import com.example.outsourcing.order.entity.OrderItemOption;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Builder
+@AllArgsConstructor
 @Getter
 @NoArgsConstructor
 @Entity
