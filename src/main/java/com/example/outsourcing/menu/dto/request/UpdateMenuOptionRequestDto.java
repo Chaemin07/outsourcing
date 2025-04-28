@@ -1,4 +1,4 @@
-package com.example.outsourcing.store.dto.request;
+package com.example.outsourcing.menu.dto.request;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

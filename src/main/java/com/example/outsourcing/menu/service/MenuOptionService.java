@@ -6,7 +6,7 @@ import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.menu.entity.MenuOption;
 import com.example.outsourcing.menu.repository.MenuOptionRepository;
 import com.example.outsourcing.menu.repository.MenuRepository;
-import com.example.outsourcing.store.dto.request.UpdateMenuOptionRequestDto;
+import com.example.outsourcing.menu.dto.request.UpdateMenuOptionRequestDto;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

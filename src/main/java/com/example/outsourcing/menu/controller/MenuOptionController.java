@@ -3,7 +3,7 @@ package com.example.outsourcing.menu.controller;
 import com.example.outsourcing.menu.dto.request.AddMenuOptionRequestDto;
 import com.example.outsourcing.menu.dto.response.MenuOptionResponseDto;
 import com.example.outsourcing.menu.service.MenuOptionService;
-import com.example.outsourcing.store.dto.request.UpdateMenuOptionRequestDto;
+import com.example.outsourcing.menu.dto.request.UpdateMenuOptionRequestDto;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
