@@ -8,6 +8,8 @@ import com.example.outsourcing.cart.entity.Cart;
 import com.example.outsourcing.cart.service.CartService;
 import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.common.response.ApiResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +24,7 @@ public class CartController {
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> addItemtoCart(
             @AuthUser Long userId,
-            @RequestBody CartRequestDto requestDto) {
+            @RequestBody @Valid CartRequestDto requestDto) {
         String message = "\"장바구니에 메뉴가 추가되었습니다.\"";
         cartService.addItemtoCart(userId, requestDto);
         return ResponseEntity.ok(ApiResponse.success(message));
@@ -38,7 +40,7 @@ public class CartController {
     @PatchMapping
     public ResponseEntity<ApiResponse<Void>> updateCart(
             @AuthUser Long userId,
-            @RequestBody UpdateCartItemRequestDto requestDto) {
+            @RequestBody @Valid UpdateCartItemRequestDto requestDto) {
         String message = "\"수정한 메뉴가 장바구니에 반영되었습니다.\"";
         cartService.updateCart(userId, requestDto);
         return ResponseEntity.ok(ApiResponse.success(message));
@@ -47,7 +49,7 @@ public class CartController {
     @DeleteMapping("/{cartId}")
     public ResponseEntity<ApiResponse<Void>> deleteCartItem(
             @AuthUser Long userId,
-            @PathVariable Long cartId) {
+            @PathVariable @NotNull Long cartId) {
         cartService.deleteCartItem(userId,cartId);
         String message = "\"해당 메뉴가 장바구니에서 삭제되었습니다.\"";
         return ResponseEntity.ok(ApiResponse.success(message));

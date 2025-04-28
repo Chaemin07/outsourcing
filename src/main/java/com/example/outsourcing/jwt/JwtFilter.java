@@ -68,10 +68,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
     try {
       claims = jwtUtil.extractClaims(token);
-
-      // 유저 역할 검증
+      // 유저 역할 검증 // TODO: 추후 early return 하도록 변경
       for (String matcher : OWNER_LIST) {
         // 사장만 접근 가능 URL 에
+        // if (url.startsWith(matcher)) {
         if (pathMatcher.match(matcher, url)) {
           Role userRole = Role.valueOf(claims.get("role", String.class));
 
@@ -90,7 +90,6 @@ public class JwtFilter extends OncePerRequestFilter {
       request.setAttribute("email", claims.get("email"));
 
       filterChain.doFilter(request, response);
-
     } catch (SecurityException | MalformedJwtException | SignatureException e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효하지 않은 JWT 서명입니다.");
     } catch (ExpiredJwtException e) {
@@ -102,7 +101,6 @@ public class JwtFilter extends OncePerRequestFilter {
     } catch (Exception e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JWT 토큰에 문제가 있습니다.");
     }
-
 
   }
 }

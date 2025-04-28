@@ -6,6 +6,7 @@ import com.example.outsourcing.order.dto.CancelUserRequestDto;
 import com.example.outsourcing.order.dto.OrderRequestDto;
 import com.example.outsourcing.order.dto.OrderResponseDto;
 import com.example.outsourcing.order.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +25,7 @@ public class OrderUserController {
     @PostMapping("/orders")
     public ResponseEntity<ApiResponse<OrderResponseDto>> createOrder(
             @AuthUser Long userId,
-            @RequestBody OrderRequestDto requestDto) {
-        // TODO 사용자는 헤더에서 가져와야함
+            @RequestBody @Valid OrderRequestDto requestDto) {
         OrderResponseDto responseDto = orderService.createOrder(userId, requestDto);
         String successMessage = "주문이 생성되었습니다.";
         return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, successMessage, responseDto));
@@ -54,7 +54,7 @@ public class OrderUserController {
     public ResponseEntity<?> cancelOrderByUser(
             @AuthUser Long userId,
             @PathVariable Long orderId,
-            @RequestBody CancelUserRequestDto requestDto
+            @RequestBody @Valid CancelUserRequestDto requestDto
     ) {
         orderService.cancelOrderByUser(userId, orderId, requestDto.getMessage());
         String message = "주문이 성공적으로 취소되었습니다.";
