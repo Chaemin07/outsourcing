@@ -1,6 +1,8 @@
 package com.example.outsourcing.payment.entity;
 
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.common.enums.PaymentMethod;
+import com.example.outsourcing.common.enums.PaymentStatus;
 import com.example.outsourcing.order.entity.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

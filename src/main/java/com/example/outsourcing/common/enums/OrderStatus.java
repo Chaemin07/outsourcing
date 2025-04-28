@@ -1,4 +1,4 @@
-package com.example.outsourcing.order.entity;
+package com.example.outsourcing.common.enums;
 
 import lombok.Getter;
 

@@ -31,7 +31,15 @@ public enum ErrorCode {
   NOT_CUSTOMER("본인의 주문이 아닙니다.", HttpStatus.BAD_REQUEST, "400-008"),
   EMPTY_CATEGORY("카테고리가 비어있습니다.", HttpStatus.BAD_REQUEST, "400-009"),
   NOT_FAVORITE_STORE("즐겨찾기가 되어있지 않은 가게입니다.", HttpStatus.BAD_REQUEST, "400-010"),
-  OVER_MAX_ADDRESSES("최대 3개의 주소를 설정할 수 있습니다.", HttpStatus.BAD_REQUEST, "400-011"),
+  REVIEW_PERIOD_EXPIRED("작성 기간이 만료되었습니다.", HttpStatus.BAD_REQUEST, "400-011"),
+  CART_PERIOD_EXPIRED("장바구니 기간이 만료되었습니다.", HttpStatus.BAD_REQUEST, "400-012"),
+  USER_CART_NOT_FOUND("장바구니가 비어있습니다.", HttpStatus.BAD_REQUEST, "404-013"),
+  ORDER_PRICE_TOO_LOW("주문 금액이 최소 주문 금액보다 낮습니다.", HttpStatus.BAD_REQUEST, "404-014"),
+  INVALID_ORDER_STATUS_CHANGE("주문 상태를 변경할 수 없습니다.", HttpStatus.BAD_REQUEST, "400-015"),
+  INVALID_ORDER_STATUS("잘못된 주문 상태가 입력되었습니다.", HttpStatus.BAD_REQUEST, "400-016"),
+  INSUFFICIENT_BALANCE("잔액이 부족하여 결제할 수 없습니다.", HttpStatus.BAD_REQUEST, "400-017"),
+  INVALID_PAYMENT_STATUS_FOR_CANCEL("완료된 결제만 취소할 수 있습니다.", HttpStatus.BAD_REQUEST, "400-019"),
+  OVER_MAX_ADDRESSES("최대 3개의 주소를 설정할 수 있습니다.", HttpStatus.BAD_REQUEST, "400-020"),
 
   // 인증
   UNAUTHORIZED_USER_ID("인증되지 않은 사용자입니다.", HttpStatus.UNAUTHORIZED, "401-001"),
@@ -39,7 +47,11 @@ public enum ErrorCode {
   MISSING_TOKEN("토큰이 존재하지 않습니다.", HttpStatus.UNAUTHORIZED, "401-003"),
 
   // 권한
-  FORBIDDEN_ADDRESS("자신의 주소가 아닙니다.", HttpStatus.FORBIDDEN, "403-001"),
+  FORBIDDEN_POST("게시글에 접근할 수 없습니다.", HttpStatus.FORBIDDEN, "403-001"),
+  FORBIDDEN_CART_ACCESS("장바구니에 접근할 수 없습니다.", HttpStatus.FORBIDDEN, "403-002"),
+  FORBIDDEN_ORDER_ACCESS("주문에 접근할 수 없습니다.", HttpStatus.FORBIDDEN, "403-003"),
+  FORBIDDEN_STORE_ACCESS("해당 가게에 대한 권한이 없습니다.", HttpStatus.FORBIDDEN, "403-004"),
+  FORBIDDEN_ADDRESS("자신의 주소가 아닙니다.", HttpStatus.FORBIDDEN, "403-005"),
 
   // 엔티티 조회
   NOT_FOUND_EMAIL("이메일을 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-001"),
@@ -51,6 +63,9 @@ public enum ErrorCode {
   NOT_FOUND_STORE_ID("가게를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-009"),
   NOT_FOUND_REVIEW_COMMENT("리뷰 댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-010"),
   NOT_FOUND_CATEGORY("카테고리를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-011"),
+  NOT_FOUND_MENU_ID("해당 메뉴를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-012"),
+  NOT_FOUND_MENU_OPTION("존재하지 않는 메뉴 옵션입니다.", HttpStatus.NOT_FOUND, "404-013"),
+  NOT_FOUND_PAYMENT_ID("해당 결제 정보를 찾을 수 없습니다.", HttpStatus.NOT_FOUND, "404-014"),
 
   // 중복
   CONFLICT_EMAIL("중복된 이메일입니다.", HttpStatus.CONFLICT, "409-001"),

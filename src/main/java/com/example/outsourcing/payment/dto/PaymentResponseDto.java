@@ -1,6 +1,6 @@
 package com.example.outsourcing.payment.dto;
 
-import com.example.outsourcing.payment.entity.PaymentStatus;
+import com.example.outsourcing.common.enums.PaymentStatus;
 import lombok.Builder;
 import lombok.Getter;
 

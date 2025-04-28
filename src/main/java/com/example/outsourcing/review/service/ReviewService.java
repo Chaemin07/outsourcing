@@ -5,7 +5,7 @@ import com.example.outsourcing.common.enums.SortType;
 import com.example.outsourcing.common.exception.BaseException;
 import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.image.service.ImageService;
-import com.example.outsourcing.order.entity.DeliveryStatus;
+import com.example.outsourcing.common.enums.DeliveryStatus;
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.order.repository.OrderRepository;
 import com.example.outsourcing.review.dto.request.ReviewRequestDto;
@@ -163,7 +163,7 @@ public class ReviewService {
         // 테스트를 위해 1분 뒤로 변경.
         // 3일뒤 => plusDays(3)
         if (deliveredAt.plusMinutes(1).isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("배송 완료 후 3일이 지났습니다.");
+            throw new BaseException(ErrorCode.REVIEW_PERIOD_EXPIRED);
         }
     }
 
