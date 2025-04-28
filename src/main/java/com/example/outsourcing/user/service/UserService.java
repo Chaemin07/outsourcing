@@ -1,6 +1,11 @@
 package com.example.outsourcing.user.service;
 
+
+import static com.example.outsourcing.common.exception.ErrorCode.CONFLICT_EMAIL;
+import static com.example.outsourcing.common.exception.ErrorCode.NOT_FOUND_USER_ID;
+
 import com.example.outsourcing.common.config.PasswordEncoder;
+import com.example.outsourcing.common.exception.BaseException;
 import com.example.outsourcing.image.service.ImageService;
 import com.example.outsourcing.user.dto.PwdUpdateRequestDTO;
 import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
@@ -28,7 +33,7 @@ public class UserService {
   public void signup(UserSignupRequestDTO requestDTO) {
     // 유저 이메일(아이디) 중복 검사
     if (isExistsEmail(requestDTO.getEmail())) {
-      throw new RuntimeException("이메일 중복입니다.");
+      throw new BaseException(CONFLICT_EMAIL);
     }
 
     // 비밀번호 인코딩
@@ -43,7 +48,7 @@ public class UserService {
   public UserResponseDTO getUser(Long userId) {
     // 유효한 id 인지 검사
     User user = userRepository.findById(userId).orElseThrow(
-        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+        () -> new BaseException(NOT_FOUND_USER_ID));
     return new UserResponseDTO(user);
   }
 
