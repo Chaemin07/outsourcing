@@ -2,55 +2,65 @@ package com.example.outsourcing.order.controller;
 
 import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.common.response.ApiResponse;
-import com.example.outsourcing.order.dto.*;
+import com.example.outsourcing.order.dto.DeliveryStatusChangeResponse;
+import com.example.outsourcing.order.dto.DeliveryStatusUpdateRequest;
+import com.example.outsourcing.order.dto.OrderStatusChangeResponse;
+import com.example.outsourcing.order.dto.OrderStatusUpdateRequest;
+import com.example.outsourcing.order.dto.StoreOrderResponseDto;
 import com.example.outsourcing.order.service.OrderService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RequiredArgsConstructor
 @RestController
 public class OrderOwnerController {
-    private final OrderService orderService;
 
-    // ############################사장님############################
-    // [사장님] 가게별 전체 주문 목록 조회
-    @PutMapping("/owners/stores/{storeId}/orders")
-    public ResponseEntity<ApiResponse<List<StoreOrderResponseDto>>> getOrdersByStore(
-            @AuthUser Long userId,
-            @PathVariable Long storeId) {
-        orderService.getOrdersByStoreId(userId, storeId);
-        return null;
-    }
+  private final OrderService orderService;
 
-    // [사장님] 주문 상태 변경
-    @PatchMapping("/stores/{storeId}/orders/{orderId}/order-status")
-    public ResponseEntity<ApiResponse<OrderStatusChangeResponse>> updateOrderStatus(
-            @AuthUser Long userId,
-            @PathVariable Long storeId,
-            @PathVariable Long orderId,
-            @RequestBody @Valid OrderStatusUpdateRequest request) {
+  // ############################사장님############################
+  // [사장님] 가게별 전체 주문 목록 조회
+  @PutMapping("/owners/stores/{storeId}/orders")
+  public ResponseEntity<ApiResponse<List<StoreOrderResponseDto>>> getOrdersByStore(
+      @AuthUser Long userId,
+      @PathVariable Long storeId) {
+    orderService.getOrdersByStoreId(userId, storeId);
+    return null;
+  }
 
-        OrderStatusChangeResponse responseDto = orderService.updateOrderStatus(userId, storeId, orderId, request.getStatus());
-        String message = "주문 상태가 변경되었습니다.";
-        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK,message,responseDto));
-    }
+  // [사장님] 주문 상태 변경
+  @PatchMapping("/stores/{storeId}/orders/{orderId}/order-status")
+  public ResponseEntity<ApiResponse<OrderStatusChangeResponse>> updateOrderStatus(
+      @AuthUser Long userId,
+      @PathVariable Long storeId,
+      @PathVariable Long orderId,
+      @RequestBody @Valid OrderStatusUpdateRequest request) {
 
-    // [사장님] 주문 배달 상태 변경
-    @PatchMapping("/stores/{storeId}/orders/{orderId}/delivery-status")
-    public ResponseEntity<ApiResponse<DeliveryStatusChangeResponse>> updateDeliveryStatus(
-            @AuthUser Long userId,
-            @PathVariable Long storeId,
-            @PathVariable Long orderId,
-            @RequestBody @Valid DeliveryStatusUpdateRequest request) {
+    OrderStatusChangeResponse responseDto = orderService.updateOrderStatus(userId, storeId, orderId,
+        request.getStatus());
+    String message = "주문 상태가 변경되었습니다.";
+    return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, message, responseDto));
+  }
 
-        DeliveryStatusChangeResponse responseDto = orderService.updateDeliveryStatus(userId, storeId, orderId, request.getDeliveryStatus());
-        String message = "배달 상태가 변경되었습니다.";
-        return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK,message,responseDto));
-    }
+  // [사장님] 주문 배달 상태 변경
+  @PatchMapping("/stores/{storeId}/orders/{orderId}/delivery-status")
+  public ResponseEntity<ApiResponse<DeliveryStatusChangeResponse>> updateDeliveryStatus(
+      @AuthUser Long userId,
+      @PathVariable Long storeId,
+      @PathVariable Long orderId,
+      @RequestBody @Valid DeliveryStatusUpdateRequest request) {
+
+    DeliveryStatusChangeResponse responseDto = orderService.updateDeliveryStatus(userId, storeId,
+        orderId, request.getDeliveryStatus());
+    String message = "배달 상태가 변경되었습니다.";
+    return ResponseEntity.ok(ApiResponse.success(HttpStatus.OK, message, responseDto));
+  }
 }

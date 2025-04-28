@@ -6,7 +6,7 @@ import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.common.response.ApiResponse;
 import com.example.outsourcing.image.util.ImageUtil;
 import com.example.outsourcing.user.dto.PwdUpdateRequestDTO;
-import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
+import com.example.outsourcing.user.dto.UserDeactivateRequestDTO;
 import com.example.outsourcing.user.dto.UserResponseDTO;
 import com.example.outsourcing.user.dto.UserSignupRequestDTO;
 import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
@@ -83,8 +83,8 @@ public class UserController {
   // 회원 탈퇴
   @DeleteMapping("/users")
   public ResponseEntity<ApiResponse<Void>> deactiveUser(@AuthUser Long userId,
-      @RequestBody UserDeactiveRequestDTO requestDTO) {
-    userService.deactiveUser(userId, requestDTO);
+      @RequestBody UserDeactivateRequestDTO requestDTO) {
+    userService.deactivateUser(userId, requestDTO);
     return ResponseEntity.ok(ApiResponse.success());
   }
 

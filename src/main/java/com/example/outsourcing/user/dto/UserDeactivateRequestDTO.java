@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Getter
-public class UserDeactiveRequestDTO {
+public class UserDeactivateRequestDTO {
 
   @NotBlank(message = "기존 비밀번호는 필수값입니다.")
   @Size(min = 8, max = 20, message = "기존 비밀번호는 8자 이상 20자리 이하입니다.")

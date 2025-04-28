@@ -1,14 +1,15 @@
 package com.example.outsourcing.user.service;
 
-
 import static com.example.outsourcing.common.exception.ErrorCode.CONFLICT_EMAIL;
 import static com.example.outsourcing.common.exception.ErrorCode.NOT_FOUND_USER_ID;
 
+import com.example.outsourcing.address.dto.UpdateUserAddressRequestDTO;
+import com.example.outsourcing.address.service.AddressService;
 import com.example.outsourcing.common.config.PasswordEncoder;
 import com.example.outsourcing.common.exception.BaseException;
 import com.example.outsourcing.image.service.ImageService;
 import com.example.outsourcing.user.dto.PwdUpdateRequestDTO;
-import com.example.outsourcing.user.dto.UserDeactiveRequestDTO;
+import com.example.outsourcing.user.dto.UserDeactivateRequestDTO;
 import com.example.outsourcing.user.dto.UserResponseDTO;
 import com.example.outsourcing.user.dto.UserSignupRequestDTO;
 import com.example.outsourcing.user.dto.UserUpdateRequestDTO;
@@ -26,6 +27,7 @@ public class UserService {
 
   private final UserRepository userRepository;
   private final ImageService imageService;
+  private final AddressService addressService;
   private final PasswordEncoder passwordEncoder;
 
   // 회원 가입
@@ -41,7 +43,15 @@ public class UserService {
     requestDTO.setPassword(encodedPwd);
 
     // 저장
-    userRepository.save(new User(requestDTO));  // TODO: Mapper or MapStruct 로 DTO-엔티티 변환 구현
+    User user = new User(requestDTO);
+    userRepository.save(user);  // TODO: Mapper or MapStruct 로 DTO-엔티티 변환 구현
+
+    // 주소 저장
+    if (requestDTO.getAddress() != null) {
+      UpdateUserAddressRequestDTO addressRequestDTO = new UpdateUserAddressRequestDTO(
+          requestDTO.getAddress(), true);
+      addressService.createAddress(user.getId(), addressRequestDTO);
+    }
   }
 
   // 회원 조회
@@ -87,7 +97,7 @@ public class UserService {
 
   // 유저 탈퇴
   @Transactional
-  public void deactiveUser(Long userId, UserDeactiveRequestDTO requestDTO) {
+  public void deactivateUser(Long userId, UserDeactivateRequestDTO requestDTO) {
     User user = userRepository.findById(userId).orElseThrow(
         () -> new RuntimeException("유저를 찾을 수 없습니다."));
 

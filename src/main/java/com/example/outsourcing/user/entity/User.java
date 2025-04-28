@@ -65,7 +65,7 @@ public class User extends BaseEntity {
   private Image profileImg;
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<Address> addresses;
+  private List<Address> addresses = new ArrayList<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<Cart> cartList = new ArrayList<>();
@@ -107,9 +107,6 @@ public class User extends BaseEntity {
   }
 
   public boolean hasMaxAddresses() {
-    if (addresses.size() >= 3) {
-      return true;
-    }
-    return false;
+    return addresses != null && addresses.size() >= 3;
   }
 }
