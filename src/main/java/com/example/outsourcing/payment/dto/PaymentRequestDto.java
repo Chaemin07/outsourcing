@@ -1,6 +1,6 @@
 package com.example.outsourcing.payment.dto;
 
-import com.example.outsourcing.payment.entity.PaymentMethod;
+import com.example.outsourcing.common.enums.PaymentMethod;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;

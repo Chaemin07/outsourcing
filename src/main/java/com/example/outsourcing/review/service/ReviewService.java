@@ -3,7 +3,7 @@ package com.example.outsourcing.review.service;
 import com.example.outsourcing.common.config.PasswordEncoder;
 import com.example.outsourcing.common.enums.SortType;
 import com.example.outsourcing.image.service.ImageService;
-import com.example.outsourcing.order.entity.DeliveryStatus;
+import com.example.outsourcing.common.enums.DeliveryStatus;
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.order.repository.OrderRepository;
 import com.example.outsourcing.review.dto.request.ReviewRequestDto;

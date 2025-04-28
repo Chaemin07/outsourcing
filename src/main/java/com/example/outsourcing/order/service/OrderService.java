@@ -1,5 +1,7 @@
 package com.example.outsourcing.order.service;
 
+import com.example.outsourcing.common.enums.DeliveryStatus;
+import com.example.outsourcing.common.enums.OrderStatus;
 import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.menu.entity.MenuOption;
 import com.example.outsourcing.menu.repository.MenuOptionRepository;

@@ -1,6 +1,8 @@
 package com.example.outsourcing.order.entity;
 
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.common.enums.DeliveryStatus;
+import com.example.outsourcing.common.enums.OrderStatus;
 import com.example.outsourcing.payment.entity.Payment;
 import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.user.entity.Role;
