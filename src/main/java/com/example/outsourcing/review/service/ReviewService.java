@@ -2,6 +2,8 @@ package com.example.outsourcing.review.service;
 
 import com.example.outsourcing.common.config.PasswordEncoder;
 import com.example.outsourcing.common.enums.SortType;
+import com.example.outsourcing.image.service.ImageService;
+import com.example.outsourcing.order.entity.DeliveryStatus;
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.order.repository.OrderRepository;
 import com.example.outsourcing.review.dto.request.ReviewRequestDto;
@@ -14,6 +16,7 @@ import com.example.outsourcing.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -29,6 +32,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final OrderRepository orderRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
 
     // 리뷰 저장
     public ReviewResponseDto saveReview(Long userId, Long orderId, ReviewRequestDto dto) {
@@ -42,7 +46,7 @@ public class ReviewService {
         // 본인의 주문이 아니면 예외처리
         checkMyOrder(order, userId);
 
-        if (!order.getDeliveryStatus().equals("DELIVERED")) {
+        if (!order.getDeliveryStatus().equals(DeliveryStatus.DELIVERED)) {
             // 배송 완료가 아닐시 예외 처리
             throw new RuntimeException("배송이 완료되지 않았습니다.");
         }
@@ -56,6 +60,20 @@ public class ReviewService {
         Review saved = reviewRepository.save(savedReview);
 
         return new ReviewResponseDto(savedReview);
+    }
+
+    @Transactional
+    public void uploadReviewImage(Long userId, Long orderId, MultipartFile file) {
+
+        Order order = getOrderByOrderId(orderId);
+
+        User user = getUserByUserId(userId);
+
+        Review review = getReviewByOrderId(orderId);
+
+        checkMyOrder(order, userId);
+
+        review.setImage(imageService.uploadImage(file));
     }
 
     @Transactional
@@ -113,10 +131,9 @@ public class ReviewService {
 
         Stream<Review> stream = reviews.stream();
 
-        // TODO: 이미지가 있는 리뷰만 보기
-        // if (sortType == SortType.WITH_IMAGES) {
-        //     stream = stream.filter(review -> review.getImage)
-        // }
+        if (sortType == SortType.WITH_IMAGES) {
+            stream = stream.filter(review -> review.getImage() != null && !review.getImage().getPath().isEmpty());
+        }
 
         if (SORT_COMPARATORS.containsKey(sortType)) {
             stream = stream.sorted(SORT_COMPARATORS.get(sortType));

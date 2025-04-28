@@ -1,6 +1,7 @@
 package com.example.outsourcing.review.entity;
 
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.reviewcomment.entity.ReviewComment;
 import jakarta.persistence.*;
@@ -29,6 +30,10 @@ public class Review extends BaseEntity {
     private Order order;
 
     private Long storeId;
+
+    @ManyToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
 
     @OneToOne(mappedBy = "review", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ReviewComment reviewComment;
