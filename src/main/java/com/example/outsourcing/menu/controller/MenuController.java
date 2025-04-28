@@ -1,5 +1,6 @@
 package com.example.outsourcing.menu.controller;
 
+import com.example.outsourcing.common.response.ApiResponse;
 import com.example.outsourcing.image.util.ImageUtil;
 import com.example.outsourcing.menu.dto.request.AddMenuRequestDto;
 import com.example.outsourcing.menu.dto.request.UpdateMenuRequestDto;
@@ -29,13 +30,13 @@ public class MenuController {
   private final ImageUtil imageUtil;
 
   @PostMapping
-  public ResponseEntity<MenuResponseDto> addMenu(
+  public ResponseEntity<ApiResponse<MenuResponseDto>> addMenu(
       @PathVariable Long storeId,
       @Valid @RequestBody AddMenuRequestDto requestDto
   ) {
     MenuResponseDto menuResponseDto = menuService.addMenu(storeId, requestDto);
 
-    return ResponseEntity.ok(menuResponseDto);
+    return ResponseEntity.ok(ApiResponse.success(menuResponseDto));
 
   }
 
@@ -54,35 +55,35 @@ public class MenuController {
   }
 
   @GetMapping("/{menuId}")
-  public ResponseEntity<MenuResponseDto> getMenuById(
+  public ResponseEntity<ApiResponse<MenuResponseDto>> getMenuById(
       @PathVariable Long storeId,
       @PathVariable Long menuId
   ) {
     MenuResponseDto menuById = menuService.getMenuById(storeId, menuId);
 
-    return ResponseEntity.ok(menuById);
+    return ResponseEntity.ok(ApiResponse.success(menuById));
 
   }
 
   @PutMapping("/{menuId}")
-  public ResponseEntity<MenuResponseDto> updateMenu(
+  public ResponseEntity<ApiResponse<MenuResponseDto>> updateMenu(
       @PathVariable Long storeId,
       @PathVariable Long menuId,
       @Valid @RequestBody UpdateMenuRequestDto requestDto
   ) {
     MenuResponseDto menuResponseDto = menuService.updateMenu(storeId, menuId, requestDto);
 
-    return ResponseEntity.ok(menuResponseDto);
+    return ResponseEntity.ok(ApiResponse.success(menuResponseDto));
   }
 
   @DeleteMapping("/{menuId}")
-  public ResponseEntity<Void> deleteMenu(
+  public ResponseEntity<ApiResponse<Void>> deleteMenu(
       @PathVariable Long storeId,
       @PathVariable Long menuId
   ) {
     menuService.deleteMenu(storeId, menuId);
 
-    return ResponseEntity.noContent().build();
+    return ResponseEntity.ok(ApiResponse.success("삭제되었습니다."));
 
   }
 
