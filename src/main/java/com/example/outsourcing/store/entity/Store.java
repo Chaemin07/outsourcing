@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @Table(name = "store")
@@ -93,5 +95,11 @@ public class Store extends BaseEntity {
 
     public void closeDown() {
         this.status = StoreStatus.CLOSED_DOWN;
+    }
+
+    @Builder
+    public Store(Long id, User user) {
+        this.id = id;
+        this.user = user;
     }
 }

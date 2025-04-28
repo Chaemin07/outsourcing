@@ -163,7 +163,7 @@ public class ReviewService {
         // 테스트를 위해 1분 뒤로 변경.
         // 3일뒤 => plusDays(3)
         if (deliveredAt.plusMinutes(1).isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("배송 완료 후 3일이 지났습니다.");
+            throw new BaseException(ErrorCode.REVIEW_PERIOD_EXPIRED);
         }
     }
 
