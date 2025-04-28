@@ -34,6 +34,9 @@ public class ReviewResponseDto {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String commentContent;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String imagePath;
+
     public ReviewResponseDto(Review review) {
         this.id = review.getId();
         this.content = review.getContent();
@@ -43,6 +46,7 @@ public class ReviewResponseDto {
         this.orderId = order.getId();
         this.userId = order.getUser().getId();
         this.storeId = order.getStore().getId();
+        this.imagePath = review.getImage() != null ? review.getImage().getPath() : null;
         this.commentContent = review.getReviewComment() != null ? review.getReviewComment().getContent() : null;
     }
 }
