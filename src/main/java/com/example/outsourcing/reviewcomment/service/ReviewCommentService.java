@@ -94,7 +94,7 @@ public class ReviewCommentService {
     }
 
     public void validateMyStore(Store store, Long userId) {
-        if (store.getUser().getId().equals(userId)) {
+        if (!store.getUser().getId().equals(userId)) {
             throw new BaseException(ErrorCode.UNAUTHORIZED_USER_ID);
         }
     }
