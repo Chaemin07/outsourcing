@@ -34,7 +34,6 @@ public class CartService {
     @Transactional
     public void addItemtoCart(Long userId,CartRequestDto requestDto) {
         Long menuId = requestDto.getMenuId();
-        // TODO 메뉴 아이디를 통해 가게 정보를 가져와야함
         // 장바구니에는 같은 가게의 메뉴만!
         Long findStoreId = menuId + 1L;
         User user = userRepository.findById(userId)
@@ -160,7 +159,7 @@ public class CartService {
         Cart cart = cartRepository.findById(cartId)
                 .orElseThrow(() -> new BaseException(ErrorCode.USER_CART_NOT_FOUND));
         // 장바구니 주인의 아이디와 현재 로그인 아이디 비교
-        if (cart.getUser().getId().equals(userId)) {
+        if (!cart.getUser().getId().equals(userId)) {
             // 에러메세지 내용 통일 (또는 권한이 없습니다?)
             throw new BaseException(ErrorCode.FORBIDDEN_CART_ACCESS);
         }
@@ -172,7 +171,7 @@ public class CartService {
     }
 
     // 만료된 장바구니 자동 삭제 메서드
-    private boolean autoClearExpiredCart(Long userId) {
+    public boolean autoClearExpiredCart(Long userId) {
 
         Optional<LocalDateTime> lastUpdatedAtOp = cartRepository.findMaxUpdatedAtByUserId(userId);
         if (lastUpdatedAtOp.isPresent()) {

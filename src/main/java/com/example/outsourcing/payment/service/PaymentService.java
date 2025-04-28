@@ -51,7 +51,8 @@ public class PaymentService {
                     .paymentId(savedPayment.getId())
                     .paymentStatus(PaymentStatus.COMPLETED)
                     .paymentTime(savedPayment.getCreatedAt())
-                    .remainingBalance(difference) // 현금 결제: 잔액 포함
+                    //  differ가 양수라면 위에서 예외 throw
+                    .remainingBalance(-difference) // 현금 결제: 잔액 포함
                     .build();
         }
 

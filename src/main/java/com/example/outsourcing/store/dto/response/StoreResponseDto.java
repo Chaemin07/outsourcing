@@ -13,6 +13,8 @@ public class StoreResponseDto {
 
     private final String name;
 
+    private final String address;
+
     private final String status;
 
     private final String storePhoneNumber;
@@ -33,6 +35,7 @@ public class StoreResponseDto {
         return new StoreResponseDto(
             store.getId(),
             store.getName(),
+            store.getAddress().getAddress(),
             store.getStatus().name(),
             store.getStorePhoneNumber(),
             store.getMinOrderPrice(),

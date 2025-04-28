@@ -3,8 +3,10 @@ package com.example.outsourcing.payment.dto;
 import com.example.outsourcing.common.enums.PaymentMethod;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.Builder;
 import lombok.Getter;
 
+@Builder
 @Getter
 public class PaymentRequestDto {
     @NotNull(message = "주문 ID는 필수입니다.")

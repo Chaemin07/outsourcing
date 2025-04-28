@@ -14,6 +14,8 @@ public class CreateStoreResponseDto {
 
     private final String name;
 
+    private final String address;
+
     private final String status;
 
     private final String storePhoneNumber;
@@ -39,6 +41,7 @@ public class CreateStoreResponseDto {
         return new CreateStoreResponseDto(
             store.getId(),
             store.getName(),
+            store.getAddress().getAddress(),
             store.getStatus().name(),
             store.getStorePhoneNumber(),
             store.getMinOrderPrice(),

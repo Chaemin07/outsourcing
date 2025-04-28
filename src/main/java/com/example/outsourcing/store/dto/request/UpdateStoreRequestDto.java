@@ -11,6 +11,8 @@ public class UpdateStoreRequestDto {
 
     private final String name;
 
+    private final String address;
+
     @NotBlank(message = "매장전화번호는 필수값입니다.")
     @Pattern(regexp = "^\\d{2,3}-\\d{3,4}-\\d{4}$", message = "유효한 메장전화번호 형식이 아닙니다.")
     private final String storePhoneNumber;
