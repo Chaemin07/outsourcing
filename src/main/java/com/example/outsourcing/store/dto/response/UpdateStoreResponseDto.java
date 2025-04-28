@@ -1,16 +1,13 @@
 package com.example.outsourcing.store.dto.response;
 
-import com.example.outsourcing.menu.dto.response.MenuSummaryResponseDto;
 import com.example.outsourcing.store.entity.Store;
-import com.example.outsourcing.store.util.StoreStatusUtil;
 import java.time.LocalDateTime;
-import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class GetStoreWithMenuResponseDto {
+public class UpdateStoreResponseDto {
 
     private final Long id;
 
@@ -26,21 +23,12 @@ public class GetStoreWithMenuResponseDto {
 
     private final String closingTimes;
 
-    private final boolean isOpen;
-
     private final String notification;
-
-    private final LocalDateTime createdAt;
 
     private final LocalDateTime updatedAt;
 
-    private final List<MenuSummaryResponseDto> menus;
-
-    public static GetStoreWithMenuResponseDto toDto(Store store, List<MenuSummaryResponseDto> menus) {
-
-        boolean isOpen = StoreStatusUtil.isOpen(store.getOpeningTimes(), store.getClosingTimes());
-
-        return new GetStoreWithMenuResponseDto(
+    public static UpdateStoreResponseDto toDto(Store store) {
+        return new UpdateStoreResponseDto(
             store.getId(),
             store.getName(),
             store.getStatus().name(),
@@ -48,11 +36,8 @@ public class GetStoreWithMenuResponseDto {
             store.getMinOrderPrice(),
             store.getOpeningTimes(),
             store.getClosingTimes(),
-            isOpen,
             store.getNotification(),
-            store.getCreatedAt(),
-            store.getUpdatedAt(),
-            menus
+            store.getUpdatedAt()
         );
     }
 

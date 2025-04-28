@@ -14,6 +14,4 @@ public class AddMenuRequestDto {
 
     private final String descrption;
 
-    private final String status;
-
 }

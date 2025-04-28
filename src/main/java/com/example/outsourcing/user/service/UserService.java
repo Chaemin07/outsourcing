@@ -42,8 +42,6 @@ public class UserService {
   // 회원 조회
   public UserResponseDTO getUser(Long userId) {
     // 유효한 id 인지 검사
-
-    // TODO: 레포지토리 조회 후 DTO 변환해서 반환
     User user = userRepository.findById(userId).orElseThrow(
         () -> new RuntimeException("유저를 찾을 수 없습니다."));
     return new UserResponseDTO(user);
