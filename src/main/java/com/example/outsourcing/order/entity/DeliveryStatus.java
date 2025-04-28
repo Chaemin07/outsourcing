@@ -13,4 +13,5 @@ public enum DeliveryStatus {
     DeliveryStatus(String value) {
         this.value = value;
     }
+
 }

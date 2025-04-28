@@ -4,6 +4,7 @@ import com.example.outsourcing.common.annotation.AuthUser;
 import com.example.outsourcing.common.response.ApiResponse;
 import com.example.outsourcing.order.dto.*;
 import com.example.outsourcing.order.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class OrderOwnerController {
             @AuthUser Long userId,
             @PathVariable Long storeId,
             @PathVariable Long orderId,
-            @RequestBody OrderStatusUpdateRequest request) {
+            @RequestBody @Valid OrderStatusUpdateRequest request) {
 
         OrderStatusChangeResponse responseDto = orderService.updateOrderStatus(userId, storeId, orderId, request.getStatus());
         String message = "주문 상태가 변경되었습니다.";
@@ -46,7 +47,7 @@ public class OrderOwnerController {
             @AuthUser Long userId,
             @PathVariable Long storeId,
             @PathVariable Long orderId,
-            @RequestBody DeliveryStatusUpdateRequest request) {
+            @RequestBody @Valid DeliveryStatusUpdateRequest request) {
 
         DeliveryStatusChangeResponse responseDto = orderService.updateDeliveryStatus(userId, storeId, orderId, request.getDeliveryStatus());
         String message = "배달 상태가 변경되었습니다.";
