@@ -31,6 +31,7 @@ public enum ErrorCode {
   NOT_CUSTOMER("본인의 주문이 아닙니다.", HttpStatus.BAD_REQUEST, "400-008"),
   EMPTY_CATEGORY("카테고리가 비어있습니다.", HttpStatus.BAD_REQUEST, "400-009"),
   NOT_FAVORITE_STORE("즐겨찾기가 되어있지 않은 가게입니다.", HttpStatus.BAD_REQUEST, "400-010"),
+  REVIEW_PERIOD_EXPIRED("작성 기간이 만료되었습니다.", HttpStatus.BAD_REQUEST, "400-011"),
 
   // 인증
   UNAUTHORIZED_USER_ID("인증되지 않은 사용자입니다.", HttpStatus.UNAUTHORIZED, "401-001"),
