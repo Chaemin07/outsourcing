@@ -3,6 +3,8 @@ package com.example.outsourcing.order.service;
 import com.example.outsourcing.common.annotation.OrderStatusLogTarget;
 import com.example.outsourcing.common.enums.DeliveryStatus;
 import com.example.outsourcing.common.enums.OrderStatus;
+import com.example.outsourcing.common.exception.BaseException;
+import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.menu.entity.MenuOption;
 import com.example.outsourcing.menu.repository.MenuOptionRepository;
@@ -41,12 +43,12 @@ public class OrderService {
         Integer storeMinOrderPrice = 10000;
         String returnMessage = "";
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER_ID));
 
         Long menuId = requestDto.getOrderItems().get(0).getMenuId();
         // 가게(store)를 찾기 위해서 menu생성
         Menu menu = menuRepository.findById(menuId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴입니다!"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_MENU_ID));
         // TODO 가게 상태에 따라 주문 가능 여부 판단
         Store store = menu.getStore();
         String requestMessage = requestDto.getRequestMessage();
@@ -57,7 +59,7 @@ public class OrderService {
         // 주문 최소 금액 미만의 주문 금액
         if (storeMinOrderPrice > orderPrice) {
             returnMessage = (storeMinOrderPrice - orderPrice) + "원 더 담으면 주문 가능! 메뉴를 추가해주세요!";
-            throw new RuntimeException(returnMessage);
+            throw new BaseException(ErrorCode.ORDER_PRICE_TOO_LOW);
         }
         // 주문 생성
         Order newOrder = Order.builder()
@@ -89,7 +91,7 @@ public class OrderService {
             if (orderItem.getOptionIds() != null) {
                 for (Long optionId : orderItem.getOptionIds()) {
                     MenuOption menuOption = manuOptionRepository.findById(optionId)
-                            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 메뉴 옵션입니다!"));
+                            .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_MENU_OPTION));
                     OrderItemOption itemOption = OrderItemOption.builder()
                             .optionPrice(menuOption.getPrice())
                             .orderDetail(savedOrderDetail)
@@ -158,11 +160,11 @@ public class OrderService {
     public OrderResponseDto getOrderById(Long userId, Long orderId) {
         // 주문 조회
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다!"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_ORDER_ID));
         // 주문id와 사용자id 비교
         if (!order.getUser().getId().equals(userId)) {
             // TODO 권한 에러 throw
-            throw new RuntimeException("다른 사용자의 주문에 접근할 수 없습니다!");
+            throw new BaseException(ErrorCode.FORBIDDEN_ORDER_ACCESS);
         }
         return OrderResponseDto.builder()
                 .orderId(order.getId())
@@ -194,16 +196,16 @@ public class OrderService {
     @Transactional
     public void cancelOrderByUser(Long userId, Long orderId, String cancelReason) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER_ID));
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다!"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_ORDER_ID));
         if (!order.getUser().getId().equals(userId)) {
-            throw new RuntimeException("다른 사용자의 주문에 접근할 수 없습니다!");
+            throw new BaseException(ErrorCode.FORBIDDEN_ORDER_ACCESS);
         }
         // 이미 취소했거나 거절된 주문 상태인 경우
         if (order.getOrderStatus() == OrderStatus.CANCELLED ||
                 order.getOrderStatus() == OrderStatus.REJECTED) {
-            throw new RuntimeException("주문 상태를 변경할 수 없습니다!");
+            throw new BaseException(ErrorCode.INVALID_ORDER_STATUS_CHANGE);
         }
         // 주문 접수 전인 대기 상태에만 사용자 주문 취소 가능
         if (order.getOrderStatus() == OrderStatus.PENDING) {
@@ -215,12 +217,12 @@ public class OrderService {
 
     public List<StoreOrderResponseDto> getOrdersByStoreId(Long userId, Long storeId) {
         User owner = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER_ID));
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 가게입니다!"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_STORE_ID));
         // 일반 사용자이거나 가게 주인이 아닌경우
         if (owner.getRole() == Role.USER || !store.getUser().getId().equals(owner.getId())) {
-            throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
+            throw new BaseException(ErrorCode.FORBIDDEN_STORE_ACCESS);
         }
 
         List<Order> orderList = orderRepository.findByStoreId(storeId);
@@ -303,20 +305,20 @@ public class OrderService {
     @Transactional
     public OrderStatusChangeResponse updateOrderStatus(Long ownerId, StatusChangeDto statusChangeDto) {
         User user = userRepository.findById(ownerId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER_ID));
         // 가게 아이디를 통해서 store -> 가게 주인과 ownerId같아야함
         Store store = storeRepository.findById(statusChangeDto.getStoreId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 가게입니다!"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_STORE_ID));
         // 사장님 role아니거나 가게주인과 ownerId다르다면 throw
         if (user.getRole()!=Role.OWNER||!store.getUser().getId().equals(ownerId)){
-            throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
+            throw new BaseException(ErrorCode.FORBIDDEN_STORE_ACCESS);
         }
         // 주문 아이디를 통해서 order -> 주문한 가게와 storeId같아야함
         Order order = orderRepository.findById(statusChangeDto.getOrderId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다!"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_ORDER_ID));
         // 주문한 가게의 Id와 storeId가 다르다면 throw
         if (!order.getStore().getId().equals(statusChangeDto.getStoreId())) {
-            throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
+            throw new BaseException(ErrorCode.FORBIDDEN_STORE_ACCESS);
         }
         String previousOrderStatus = order.getOrderStatus().getValue();
         try {
@@ -324,7 +326,7 @@ public class OrderService {
             OrderStatus orderStatus = statusChangeDto.getOrderStatus();
             order.setOrderStatus(orderStatus);
         } catch (IllegalArgumentException error) {
-            throw new IllegalArgumentException("잘못된 상태가 입력되었습니다! : " + statusChangeDto.getOrderStatus());
+            throw new BaseException(ErrorCode.INVALID_ORDER_STATUS);
         }
 
         return OrderStatusChangeResponse.builder()
@@ -338,20 +340,20 @@ public class OrderService {
     @Transactional
     public DeliveryStatusChangeResponse updateDeliveryStatus(Long ownerId, StatusChangeDto statusChangeDto) {
         User user = userRepository.findById(ownerId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER_ID));
         // 가게 아이디를 통해서 store -> 가게 주인과 ownerId같아야함
         Store store = storeRepository.findById(statusChangeDto.getStoreId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 가게입니다!"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_STORE_ID));
         // 사장님 role아니거나 가게주인과 ownerId다르다면 throw
         if (user.getRole()!=Role.OWNER||!store.getUser().getId().equals(ownerId)){
-            throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
+            throw new BaseException(ErrorCode.FORBIDDEN_STORE_ACCESS);
         }
         // 주문 아이디를 통해서 order -> 주문한 가게와 storeId같아야함
         Order order = orderRepository.findById(statusChangeDto.getOrderId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다!"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_ORDER_ID));
         // 주문한 가게의 Id와 storeId가 다르다면 throw
         if (!order.getStore().getId().equals(statusChangeDto.getStoreId())) {
-            throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
+            throw new BaseException(ErrorCode.FORBIDDEN_STORE_ACCESS);
         }
         String previousDeliveryStatus = order.getDeliveryStatus().getValue();
         try {
@@ -359,7 +361,7 @@ public class OrderService {
             DeliveryStatus deliveryStatus = statusChangeDto.getDeliveryStatus();
             order.setDeliveryStatus(deliveryStatus);
         } catch (IllegalArgumentException error) {
-            throw new IllegalArgumentException("잘못된 상태가 입력되었습니다! : " + statusChangeDto.getDeliveryStatus());
+            throw new BaseException(ErrorCode.INVALID_ORDER_STATUS);
         }
 
         return DeliveryStatusChangeResponse.builder()

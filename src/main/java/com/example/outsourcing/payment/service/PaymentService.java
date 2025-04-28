@@ -1,5 +1,7 @@
 package com.example.outsourcing.payment.service;
 
+import com.example.outsourcing.common.exception.BaseException;
+import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.order.entity.Order;
 import com.example.outsourcing.order.repository.OrderRepository;
 import com.example.outsourcing.order.service.OrderService;
@@ -24,13 +26,13 @@ public class PaymentService {
     @Transactional
     public PaymentResponseDto createPayment(PaymentRequestDto requestDto) {
         Order order = orderRepository.findById(requestDto.getOrderId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 주문이 없습니다!"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_ORDER_ID));
         Integer orderPrice = orderService.calculateTotalPrice(order);
 
         // 주문 금액 > 현금
         int difference = orderPrice - requestDto.getInputAmount();
         if (difference>0) {
-            throw new InsufficientBalanceException(difference+" (원)이 부족하여 결제할 수 없습니다.");
+            throw new BaseException(ErrorCode.INSUFFICIENT_BALANCE);
         }
 
         Payment payment = Payment.builder()
@@ -64,9 +66,9 @@ public class PaymentService {
     @Transactional
     public PaymentResponseDto cancelPayment(Long paymentId) {
         Payment payment = paymentRepository.findById(paymentId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 결제정보가 없습니다!"));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_PAYMENT_ID));
         if (payment.getStatus() != PaymentStatus.COMPLETED) {
-            throw new IllegalStateException("완료된 결제만 취소할 수 있습니다!");
+            throw new BaseException(ErrorCode.INVALID_PAYMENT_STATUS_FOR_CANCEL);
         }
         // 결제 취소 처리
         payment.cancel();
