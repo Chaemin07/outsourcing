@@ -13,6 +13,8 @@ public class UpdateStoreResponseDto {
 
     private final String name;
 
+    private final String address;
+
     private final String status;
 
     private final String storePhoneNumber;
@@ -31,6 +33,7 @@ public class UpdateStoreResponseDto {
         return new UpdateStoreResponseDto(
             store.getId(),
             store.getName(),
+            store.getAddress(),
             store.getStatus().name(),
             store.getStorePhoneNumber(),
             store.getMinOrderPrice(),

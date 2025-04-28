@@ -22,6 +22,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Getter
 @Entity
@@ -35,6 +37,9 @@ public class Store extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
+    private String address;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -59,10 +64,6 @@ public class Store extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "address_id")
-    private Address address;
-
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")
@@ -70,6 +71,7 @@ public class Store extends BaseEntity {
 
     public Store(CreateStoreRequestDto requestDto, User user) {
         this.name = requestDto.getName();
+        this.address = requestDto.getAddress();
         this.status = StoreStatus.OPEN;
         this.storePhoneNumber = requestDto.getStorePhoneNumber();
         this.minOrderPrice = requestDto.getMinOrderPrice();
@@ -81,6 +83,7 @@ public class Store extends BaseEntity {
 
     public void updateStore(UpdateStoreRequestDto requestDto) {
         this.name = requestDto.getName();
+        this.address = requestDto.getAddress();
         this.storePhoneNumber = requestDto.getStorePhoneNumber();
         this.minOrderPrice = requestDto.getMinOrderPrice();
         this.openingTimes = requestDto.getOpeningTimes();
