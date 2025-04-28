@@ -1,5 +1,6 @@
 package com.example.outsourcing.order.service;
 
+import com.example.outsourcing.common.annotation.OrderStatusLogTarget;
 import com.example.outsourcing.common.enums.DeliveryStatus;
 import com.example.outsourcing.common.enums.OrderStatus;
 import com.example.outsourcing.menu.entity.Menu;
@@ -298,70 +299,73 @@ public class OrderService {
         return  new ArrayList<>(groupedDetails.values());
     }
 
+    @OrderStatusLogTarget
     @Transactional
-    public OrderStatusChangeResponse updateOrderStatus(Long ownerId, Long storeId, Long orderId, String status) {
+    public OrderStatusChangeResponse updateOrderStatus(Long ownerId, StatusChangeDto statusChangeDto) {
         User user = userRepository.findById(ownerId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         // 가게 아이디를 통해서 store -> 가게 주인과 ownerId같아야함
-        Store store = storeRepository.findById(storeId)
+        Store store = storeRepository.findById(statusChangeDto.getStoreId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 가게입니다!"));
         // 사장님 role아니거나 가게주인과 ownerId다르다면 throw
         if (user.getRole()!=Role.OWNER||!store.getUser().getId().equals(ownerId)){
             throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
         }
         // 주문 아이디를 통해서 order -> 주문한 가게와 storeId같아야함
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findById(statusChangeDto.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다!"));
         // 주문한 가게의 Id와 storeId가 다르다면 throw
-        if (!order.getStore().getId().equals(storeId)) {
+        if (!order.getStore().getId().equals(statusChangeDto.getStoreId())) {
             throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
         }
         String previousOrderStatus = order.getOrderStatus().getValue();
         try {
             // 입력받은 상태값 체크
-            OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
+            OrderStatus orderStatus = statusChangeDto.getOrderStatus();
             order.setOrderStatus(orderStatus);
         } catch (IllegalArgumentException error) {
-            throw new IllegalArgumentException("잘못된 상태가 입력되었습니다! : " + status);
+            throw new IllegalArgumentException("잘못된 상태가 입력되었습니다! : " + statusChangeDto.getOrderStatus());
         }
 
         return OrderStatusChangeResponse.builder()
-                .orderId(orderId)
+                .orderId(statusChangeDto.getOrderId())
                 .previousOrderStatus(previousOrderStatus)
                 .newOrderStatus(order.getOrderStatus().getValue())
                 .build();
     }
+
+    @OrderStatusLogTarget
     @Transactional
-    public DeliveryStatusChangeResponse updateDeliveryStatus(Long ownerId, Long storeId, Long orderId, String status) {
+    public DeliveryStatusChangeResponse updateDeliveryStatus(Long ownerId, StatusChangeDto statusChangeDto) {
         User user = userRepository.findById(ownerId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
         // 가게 아이디를 통해서 store -> 가게 주인과 ownerId같아야함
-        Store store = storeRepository.findById(storeId)
+        Store store = storeRepository.findById(statusChangeDto.getStoreId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 가게입니다!"));
         // 사장님 role아니거나 가게주인과 ownerId다르다면 throw
         if (user.getRole()!=Role.OWNER||!store.getUser().getId().equals(ownerId)){
             throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
         }
         // 주문 아이디를 통해서 order -> 주문한 가게와 storeId같아야함
-        Order order = orderRepository.findById(orderId)
+        Order order = orderRepository.findById(statusChangeDto.getOrderId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다!"));
         // 주문한 가게의 Id와 storeId가 다르다면 throw
-        if (!order.getStore().getId().equals(storeId)) {
+        if (!order.getStore().getId().equals(statusChangeDto.getStoreId())) {
             throw new RuntimeException("해당 가게에 대한 권한이 없습니다.");
         }
         String previousDeliveryStatus = order.getDeliveryStatus().getValue();
         try {
             // 입력받은 상태값 체크
-            DeliveryStatus deliveryStatus = DeliveryStatus.valueOf(status.toUpperCase());
+            DeliveryStatus deliveryStatus = statusChangeDto.getDeliveryStatus();
             order.setDeliveryStatus(deliveryStatus);
         } catch (IllegalArgumentException error) {
-            throw new IllegalArgumentException("잘못된 상태가 입력되었습니다! : " + status);
+            throw new IllegalArgumentException("잘못된 상태가 입력되었습니다! : " + statusChangeDto.getDeliveryStatus());
         }
 
         return DeliveryStatusChangeResponse.builder()
-                .orderId(orderId)
+                .orderId(statusChangeDto.getOrderId())
                 .previousDeliveryStatus(previousDeliveryStatus)
-                .newDeliveryStatus(order.getOrderStatus().getValue())
+                .newDeliveryStatus(order.getDeliveryStatus().getValue())
                 .build();
 
     }
