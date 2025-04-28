@@ -3,6 +3,8 @@ package com.example.outsourcing.cart.service;
 import com.example.outsourcing.cart.dto.*;
 import com.example.outsourcing.cart.entity.Cart;
 import com.example.outsourcing.cart.entity.SelectedMenuOption;
+import com.example.outsourcing.cart.exception.CartEmptyException;
+import com.example.outsourcing.cart.exception.CartExpiredException;
 import com.example.outsourcing.cart.repository.CartRepository;
 import com.example.outsourcing.cart.repository.SelectedMenuOptionRepository;
 import com.example.outsourcing.menu.entity.Menu;
@@ -14,6 +16,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,11 +45,13 @@ public class CartService {
         // 유저아이디로 저장된 장바구니가 있는경우 → 기존 장바구니 가게와 requestDto가게 정보 비교 필요
         if (cartOptional.isPresent()) {
             Cart cart = cartOptional.get();
+            // TODO 가게 다르면 사용자에게 메세지 보내야함
             if (cart.getStoreId() != requestDto.getStoreId()) {
-                // TODO 가게 다르면 사용자에게 메세지 보내야함
                 // 기존 장바구니에 있는 가게 메뉴를 담을 건지
                 // 아니면 새롭게 들어온 가게 메뉴로 장바구니 담을건지
                 // 어떻게 처리하지?
+                // 04_27 일단 바로 지워버리기
+                clearCart(userId);
             }
         }
         // 기존 장바구니 있지만, 가게가 같은경우
@@ -102,8 +107,15 @@ public class CartService {
 
     // TODO 엔티티를 DTO로 변환필요
     public CartResponseDto getCartDetails(Long userId) {
+        // 장바구니 수정일 기준 +24시간이라면 삭제
+        if (autoClearExpiredCart(userId)) {
+            throw new CartExpiredException("장바구니가 만료되어 삭제되었습니다!");
+        }
         List<CartItemDto> cartItemDtoList = new ArrayList<>();
         List<Cart> cartList = cartRepository.findByUserId(userId);
+        if (cartList.isEmpty()) {
+            throw new CartEmptyException("장바구니에 담긴 메뉴가 없습니다!");
+        }
         Integer totalPrice = 0;
         for (Cart cart : cartList) {
             Integer optionTotalPrice = 0;
@@ -143,11 +155,34 @@ public class CartService {
 
     }
 
-    public void deleteCartItem(Long cartId) {
+    public void deleteCartItem(Long userId, Long cartId) {
+        Cart cart = cartRepository.findById(cartId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 아이디의 장바구니가 없습니다!"));
+        // 장바구니 주인의 아이디와 현재 로그인 아이디 비교
+        if (cart.getUser().getId().equals(userId)) {
+            // 에러메세지 내용 통일 (또는 권한이 없습니다?)
+            throw new RuntimeException("다른 사용자의 장바구니에 접근할 수 없습니다!");
+        }
         cartRepository.deleteById(cartId);
     }
 
     public void clearCart(Long userId) {
         cartRepository.deleteByUserId(userId);
+    }
+
+    // 만료된 장바구니 자동 삭제 메서드
+    private boolean autoClearExpiredCart(Long userId) {
+
+        Optional<LocalDateTime> lastUpdatedAtOp = cartRepository.findMaxUpdatedAtByUserId(userId);
+        if (lastUpdatedAtOp.isPresent()) {
+            LocalDateTime lastUpdatedAt = lastUpdatedAtOp.get();
+            // 장바구니 마지막 수정일기준 24시간과 현재 시간 비교
+            if (lastUpdatedAt.plusDays(1).isBefore(LocalDateTime.now())) {
+                // 해당 사용자 장바구니 삭제
+                clearCart(userId);
+                return true;
+            }
+        }
+        return false;
     }
 }
