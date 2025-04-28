@@ -33,7 +33,7 @@ public class UpdateStoreResponseDto {
         return new UpdateStoreResponseDto(
             store.getId(),
             store.getName(),
-            store.getAddress(),
+            store.getAddress().getAddress(),
             store.getStatus().name(),
             store.getStorePhoneNumber(),
             store.getMinOrderPrice(),
