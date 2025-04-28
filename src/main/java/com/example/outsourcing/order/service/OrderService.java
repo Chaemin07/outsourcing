@@ -2,7 +2,7 @@ package com.example.outsourcing.order.service;
 
 import com.example.outsourcing.menu.entity.Menu;
 import com.example.outsourcing.menu.entity.MenuOption;
-import com.example.outsourcing.menu.repository.ManuOptionRepository;
+import com.example.outsourcing.menu.repository.MenuOptionRepository;
 import com.example.outsourcing.menu.repository.MenuRepository;
 import com.example.outsourcing.order.dto.*;
 import com.example.outsourcing.order.entity.*;
@@ -27,7 +27,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final MenuRepository menuRepository;
-    private final ManuOptionRepository manuOptionRepository;
+    private final MenuOptionRepository manuOptionRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final OrderItemOptionRepository orderItemOptionRepository;
     private final StoreRepository storeRepository;
