@@ -16,5 +16,5 @@ public @interface AuthUser {
   @AliasFor("value")
   String name() default "";
 
-  boolean required() default true;      // TODO: SessonAttribute 동작 뜯어와서 비슷하게 동작하도록
+  boolean required() default true;
 }
