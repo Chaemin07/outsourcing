@@ -1,7 +1,7 @@
 package com.example.outsourcing.order.dto;
 
-import com.example.outsourcing.order.entity.DeliveryStatus;
-import com.example.outsourcing.order.entity.OrderStatus;
+import com.example.outsourcing.common.enums.DeliveryStatus;
+import com.example.outsourcing.common.enums.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 

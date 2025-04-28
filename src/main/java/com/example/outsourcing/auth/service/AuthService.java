@@ -2,6 +2,8 @@ package com.example.outsourcing.auth.service;
 
 import com.example.outsourcing.auth.dto.LoginResponseDTO;
 import com.example.outsourcing.common.config.PasswordEncoder;
+import com.example.outsourcing.common.exception.BaseException;
+import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.jwt.JwtUtil;
 import com.example.outsourcing.user.dto.userLoginRequestDTO;
 import com.example.outsourcing.user.entity.User;
@@ -21,11 +23,11 @@ public class AuthService {
   public LoginResponseDTO login(userLoginRequestDTO requestDTO) {
     // 이메일 검증
     User user = userRepository.findUserByEmail(requestDTO.getEmail()).orElseThrow(
-        () -> new RuntimeException("유저를 찾을 수 없습니다."));
+        () -> new BaseException(ErrorCode.INVALID_EMAIL));
 
     // 비밀번호 검증
     if (!isValidPassword(requestDTO.getPassword(), user.getPassword())) {
-      throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+      throw new BaseException(ErrorCode.INVALID_PASSWORD);
     }
 
     String token = jwtUtil.createToken(user.getId(), user.getEmail(), user.getRole());
