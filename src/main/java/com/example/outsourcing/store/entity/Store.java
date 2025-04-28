@@ -6,7 +6,6 @@ import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.user.entity.User;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,14 +16,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @Getter
 @Setter
@@ -40,8 +36,9 @@ public class Store extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String address;
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Address address;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -73,7 +70,6 @@ public class Store extends BaseEntity {
 
     public Store(CreateStoreRequestDto requestDto, User user) {
         this.name = requestDto.getName();
-        this.address = requestDto.getAddress();
         this.status = StoreStatus.OPEN;
         this.storePhoneNumber = requestDto.getStorePhoneNumber();
         this.minOrderPrice = requestDto.getMinOrderPrice();
@@ -83,9 +79,9 @@ public class Store extends BaseEntity {
         this.user = user;
     }
 
-    public void updateStore(UpdateStoreRequestDto requestDto) {
+    public void updateStore(UpdateStoreRequestDto requestDto, Address address) {
         this.name = requestDto.getName();
-        this.address = requestDto.getAddress();
+        this.address = address;
         this.storePhoneNumber = requestDto.getStorePhoneNumber();
         this.minOrderPrice = requestDto.getMinOrderPrice();
         this.openingTimes = requestDto.getOpeningTimes();

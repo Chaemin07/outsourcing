@@ -2,6 +2,7 @@ package com.example.outsourcing.address.entity;
 
 import com.example.outsourcing.address.dto.UpdateUserAddressRequestDTO;
 import com.example.outsourcing.common.entity.BaseEntity;
+import com.example.outsourcing.store.entity.Store;
 import com.example.outsourcing.user.entity.Role;
 import com.example.outsourcing.user.entity.User;
 import jakarta.persistence.Column;
@@ -43,10 +44,20 @@ public class Address extends BaseEntity {
   @JoinColumn(name = "user_id")
   User user;
 
+  @ManyToOne
+  @JoinColumn(name = "store_id")
+  Store store;
+
   public Address(UpdateUserAddressRequestDTO requestDTO, User user) {
     this.role = Role.USER;
     this.address = requestDTO.getAddress();
     this.user = user;
+  }
+
+  public Address(String address, Store store) {
+    this.role = Role.OWNER;
+    this.address = address;
+    this.store = store;
   }
 
   // TODO: 접근 제어

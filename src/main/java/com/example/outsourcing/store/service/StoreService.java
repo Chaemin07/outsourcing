@@ -1,5 +1,6 @@
 package com.example.outsourcing.store.service;
 
+import com.example.outsourcing.address.entity.Address;
 import com.example.outsourcing.common.exception.BaseException;
 import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.image.service.ImageService;
@@ -21,11 +22,10 @@ import com.example.outsourcing.user.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
+
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +56,10 @@ public class StoreService {
 
         // 가게 저장
         Store savedStore = storeRepository.save(new Store(requestDto, user));
+
+        Address address = new Address(requestDto.getAddress(), savedStore);
+
+        savedStore.setAddress(address);
 
         return CreateStoreResponseDto.toDto(savedStore);
     }
@@ -97,7 +101,7 @@ public class StoreService {
             throw new BaseException(ErrorCode.FORBIDDEN_STORE);
         }
 
-        findStore.updateStore(requestDto);
+        findStore.updateStore(requestDto, new Address(requestDto.getAddress(), findStore));
 
         return UpdateStoreResponseDto.toDto(findStore);
     }
