@@ -1,6 +1,7 @@
 package com.example.outsourcing.store.controller;
 
 import com.example.outsourcing.common.annotation.AuthUser;
+import com.example.outsourcing.common.response.ApiResponse;
 import com.example.outsourcing.image.util.ImageUtil;
 import com.example.outsourcing.menu.dto.response.MenuSummaryResponseDto;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
@@ -35,13 +36,13 @@ public class StoreController {
     private final ImageUtil imageUtil;
 
     @PostMapping
-    public ResponseEntity<CreateStoreResponseDto> createStore(
+    public ResponseEntity<ApiResponse<CreateStoreResponseDto>> createStore(
         @Valid @RequestBody CreateStoreRequestDto requestDto,
         @AuthUser Long userId) {
 
         CreateStoreResponseDto responseDto = storeService.createStore(requestDto, userId);
 
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 
     // 가게 이미지 업로드
@@ -59,37 +60,37 @@ public class StoreController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StoreResponseDto>> getStore() {
+    public ResponseEntity<ApiResponse<List<StoreResponseDto>>> getStore() {
         List<StoreResponseDto> storeList = storeService.getStore();
-        return ResponseEntity.ok(storeList);
+        return ResponseEntity.ok(ApiResponse.success(storeList));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<StoreResponseDto>> searchStores(@RequestParam String keyword) {
+    public ResponseEntity<ApiResponse<List<StoreResponseDto>>> searchStores(@RequestParam String keyword) {
         List<StoreResponseDto> storeList = storeService.searchStores(keyword);
-        return ResponseEntity.ok(storeList);
+        return ResponseEntity.ok(ApiResponse.success(storeList));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetStoreWithMenuResponseDto> getStoreById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<GetStoreWithMenuResponseDto>> getStoreById(@PathVariable Long id) {
         GetStoreWithMenuResponseDto responseDto = storeService.getStoreById(id);
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UpdateStoreResponseDto> updateStore(
+    public ResponseEntity<ApiResponse<UpdateStoreResponseDto>> updateStore(
         @PathVariable Long id,
         @AuthUser Long userId,
         @Valid @RequestBody UpdateStoreRequestDto requestDto) {
 
         UpdateStoreResponseDto responseDto = storeService.updateStore(id, requestDto, userId);
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> closedDownStore(@PathVariable Long id, @AuthUser Long userId) {
+    public ResponseEntity<ApiResponse<Void>> closedDownStore(@PathVariable Long id, @AuthUser Long userId) {
         storeService.closedDownStore(id, userId);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
 }

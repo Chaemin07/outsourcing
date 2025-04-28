@@ -1,5 +1,7 @@
 package com.example.outsourcing.menu.service;
 
+import com.example.outsourcing.common.exception.BaseException;
+import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.image.service.ImageService;
 import com.example.outsourcing.menu.dto.request.AddMenuRequestDto;
 import com.example.outsourcing.menu.dto.request.UpdateMenuRequestDto;
@@ -39,12 +41,12 @@ public class MenuService {
 
     // 우리 가게 메뉴인지 검증
     if(!menu.getStore().getId().equals(storeId)){
-      throw new RuntimeException("저희 가게 음식이 아닙니다.");
+      throw new BaseException(ErrorCode.INVALID_MENU_ID);
     }
 
     // 삭제된 메뉴 검증
     if(menu.isDeleted()) {
-      throw new RuntimeException("더 이상 이 메뉴는 만들지 않습니다.");
+      throw new BaseException(ErrorCode.INVALID_MENU_ID);
     }
 
     return MenuResponseDto.toDto(menu);
@@ -60,7 +62,7 @@ public class MenuService {
 
     // 삭제 메뉴 수정 불가
     if (findMenu.isDeleted()) {
-      throw new RuntimeException("삭제된 메뉴는 수정할 수 없습니다.");
+      throw new BaseException(ErrorCode.MENU_ALREADY_DELETED);
     }
 
     findMenu.updateMenu(requestDto);
@@ -87,7 +89,7 @@ public class MenuService {
     try {
       findMenu.setImage(imageService.uploadImage(file));   // 업로드 후 메뉴 이미지에 값 설정
     } catch (RuntimeException e) {
-      throw new RuntimeException("파일 업로드에 실패하였습니다.", e);
+      throw new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
     }
   }
 

@@ -6,7 +6,6 @@ import com.example.outsourcing.image.entity.Image;
 import com.example.outsourcing.store.dto.request.CreateStoreRequestDto;
 import com.example.outsourcing.store.dto.request.UpdateStoreRequestDto;
 import com.example.outsourcing.user.entity.User;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -17,8 +16,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,6 +35,10 @@ public class Store extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
+
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Address address;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -60,10 +63,6 @@ public class Store extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "address_id")
-    private Address address;
-
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")
@@ -80,8 +79,9 @@ public class Store extends BaseEntity {
         this.user = user;
     }
 
-    public void updateStore(UpdateStoreRequestDto requestDto) {
+    public void updateStore(UpdateStoreRequestDto requestDto, Address address) {
         this.name = requestDto.getName();
+        this.address = address;
         this.storePhoneNumber = requestDto.getStorePhoneNumber();
         this.minOrderPrice = requestDto.getMinOrderPrice();
         this.openingTimes = requestDto.getOpeningTimes();
@@ -91,5 +91,11 @@ public class Store extends BaseEntity {
 
     public void closeDown() {
         this.status = StoreStatus.CLOSED_DOWN;
+    }
+
+    @Builder
+    public Store(Long id, User user) {
+        this.id = id;
+        this.user = user;
     }
 }
