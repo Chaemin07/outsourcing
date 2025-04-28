@@ -16,6 +16,4 @@ public class ReviewRequestDto {
     @Range(min = 1, max = 5)
     @NotNull
     private final int score;
-    
-    // 사진 추가
 }
