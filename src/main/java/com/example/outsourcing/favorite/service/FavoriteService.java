@@ -1,5 +1,7 @@
 package com.example.outsourcing.favorite.service;
 
+import com.example.outsourcing.common.exception.BaseException;
+import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.favorite.dto.reponse.FavoriteResponseDto;
 import com.example.outsourcing.favorite.entity.Favorite;
 import com.example.outsourcing.favorite.repository.FavoriteRepository;
@@ -46,22 +48,22 @@ public class FavoriteService {
     public void checkDuplicatedFavorite(User user, Store store) {
 
         if (favoriteRepository.existsByUserAndStore(user, store)) {
-            throw new RuntimeException("중복 즐겨찾기 불가");
+            throw new BaseException(ErrorCode.CONFLICT_STATUS);
         }
     }
 
     public User getUserByUserId(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 유저입니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER_ID));
     }
 
     public Store getStoreByStoreId(Long storeId) {
         return storeRepository.findById(storeId)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 가게입니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_STORE_ID));
     }
 
     public Favorite getFavoriteByUserAndStore(User user, Store store) {
         return favoriteRepository.findByUserAndStore(user, store)
-                .orElseThrow(() -> new RuntimeException("즐겨찾기가 안된 가게입니다."));
+                .orElseThrow(() -> new BaseException(ErrorCode.NOT_FAVORITE_STORE));
     }
 }
