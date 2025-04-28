@@ -79,10 +79,9 @@ public class JwtFilter extends OncePerRequestFilter {
     } catch (Exception e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JWT 토큰에 문제가 있습니다.");
     }
-    // 유저 역할 검증 // TODO: 추후 early return 하도록 변경
+    // 유저 역할 검증
     for (String matcher : OWNER_LIST) {
       // 사장만 접근 가능 URL 에
-      // if (url.startsWith(matcher)) {
       if (pathMatcher.match(matcher, url)) {
         Role userRole = Role.valueOf(claims.get("role", String.class));
 
