@@ -131,10 +131,9 @@ public class ReviewService {
 
         Stream<Review> stream = reviews.stream();
 
-        // TODO: 이미지가 있는 리뷰만 보기
-        // if (sortType == SortType.WITH_IMAGES) {
-        //     stream = stream.filter(review -> review.getImage)
-        // }
+        if (sortType == SortType.WITH_IMAGES) {
+            stream = stream.filter(review -> review.getImage() != null && !review.getImage().getPath().isEmpty());
+        }
 
         if (SORT_COMPARATORS.containsKey(sortType)) {
             stream = stream.sorted(SORT_COMPARATORS.get(sortType));
