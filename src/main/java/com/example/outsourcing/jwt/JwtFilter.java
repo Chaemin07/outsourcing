@@ -68,6 +68,29 @@ public class JwtFilter extends OncePerRequestFilter {
 
     try {
       claims = jwtUtil.extractClaims(token);
+
+      // 유저 역할 검증
+      for (String matcher : OWNER_LIST) {
+        // 사장만 접근 가능 URL 에
+        if (pathMatcher.match(matcher, url)) {
+          Role userRole = Role.valueOf(claims.get("role", String.class));
+
+          // 만약 유저 role 이 일반 사용자(USER)라면
+          if (!Role.OWNER.equals(userRole)) {
+            log.info("JwtFilter Role : Invalid");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "유효하지 않은 접근입니다.");
+            return;
+          }
+        }
+      }
+
+      // request attributes 세팅
+      request.setAttribute("userId", Long.valueOf(claims.getSubject()));
+      request.setAttribute("role", claims.get("role"));
+      request.setAttribute("email", claims.get("email"));
+
+      filterChain.doFilter(request, response);
+
     } catch (SecurityException | MalformedJwtException | SignatureException e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효하지 않은 JWT 서명입니다.");
     } catch (ExpiredJwtException e) {
@@ -79,26 +102,6 @@ public class JwtFilter extends OncePerRequestFilter {
     } catch (Exception e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, "JWT 토큰에 문제가 있습니다.");
     }
-    // 유저 역할 검증
-    for (String matcher : OWNER_LIST) {
-      // 사장만 접근 가능 URL 에
-      if (pathMatcher.match(matcher, url)) {
-        Role userRole = Role.valueOf(claims.get("role", String.class));
 
-        // 만약 유저 role 이 일반 사용자(USER)라면
-        if (!Role.OWNER.equals(userRole)) {
-          log.info("JwtFilter Role : Invalid");
-          response.sendError(HttpServletResponse.SC_FORBIDDEN, "유효하지 않은 접근입니다.");
-          return;
-        }
-      }
-    }
-
-    // request attributes 세팅
-    request.setAttribute("userId", Long.valueOf(claims.getSubject()));
-    request.setAttribute("role", claims.get("role"));
-    request.setAttribute("email", claims.get("email"));
-
-    filterChain.doFilter(request, response);
   }
 }
