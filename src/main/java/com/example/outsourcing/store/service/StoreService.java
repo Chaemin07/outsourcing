@@ -1,5 +1,7 @@
 package com.example.outsourcing.store.service;
 
+import com.example.outsourcing.common.exception.BaseException;
+import com.example.outsourcing.common.exception.ErrorCode;
 import com.example.outsourcing.image.service.ImageService;
 import com.example.outsourcing.menu.dto.response.MenuSummaryResponseDto;
 import com.example.outsourcing.menu.entity.Menu;
@@ -39,17 +41,17 @@ public class StoreService {
 
         // 사용자(사장) 검증
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다"));
+            .orElseThrow(() -> new BaseException(ErrorCode.NOT_FOUND_USER_ID));
 
         // User_Role 검증
         if (!user.getRole().equals(Role.OWNER)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "사장님만 가게를 생성할 수 있습니다.");
+            throw new BaseException(ErrorCode.FORBIDDEN_STORE);
         }
 
         // 사장님 점포 수 검증 3개 이하 인지
         int storeCount = storeRepository.countByUserIdAndStatusNot(userId, StoreStatus.CLOSED_DOWN);
         if (storeCount >= 3) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "가게는 최대 3개까지 운영할 수 있습니다");
+            throw new BaseException(ErrorCode.EXCEED_STORE_LIMIT);
         }
 
         // 가게 저장
@@ -92,7 +94,7 @@ public class StoreService {
         Store findStore = storeRepository.findByIdOrElseThrow(id);
 
         if (!findStore.getUser().getId().equals(userId)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "가게 수정 권한이 없습니다");
+            throw new BaseException(ErrorCode.FORBIDDEN_STORE);
         }
 
         findStore.updateStore(requestDto);
@@ -106,7 +108,7 @@ public class StoreService {
 
         // 가게 주인 검증
         if (!findStore.getUser().getId().equals(userId)) {
-            throw new RuntimeException("본인의 가게만 폐업할 수 있습니다.");
+            throw new BaseException(ErrorCode.FORBIDDEN_STORE);
         }
 
         findStore.closeDown();
@@ -120,7 +122,7 @@ public class StoreService {
     try {
       findStore.setImage(imageService.uploadImage(file));   // 업로드 후 가게 이미지에 값 설정
     } catch (RuntimeException e) {
-      new RuntimeException("파일 업로드에 실패하였습니다.", e);
+      new BaseException(ErrorCode.IMAGE_UPLOAD_FAILED);
     }
   }
 
